@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#include "searcher.h"
+#include "search_ui.h"
 
 const std::string VERSION = "DesktopSearcher 1.0";
 const std::string BUILD_TIME = __TIME__;

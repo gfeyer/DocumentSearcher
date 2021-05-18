@@ -1,4 +1,4 @@
-#include "searcher.h"
+#include "search_ui.h"
 
 #include "lucene_api/api.h"
 #include "logger.h"

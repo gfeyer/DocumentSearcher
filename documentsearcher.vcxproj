@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
-    <ClCompile Include="src\searcher.cpp" />
+    <ClCompile Include="src\search_ui.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\lucene_api\api.cpp" />
@@ -30,7 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
-    <ClInclude Include="src\searcher.h" />
+    <ClInclude Include="src\search_ui.h" />
     <ClInclude Include="src\logger.h" />
     <ClInclude Include="src\lucene_api\index.h" />
     <ClInclude Include="src\lucene_api\api.h" />
