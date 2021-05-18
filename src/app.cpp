@@ -1,11 +1,11 @@
 #include "app.h"
 
-#include "inspector.h"
+#include "logger.h"
 
 App::App(wxWindow* parent) : UIFrame(parent)
 {
-	inspector_panel_ = new Inspector(auinotebook);
-	auinotebook->AddPage(inspector_panel_, wxT("Inspector"), false, wxNullBitmap);
+	search_panel_ = new Searcher(auinotebook);
+	auinotebook->AddPage(search_panel_, wxT("Search"), false, wxNullBitmap);
 }
 
 void App::OnClose()

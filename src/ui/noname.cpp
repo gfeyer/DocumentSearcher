@@ -103,51 +103,24 @@ CustomMessageFrame::~CustomMessageFrame()
 {
 }
 
-InspectorPanel::InspectorPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name ) : wxPanel( parent, id, pos, size, style, name )
+SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name ) : wxPanel( parent, id, pos, size, style, name )
 {
 	wxBoxSizer* bSizer14;
 	bSizer14 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer18;
-	bSizer18 = new wxBoxSizer( wxHORIZONTAL );
-
-	gui_button_run = new wxButton( this, wxID_ANY, wxT("Run"), wxDefaultPosition, wxDefaultSize, 0 );
-	gui_button_run->SetToolTip( wxT("Collect kafka requests") );
-
-	bSizer18->Add( gui_button_run, 0, wxALL, 5 );
-
-	gui_buffer_size = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 99999, 100 );
-	gui_buffer_size->SetToolTip( wxT("Max requests to collect") );
-
-	bSizer18->Add( gui_buffer_size, 1, wxALL, 5 );
-
-	gui_topic = new wxComboBox( this, wxID_ANY, wxT("topic_name"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	gui_topic->SetSelection( 0 );
-	gui_topic->SetToolTip( wxT("topic") );
-
-	bSizer18->Add( gui_topic, 4, wxALL, 5 );
-
-	gui_brokers = new wxComboBox( this, wxID_ANY, wxT("10.5.5.10,10.5.5.11"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	gui_brokers->SetToolTip( wxT("IX brokers") );
-
-	bSizer18->Add( gui_brokers, 10, wxALL, 5 );
-
-
-	bSizer14->Add( bSizer18, 0, wxEXPAND, 5 );
-
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxHORIZONTAL );
 
-	gui_button_filter = new wxButton( this, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0 );
-	gui_button_filter->SetToolTip( wxT("execute filter") );
+	gui_button_search = new wxButton( this, wxID_ANY, wxT("Search"), wxDefaultPosition, wxDefaultSize, 0 );
+	gui_button_search->SetToolTip( wxT("execute filter") );
 
-	bSizer19->Add( gui_button_filter, 0, wxALL, 5 );
+	bSizer19->Add( gui_button_search, 0, wxALL, 5 );
 
-	gui_filter = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	gui_filter->Append( wxT(".request") );
-	gui_filter->SetToolTip( wxT("filter jq") );
+	gui_search_query = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	gui_search_query->Append( wxT(".request") );
+	gui_search_query->SetToolTip( wxT("filter jq") );
 
-	bSizer19->Add( gui_filter, 14, wxALL, 5 );
+	bSizer19->Add( gui_search_query, 14, wxALL, 5 );
 
 
 	bSizer14->Add( bSizer19, 0, wxEXPAND, 5 );
@@ -166,7 +139,7 @@ InspectorPanel::InspectorPanel( wxWindow* parent, wxWindowID id, const wxPoint& 
 	bSizer20 = new wxBoxSizer( wxVERTICAL );
 
 	m_splitter1 = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D );
-	m_splitter1->Connect( wxEVT_IDLE, wxIdleEventHandler( InspectorPanel::m_splitter1OnIdle ), NULL, this );
+	m_splitter1->Connect( wxEVT_IDLE, wxIdleEventHandler( SearchPanel::m_splitter1OnIdle ), NULL, this );
 
 	m_panel5 = new wxPanel( m_splitter1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer22;
@@ -248,24 +221,22 @@ InspectorPanel::InspectorPanel( wxWindow* parent, wxWindowID id, const wxPoint& 
 	this->Layout();
 
 	// Connect Events
-	gui_button_run->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( InspectorPanel::OnRun ), NULL, this );
-	gui_button_filter->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( InspectorPanel::OnFilter ), NULL, this );
-	gui_filter->Connect( wxEVT_KEY_UP, wxKeyEventHandler( InspectorPanel::OnKeyUpFilter ), NULL, this );
-	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( InspectorPanel::OnSelect ), NULL, this );
-	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( InspectorPanel::OnSearchCancel ), NULL, this );
-	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( InspectorPanel::OnSearch ), NULL, this );
-	gui_search->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( InspectorPanel::OnSearchPartial ), NULL, this );
+	gui_button_search->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnFilter ), NULL, this );
+	gui_search_query->Connect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
+	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelect ), NULL, this );
+	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( SearchPanel::OnSearchCancel ), NULL, this );
+	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
+	gui_search->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( SearchPanel::OnSearchPartial ), NULL, this );
 }
 
-InspectorPanel::~InspectorPanel()
+SearchPanel::~SearchPanel()
 {
 	// Disconnect Events
-	gui_button_run->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( InspectorPanel::OnRun ), NULL, this );
-	gui_button_filter->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( InspectorPanel::OnFilter ), NULL, this );
-	gui_filter->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( InspectorPanel::OnKeyUpFilter ), NULL, this );
-	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( InspectorPanel::OnSelect ), NULL, this );
-	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( InspectorPanel::OnSearchCancel ), NULL, this );
-	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( InspectorPanel::OnSearch ), NULL, this );
-	gui_search->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( InspectorPanel::OnSearchPartial ), NULL, this );
+	gui_button_search->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnFilter ), NULL, this );
+	gui_search_query->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
+	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelect ), NULL, this );
+	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( SearchPanel::OnSearchCancel ), NULL, this );
+	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
+	gui_search->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( SearchPanel::OnSearchPartial ), NULL, this );
 
 }

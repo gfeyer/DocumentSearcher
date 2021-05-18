@@ -16,9 +16,11 @@ namespace lucene_api::internal {
         Lucene::Collection<Lucene::ScoreDocPtr> hits_;
     public:
         SearchResults(std::string index, std::wstring userquery);
-        ~SearchResults() {}
+        ~SearchResults();
         size_t Size();
         double Score(size_t pos);
+        std::string Path(size_t);
+        std::string Name(size_t);
     };
 }
 

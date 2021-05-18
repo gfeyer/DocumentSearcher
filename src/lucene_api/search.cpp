@@ -3,9 +3,9 @@
 
 
 namespace lucene_api::internal {
+    using namespace Lucene;
 
     SearchResults::SearchResults(std::string index, std::wstring userquery) {
-        using namespace Lucene; //TODO: remove this
         // Search
         // String index = L"index";
         String field = L"contents";
@@ -44,21 +44,22 @@ namespace lucene_api::internal {
         int32_t end = hits_.size();
     
         // Get search results metadata
-        for (auto i = 0; i < end; ++i) {
+        /*for (auto i = 0; i < end; ++i) {
     
             DocumentPtr doc = searcher_->doc(hits_[i]->doc);
             String path = doc->get(L"path");
             String modified = doc->get(L"modified");
             String contents = doc->get(L"contents");
     
-            std::wcout << StringUtils::toString(i + 1) + L". " << path << L"\n";
-    
-            std::wcout << "doc=" << hits_[i]->doc << " score=" << hits_[i]->score << "\n";
-    
+            //std::wcout << StringUtils::toString(i + 1) + L". " << path << L"\n";
+            //std::wcout << "doc=" << hits_[i]->doc << " score=" << hits_[i]->score << "\n";
             //std::wcout << path << L"\n";
             //std::wcout << modified << L"\n";
             //std::wcout << contents << L"\n";
-        }
+        }*/
+    }
+
+    SearchResults::~SearchResults() {
         reader_->close();
     }
     
@@ -67,6 +68,21 @@ namespace lucene_api::internal {
     }
     double SearchResults::Score(size_t pos) {
         return hits_[pos]->score;
+    }
+
+    std::string SearchResults::Path(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        String path = doc->get(L"path");
+        return utf16ToUtf8(path);
+    }
+
+    std::string SearchResults::Name(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto path = utf16ToUtf8(doc->get(L"path"));
+        std::string filename = path.substr(path.find_last_of("/\\") + 1);
+        return filename;
     }
     
 }

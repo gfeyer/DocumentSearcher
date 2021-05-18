@@ -2,7 +2,10 @@
 #define UI_H_
 
 #include "ui/noname.h"
-#include "inspector.h"
+
+#include <memory>
+
+#include "searcher.h"
 
 const std::string VERSION = "DesktopSearcher 1.0";
 const std::string BUILD_TIME = __TIME__;
@@ -16,11 +19,12 @@ public:
     ~App() {}
 
 private:
-    Inspector* inspector_panel_;
+    Searcher* search_panel_;
     // Event handlers
 
     // Closing & Cleanup
     void OnClose();
+
 
 };
 

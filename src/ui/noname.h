@@ -23,7 +23,6 @@
 #include <wx/frame.h>
 #include <wx/panel.h>
 #include <wx/button.h>
-#include <wx/spinctrl.h>
 #include <wx/combobox.h>
 #include <wx/stattext.h>
 #include <wx/dataview.h>
@@ -85,19 +84,15 @@ class CustomMessageFrame : public wxFrame
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class InspectorPanel
+/// Class SearchPanel
 ///////////////////////////////////////////////////////////////////////////////
-class InspectorPanel : public wxPanel
+class SearchPanel : public wxPanel
 {
 	private:
 
 	protected:
-		wxButton* gui_button_run;
-		wxSpinCtrl* gui_buffer_size;
-		wxComboBox* gui_topic;
-		wxComboBox* gui_brokers;
-		wxButton* gui_button_filter;
-		wxComboBox* gui_filter;
+		wxButton* gui_button_search;
+		wxComboBox* gui_search_query;
 		wxStaticText* gui_console;
 		wxSplitterWindow* m_splitter1;
 		wxPanel* m_panel5;
@@ -107,7 +102,6 @@ class InspectorPanel : public wxPanel
 		wxStyledTextCtrl* gui_text_view;
 
 		// Virtual event handlers, overide them in your derived class
-		virtual void OnRun( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnFilter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnKeyUpFilter( wxKeyEvent& event ) { event.Skip(); }
 		virtual void OnSelect( wxDataViewEvent& event ) { event.Skip(); }
@@ -118,13 +112,13 @@ class InspectorPanel : public wxPanel
 
 	public:
 
-		InspectorPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 900,600 ), long style = wxTAB_TRAVERSAL, const wxString& name = wxEmptyString );
-		~InspectorPanel();
+		SearchPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 900,600 ), long style = wxTAB_TRAVERSAL, const wxString& name = wxEmptyString );
+		~SearchPanel();
 
 		void m_splitter1OnIdle( wxIdleEvent& )
 		{
 			m_splitter1->SetSashPosition( 0 );
-			m_splitter1->Disconnect( wxEVT_IDLE, wxIdleEventHandler( InspectorPanel::m_splitter1OnIdle ), NULL, this );
+			m_splitter1->Disconnect( wxEVT_IDLE, wxIdleEventHandler( SearchPanel::m_splitter1OnIdle ), NULL, this );
 		}
 
 };

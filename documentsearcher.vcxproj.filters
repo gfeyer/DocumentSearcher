@@ -38,7 +38,7 @@
     <ClCompile Include="src\app.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\inspector.cpp">
+    <ClCompile Include="src\searcher.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -61,7 +61,7 @@
     <ClInclude Include="src\app.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\inspector.h">
+    <ClInclude Include="src\searcher.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

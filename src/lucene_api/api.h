@@ -20,6 +20,8 @@ namespace lucene_api {
     public:
         virtual size_t Size() = 0;
         virtual double Score(size_t) = 0;
+        virtual std::string Path(size_t) = 0;
+        virtual std::string Name(size_t) = 0;
     };
 
     std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query);
