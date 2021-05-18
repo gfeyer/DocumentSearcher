@@ -18,6 +18,13 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\documentsearcher.cpp" />
+    <ClCompile Include="src\logger.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\logger.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{F197BB44-AB77-4310-A285-1DACAEEE50A3}</ProjectGuid>
@@ -156,13 +163,6 @@
       <AdditionalDependencies>lucene++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="documentsearcher.cpp" />
-    <ClCompile Include="logger.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="logger.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

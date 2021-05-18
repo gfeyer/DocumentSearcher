@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="documentsearcher.cpp">
+    <ClCompile Include="src\documentsearcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="logger.cpp">
+    <ClCompile Include="src\logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="logger.h">
+    <ClInclude Include="src\logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
