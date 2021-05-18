@@ -1,6 +1,14 @@
 #ifndef LUCENE_API_H_
 #define LUCENE_API_H_
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
 #include <memory>
 
 #include "LuceneHeaders.h"
