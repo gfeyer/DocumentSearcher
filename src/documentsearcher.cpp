@@ -1,8 +1,11 @@
 
+#include <iostream>
+
 #include "lucene_api/api.h"
 #include "lucene_api/search.h"
 #include "lucene_api/index.h"
 
+#include "logger.h"
 
 int main()
 {
@@ -17,8 +20,7 @@ int main()
     // Perform basic search and get results
     auto results = lucene_api::NewSearch(index, L"H4R0K2");
 
-    //std::wcout << search.TotalHits();
-    //logger_info << results->Size();
-    //logger_info << "SCORE at 0 is: " << results->Score(0);
-    //logger_info << "SCORE at 1 is: " << results->Score(1);
+    logger_info << results->Size();
+    logger_info << "SCORE at 0 is: " << results->Score(0);
+    logger_info << "SCORE at 1 is: " << results->Score(1);
 }

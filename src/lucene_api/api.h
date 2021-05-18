@@ -24,11 +24,9 @@ namespace lucene_api {
 
     std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query);
 
-    // Interface for indexing
-    class IIndexer {
-    public:
-        virtual void AddFile(std::string) = 0;
-    };
+    // Interface for indexing directory and updating the index
+    int IndexDocs(std::string source, std::string index);
+    int UpdateDocs(std::string source, std::string index);
 
     // Utility functions
     std::wstring utf8ToUtf16(const std::string& utf8Str);
