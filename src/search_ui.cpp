@@ -3,7 +3,7 @@
 #include "lucene_api/api.h"
 #include "logger.h"
 
-Searcher::Searcher(wxWindow* window) : SearchPanel(window)
+SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 {
     gui_list_view->AppendTextColumn("Id");
     gui_list_view->AppendTextColumn("Filename");
@@ -33,11 +33,11 @@ Searcher::Searcher(wxWindow* window) : SearchPanel(window)
     //logger_info << "SCORE at 1 is: " << results_->Score(1);
 }
 
-Searcher::~Searcher()
+SearchUI::~SearchUI()
 {
 }
 
-void Searcher::InsertResult(std::vector<std::string> data)
+void SearchUI::InsertResult(std::vector<std::string> data)
 {
     wxVector<wxVariant> d;
     for (auto item : data) {
@@ -46,7 +46,7 @@ void Searcher::InsertResult(std::vector<std::string> data)
     gui_list_view->AppendItem(d);
 }
 
-void Searcher::OnSelect(wxDataViewEvent& event)
+void SearchUI::OnSelect(wxDataViewEvent& event)
 {
     auto row = gui_list_view->GetSelectedRow();
     auto path = results_->Path(row);

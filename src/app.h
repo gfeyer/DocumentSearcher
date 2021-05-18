@@ -19,7 +19,7 @@ public:
     ~App() {}
 
 private:
-    Searcher* search_panel_;
+    SearchUI* search_panel_;
     // Event handlers
 
     // Closing & Cleanup

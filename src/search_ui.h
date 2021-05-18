@@ -7,10 +7,10 @@
 #include <string>
 #include "lucene_api/api.h"
 
-class Searcher : public SearchPanel {
+class SearchUI : public SearchPanel {
 public:
-	Searcher(wxWindow* window);
-	~Searcher();
+	SearchUI(wxWindow* window);
+	~SearchUI();
 
 private:
 

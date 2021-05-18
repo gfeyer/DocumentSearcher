@@ -4,7 +4,7 @@
 
 App::App(wxWindow* parent) : UIFrame(parent)
 {
-	search_panel_ = new Searcher(auinotebook);
+	search_panel_ = new SearchUI(auinotebook);
 	auinotebook->AddPage(search_panel_, wxT("Search"), false, wxNullBitmap);
 }
 
