@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -15,9 +11,6 @@
     </Filter>
     <Filter Include="src\lucene_api">
       <UniqueIdentifier>{d7c0a4fa-bd5a-4d7d-aad5-50966b1aa005}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\lucene_api">
-      <UniqueIdentifier>{2011767f-9185-463f-ae71-20467ab6c247}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -35,14 +28,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\lucene_api\search.h">
       <Filter>src\lucene_api</Filter>
     </ClInclude>
     <ClInclude Include="src\lucene_api\index.h">
       <Filter>src\lucene_api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logger.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
