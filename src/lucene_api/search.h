@@ -92,10 +92,10 @@ namespace LuceneAPI {
         }
     };
 
-    std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query) {
+    /*std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query) {
         std::shared_ptr<IResults> searchResults(new SearchResults(index, query));
         return searchResults;
-    }
+    }*/
 }
 
 #endif  // SEARCH_H_

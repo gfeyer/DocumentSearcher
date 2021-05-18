@@ -11,6 +11,8 @@
 #include <codecvt>
 #include <iostream>
 
+#include "search.h"
+
 namespace LuceneAPI {
     std::wstring utf8ToUtf16(const std::string& utf8Str)
     {
@@ -22,5 +24,10 @@ namespace LuceneAPI {
     {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
         return conv.to_bytes(utf16Str);
+    }
+
+    std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query) {
+        std::shared_ptr<IResults> searchResults(new SearchResults(index, query));
+        return searchResults;
     }
 }

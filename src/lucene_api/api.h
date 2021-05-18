@@ -1,22 +1,13 @@
 #ifndef LUCENE_API_H_
 #define LUCENE_API_H_
 
-#include <codecvt>
-#include <iostream>
 #include <memory>
 
-#include "Config.h"
-#include "targetver.h"
 #include "LuceneHeaders.h"
-#include "FileUtils.h"
-#include "FilterIndexReader.h"
-#include "MiscUtils.h"
 
 namespace LuceneAPI {
 
-    std::wstring utf8ToUtf16(const std::string& utf8Str);
-    std::string utf16ToUtf8(const std::wstring& utf16Str);
-
+    // Interface for interacting with lucene results
     class IResults {
     public:
         virtual size_t Size() = 0;
@@ -24,6 +15,11 @@ namespace LuceneAPI {
     };
 
     std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query);
+
+    // Utility functions
+    std::wstring utf8ToUtf16(const std::string& utf8Str);
+    std::string utf16ToUtf8(const std::wstring& utf16Str);
+    
 }
 
 #endif // LUCENE_API_H_
