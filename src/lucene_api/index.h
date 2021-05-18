@@ -16,6 +16,13 @@
 
 namespace lucene_api {
 
+    class Indexer : public IIndexer {
+    public:
+        Indexer();
+        ~Indexer() {}
+        void AddFile(std::string);
+    };
+
     std::string readFileIntoString(const std::wstring& path);
     std::wstring readFileIntoWString(const std::wstring& path);
     Lucene::DocumentPtr fileDocument(const Lucene::String& docFile);

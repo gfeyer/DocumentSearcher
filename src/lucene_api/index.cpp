@@ -2,6 +2,14 @@
 #include "index.h"
 
 namespace lucene_api {
+
+    Indexer::Indexer() {
+
+    }
+    void Indexer::AddFile(std::string path) {
+
+    }
+
     int32_t docNumber = 0;
 
     std::string readFileIntoString(const std::wstring& path) {
