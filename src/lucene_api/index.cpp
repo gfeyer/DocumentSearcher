@@ -4,7 +4,7 @@
 namespace lucene_api {
 
     namespace internal {
-
+        using namespace Lucene;
 
         int32_t docNumber = 0;
 
@@ -31,7 +31,7 @@ namespace lucene_api {
         }
 
         Lucene::DocumentPtr fileDocument(const Lucene::String& docFile) {
-            using namespace Lucene;
+
             DocumentPtr doc = newLucene<Document>();
 
             // Add the path of the file as a field named "path".  Use a field that is indexed (ie. searchable), but
@@ -56,7 +56,6 @@ namespace lucene_api {
         }
 
         void IndexDocsWithWriter(const Lucene::IndexWriterPtr& writer, const Lucene::String& sourceDir) {
-            using namespace Lucene;
 
             HashSet<String> dirList(HashSet<String>::newInstance());
             if (!FileUtils::listDirectory(sourceDir, false, dirList)) {

@@ -19,7 +19,7 @@ namespace lucene_api {
     }
 
     std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query) {
-        std::shared_ptr<IResults> searchResults(new SearchResults(index, query));
+        std::shared_ptr<IResults> searchResults(new internal::SearchResults(index, query));
         return searchResults;
     }
 }

@@ -17,7 +17,6 @@ int main()
     // Perform basic search and get results
     auto results = lucene_api::NewSearch(index, L"H4R0K2");
 
-
     //std::wcout << search.TotalHits();
     //logger_info << results->Size();
     //logger_info << "SCORE at 0 is: " << results->Score(0);
