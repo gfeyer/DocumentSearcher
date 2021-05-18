@@ -21,6 +21,7 @@ namespace lucene_api::internal {
         double Score(size_t pos);
         std::string Path(size_t);
         std::string Name(size_t);
+        std::wstring Content(size_t);
     };
 }
 

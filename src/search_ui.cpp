@@ -49,6 +49,7 @@ void SearchUI::InsertResult(std::vector<std::string> data)
 void SearchUI::OnSelect(wxDataViewEvent& event)
 {
     auto row = gui_list_view->GetSelectedRow();
-    auto path = results_->Path(row);
-    logger_info << path;
+    auto content = results_->Content(row);
+    //auto path = gui_list_view->GetTextValue(i, 1);
+    gui_text_view->SetText(content);
 }

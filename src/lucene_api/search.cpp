@@ -84,5 +84,12 @@ namespace lucene_api::internal {
         std::string filename = path.substr(path.find_last_of("/\\") + 1);
         return filename;
     }
+
+    std::wstring SearchResults::Content(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto content = doc->get(L"contents");
+        return content;
+    }
     
 }
