@@ -96,7 +96,12 @@ namespace LuceneAPI {
         uint64_t beginIndex = MiscUtils::currentTimeMillis();
 
         try {
-            IndexWriterPtr writer = newLucene<IndexWriter>(FSDirectory::open(indexDir), newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_CURRENT), true, IndexWriter::MaxFieldLengthLIMITED);
+            IndexWriterPtr writer = newLucene<IndexWriter>(
+                FSDirectory::open(indexDir), 
+                newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_CURRENT), 
+                true, 
+                IndexWriter::MaxFieldLengthLIMITED);
+
             std::wcout << L"Indexing to directory: " << indexDir << L"...\n";
 
             IndexDocsWithWriter(writer, sourceDir);
