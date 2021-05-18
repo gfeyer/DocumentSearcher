@@ -102,12 +102,12 @@ class SearchPanel : public wxPanel
 		wxStyledTextCtrl* gui_text_view;
 
 		// Virtual event handlers, overide them in your derived class
-		virtual void OnFilter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSearch( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnKeyUpFilter( wxKeyEvent& event ) { event.Skip(); }
 		virtual void OnSelect( wxDataViewEvent& event ) { event.Skip(); }
-		virtual void OnSearchCancel( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSearch( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSearchPartial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDocSearchCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDocSearch( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDocSearchPartial( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

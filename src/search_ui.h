@@ -14,10 +14,13 @@ public:
 
 private:
 
-	void InsertResult(std::vector<std::string>);
-
 	// Events
 	void OnSelect(wxDataViewEvent& event);
+	void OnSearch(wxCommandEvent& event);
+	void OnKeyUpFilter(wxKeyEvent& event);
+
+	// Utility Functions
+	void UpdateResults();
 
 	// Session data
 	std::shared_ptr<lucene_api::IResults> results_;

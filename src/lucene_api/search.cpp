@@ -23,7 +23,8 @@ namespace lucene_api::internal {
         QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_CURRENT, field, analyzer);
     
         ReaderPtr in;
-    
+        
+        std::wcout << L"User query: " << userquery << L"\n";
         QueryPtr query = parser->parse(userquery);
         std::wcout << L"Searching for: " << query->toString(field) << L"\n";
     
@@ -60,6 +61,7 @@ namespace lucene_api::internal {
     }
 
     SearchResults::~SearchResults() {
+        std::wcout << "d'tor" << std::endl;
         reader_->close();
     }
     

@@ -441,7 +441,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
-                                <event name="OnButtonClick">OnFilter</event>
+                                <event name="OnButtonClick">OnSearch</event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="0">
@@ -799,11 +799,11 @@
                                             <property name="name">bSizer23</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxEXPAND</property>
                                                 <property name="proportion">0</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer37</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -871,9 +871,9 @@
                                                             <property name="window_extra_style"></property>
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
-                                                            <event name="OnCancelButton">OnSearchCancel</event>
-                                                            <event name="OnSearchButton">OnSearch</event>
-                                                            <event name="OnText">OnSearchPartial</event>
+                                                            <event name="OnCancelButton">OnDocSearchCancel</event>
+                                                            <event name="OnSearchButton">OnDocSearch</event>
+                                                            <event name="OnText">OnDocSearchPartial</event>
                                                         </object>
                                                     </object>
                                                 </object>

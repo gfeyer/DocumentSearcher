@@ -19,31 +19,26 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 
     // Perform basic search and get results
     results_ = lucene_api::NewSearch(index, L"H4R0K2");
-
-    for (auto i = 0; i < results_->Size(); ++i) {
-        auto id = std::to_string(i);
-        auto name = results_->Name(i);
-        auto path = results_->Path(i);
-
-        InsertResult({id, name, path});
-    }
-
-    //logger_info << results_->Size();
-    //logger_info << "SCORE at 0 is: " << results_->Score(0);
-    //logger_info << "SCORE at 1 is: " << results_->Score(1);
+    UpdateResults();
 }
 
 SearchUI::~SearchUI()
 {
 }
 
-void SearchUI::InsertResult(std::vector<std::string> data)
+void SearchUI::UpdateResults()
 {
-    wxVector<wxVariant> d;
-    for (auto item : data) {
-        d.push_back(item);
+    gui_list_view->DeleteAllItems();
+
+    for (auto i = 0; i < results_->Size(); ++i) {
+        wxVector<wxVariant> data;
+        data.push_back(std::to_string(i));
+        data.push_back(results_->Name(i));
+        data.push_back(results_->Path(i));
+
+        //d.push_back(item);
+        gui_list_view->AppendItem(data);
     }
-    gui_list_view->AppendItem(d);
 }
 
 void SearchUI::OnSelect(wxDataViewEvent& event)
@@ -52,4 +47,19 @@ void SearchUI::OnSelect(wxDataViewEvent& event)
     auto content = results_->Content(row);
     //auto path = gui_list_view->GetTextValue(i, 1);
     gui_text_view->SetText(content);
+}
+
+void SearchUI::OnSearch(wxCommandEvent& event)
+{
+    auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
+    std::wstring query = gui_search_query->GetLabelText().ToStdWstring();
+    results_ = nullptr; // clear any locks on the index
+
+    // query gets destroyed and is not copied - hence crash 
+    results_ = lucene_api::NewSearch(index, query);
+    UpdateResults();
+}
+
+void SearchUI::OnKeyUpFilter(wxKeyEvent& event)
+{
 }
