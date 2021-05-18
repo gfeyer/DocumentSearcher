@@ -1,7 +1,7 @@
 #include "api.h"
 #include "index.h"
 
-namespace LuceneAPI {
+namespace lucene_api {
     int32_t docNumber = 0;
 
     std::string readFileIntoString(const std::wstring& path) {

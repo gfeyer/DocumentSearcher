@@ -12,10 +12,11 @@ int main()
     auto source = R"#(C:\Users\Vlad\Documents\temp\source)#";
     auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
 
-    LuceneAPI::IndexDocs(source, index);
+    lucene_api::IndexDocs(source, index);
 
     // Perform basic search and get results
-    auto results = LuceneAPI::NewSearch(index, L"H4R0K2");
+    auto results = lucene_api::NewSearch(index, L"H4R0K2");
+
 
     //std::wcout << search.TotalHits();
     //logger_info << results->Size();

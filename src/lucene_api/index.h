@@ -14,7 +14,7 @@
 
 // TODO: cleanup references and use proper notation for lucene namespace
 
-namespace LuceneAPI {
+namespace lucene_api {
 
     std::string readFileIntoString(const std::wstring& path);
     std::wstring readFileIntoWString(const std::wstring& path);

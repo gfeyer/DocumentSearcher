@@ -6,7 +6,7 @@
 #include <memory>
 
 
-namespace LuceneAPI {
+namespace lucene_api {
 
     class SearchResults : public IResults {
     private:

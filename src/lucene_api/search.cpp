@@ -2,7 +2,7 @@
 #include "search.h"
 
 
-namespace LuceneAPI {
+namespace lucene_api {
 	
     SearchResults::SearchResults(std::string index, std::wstring userquery) {
         using namespace Lucene; //TODO: remove this

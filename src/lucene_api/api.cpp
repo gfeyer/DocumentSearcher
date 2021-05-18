@@ -5,7 +5,7 @@
 
 #include "search.h"
 
-namespace LuceneAPI {
+namespace lucene_api {
     std::wstring utf8ToUtf16(const std::string& utf8Str)
     {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
