@@ -21,9 +21,13 @@
   <ItemGroup>
     <ClCompile Include="src\documentsearcher.cpp" />
     <ClCompile Include="src\logger.cpp" />
+    <ClCompile Include="src\lucene_api\index.cpp" />
+    <ClCompile Include="src\lucene_api\search.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\logger.h" />
+    <ClInclude Include="src\lucene_api\index.h" />
+    <ClInclude Include="src\lucene_api\search.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
