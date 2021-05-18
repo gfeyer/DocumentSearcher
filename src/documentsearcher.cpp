@@ -20,6 +20,7 @@
 
 #include "lucene_api/api.h"
 #include "lucene_api/search.h"
+#include "lucene_api/index.h"
 
 /*namespace LuceneAPI {
     
@@ -171,7 +172,8 @@ int main()
     auto source = R"#(C:\Users\Vlad\Documents\temp\source)#";
     auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
 
-    //LuceneAPI::IndexDocs(source, index);
+
+    LuceneAPI::IndexDocs(source, index);
 
     // Perform a basic search and get some results
     auto results = LuceneAPI::NewSearch(index, L"H4R0K2");

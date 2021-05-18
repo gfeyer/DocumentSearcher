@@ -5,12 +5,6 @@
 #include <iostream>
 #include <memory>
 
-//#include "Config.h"
-//#include "targetver.h"
-//#include "LuceneHeaders.h"
-//#include "FileUtils.h"
-//#include "FilterIndexReader.h"
-//#include "MiscUtils.h"
 
 namespace LuceneAPI {
 
