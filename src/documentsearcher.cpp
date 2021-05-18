@@ -26,8 +26,9 @@
 
 #include "logger.h"
 
+#include "lucene_api/lucene_api.h"
 
-namespace LuceneAPI {
+/*namespace LuceneAPI {
     
     std::wstring utf8ToUtf16(const std::string& utf8Str)
     {
@@ -166,100 +167,8 @@ namespace LuceneAPI {
     int IndexDocs(std::string source, std::string index) {
         return internal::indexDocs(source,index);
     }
-}
+}*/
 
-
-namespace LuceneAPI {
-    class IResults {
-    public:
-        virtual size_t Size() = 0;
-        virtual double Score(size_t) = 0;
-    };
-
-    namespace internal {
-
-
-        class SearchResults : public IResults {
-        private:
-            IndexReaderPtr reader_;
-            SearcherPtr searcher_;
-            TopScoreDocCollectorPtr collector_;
-            Collection<ScoreDocPtr> hits_;
-        public:
-            SearchResults(std::string index, std::wstring userquery) {
-                // Search
-                // String index = L"index";
-                String field = L"contents";
-                String queries;
-                int32_t repeat = 0;
-                bool raw = false;
-                String normsField;
-                bool paging = true;
-                int32_t maxHits = 10;
-
-                // only searching, so read-only=true
-                reader_ = IndexReader::open(FSDirectory::open(utf8ToUtf16(index)), true);
-                searcher_ = newLucene<IndexSearcher>(reader_);
-                AnalyzerPtr analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_CURRENT);
-                QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_CURRENT, field, analyzer);
-
-                ReaderPtr in;
-
-                QueryPtr query = parser->parse(userquery);
-                std::wcout << L"Searching for: " << query->toString(field) << L"\n";
-
-                searcher_->search(query, FilterPtr(), 100);
-
-                //doPagingSearch(searcher, query, hitsPerPage, raw, queries.empty());
-                //doPagingSearch(searcher, query, hitsPerPage);
-
-                // Collect enough docs for maxHits
-                collector_ = TopScoreDocCollector::create(maxHits, false);
-                searcher_->search(query, collector_);
-                hits_ = collector_->topDocs()->scoreDocs;
-
-                int32_t numTotalHits = collector_->getTotalHits();
-                std::wcout << numTotalHits << L" total matching documents\n";
-
-                int32_t start = 0;
-                int32_t end = hits_.size();
-
-                // Get search results metadata
-                for (auto i = 0; i < end; ++i) {
-
-                    DocumentPtr doc = searcher_->doc(hits_[i]->doc);
-                    String path = doc->get(L"path");
-                    String modified = doc->get(L"modified");
-                    String contents = doc->get(L"contents");
-
-                    std::wcout << StringUtils::toString(i + 1) + L". " << path << L"\n";
-
-                    std::wcout << "doc=" << hits_[i]->doc << " score=" << hits_[i]->score << "\n";
-
-                    //std::wcout << path << L"\n";
-                    //std::wcout << modified << L"\n";
-                    //std::wcout << contents << L"\n";
-                }
-
-                reader_->close();
-            }
-            ~SearchResults() {}
-
-            size_t Size() {
-                return collector_->getTotalHits();
-            }
-
-            double Score(size_t pos) {
-                return hits_[pos]->score;
-            }
-        };
-    }
-
-    std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query) {
-        std::shared_ptr<IResults> searchResults(new internal::SearchResults(index, query));
-        return searchResults;
-    }
-}
 
 int main()
 {
@@ -269,15 +178,15 @@ int main()
     auto source = R"#(C:\Users\Vlad\Documents\temp\source)#";
     auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
 
-    LuceneAPI::IndexDocs(source, index);
+    //LuceneAPI::IndexDocs(source, index);
 
     // Perform a basic search and get some results
     auto results = LuceneAPI::NewSearch(index, L"H4R0K2");
 
     //std::wcout << search.TotalHits();
-    logger_info << results->Size();
+    //logger_info << results->Size();
 
-    logger_info << "SCORE at 0 is: " << results->Score(0);
-    logger_info << "SCORE at 1 is: " << results->Score(1);
+    //logger_info << "SCORE at 0 is: " << results->Score(0);
+    //logger_info << "SCORE at 1 is: " << results->Score(1);
     
 }

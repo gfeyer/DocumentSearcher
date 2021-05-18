@@ -37,5 +37,8 @@
     <ClInclude Include="src\logger.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\lucene_api\lucene_api.h">
+      <Filter>src\lucene_api</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

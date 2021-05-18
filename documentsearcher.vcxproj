@@ -27,6 +27,7 @@
   <ItemGroup>
     <ClInclude Include="src\logger.h" />
     <ClInclude Include="src\lucene_api\index.h" />
+    <ClInclude Include="src\lucene_api\lucene_api.h" />
     <ClInclude Include="src\lucene_api\search.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
