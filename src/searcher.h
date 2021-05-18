@@ -16,6 +16,9 @@ private:
 
 	void InsertResult(std::vector<std::string>);
 
+	// Events
+	void OnSelect(wxDataViewEvent& event);
+
 	// Session data
 	std::shared_ptr<lucene_api::IResults> results_;
 };

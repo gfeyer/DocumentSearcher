@@ -1,6 +1,7 @@
 #include "searcher.h"
 
 #include "lucene_api/api.h"
+#include "logger.h"
 
 Searcher::Searcher(wxWindow* window) : SearchPanel(window)
 {
@@ -43,4 +44,11 @@ void Searcher::InsertResult(std::vector<std::string> data)
         d.push_back(item);
     }
     gui_list_view->AppendItem(d);
+}
+
+void Searcher::OnSelect(wxDataViewEvent& event)
+{
+    auto row = gui_list_view->GetSelectedRow();
+    auto path = results_->Path(row);
+    logger_info << path;
 }
