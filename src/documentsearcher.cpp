@@ -6,6 +6,7 @@
 #define NOMINMAX
 #endif
 
+/*
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -14,19 +15,11 @@
 #include <io.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <boost/algorithm/string.hpp>*/
 
-#include <boost/algorithm/string.hpp>
 
-#include "Config.h"
-#include "targetver.h"
-#include "LuceneHeaders.h"
-#include "FileUtils.h"
-#include "FilterIndexReader.h"
-#include "MiscUtils.h"
-
-#include "logger.h"
-
-#include "lucene_api/lucene_api.h"
+#include "lucene_api/api.h"
+#include "lucene_api/search.h"
 
 /*namespace LuceneAPI {
     

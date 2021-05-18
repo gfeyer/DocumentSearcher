@@ -26,6 +26,9 @@
     <ClCompile Include="src\lucene_api\search.cpp">
       <Filter>src\lucene_api</Filter>
     </ClCompile>
+    <ClCompile Include="src\lucene_api\api.cpp">
+      <Filter>src\lucene_api</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lucene_api\search.h">
@@ -37,7 +40,7 @@
     <ClInclude Include="src\logger.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\lucene_api\lucene_api.h">
+    <ClInclude Include="src\lucene_api\api.h">
       <Filter>src\lucene_api</Filter>
     </ClInclude>
   </ItemGroup>
