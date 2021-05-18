@@ -13,7 +13,7 @@
 
 #include "logger.h"
 
-#include "ui/app.h"
+#include "app.h"
 
 class MainApp : public wxApp
 {

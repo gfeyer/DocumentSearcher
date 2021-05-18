@@ -1,7 +1,8 @@
 #ifndef UI_H_
 #define UI_H_
 
-#include "noname.h"
+#include "ui/noname.h"
+#include "inspector.h"
 
 const std::string VERSION = "DesktopSearcher 1.0";
 const std::string BUILD_TIME = __TIME__;
@@ -15,7 +16,7 @@ public:
     ~App() {}
 
 private:
-
+    Inspector* inspector_panel_;
     // Event handlers
 
     // Closing & Cleanup
