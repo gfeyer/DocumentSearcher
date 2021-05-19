@@ -12,5 +12,15 @@ TEST(file_util, FileNameFromPath) {
 }
 
 TEST(file_util, ExtensionFromPath) {
-    EXPECT_EQ(file_util::ExtensionFromPath("N:\\cpp\\file.doc"), "doc");
+    EXPECT_EQ(file_util::ExtensionFromPath("C:\\folder\\file.doc"), "doc");
+}
+
+TEST(file_util, Read) {
+    using namespace std;
+
+    //auto file = file_util::Read("resources\\xlsx.xlsx");
+    
+    //cout << file.author;
+    
+    EXPECT_EQ(1,1);
 }

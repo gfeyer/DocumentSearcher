@@ -44,11 +44,12 @@ namespace file_util {
         return ext;
     }
 
-    File Read(const std::wstring& path)
+    File Read(std::string& path)
     {
         File document;
 
         // Read file contents
+        auto extension = ExtensionFromPath(path);
         auto ss = std::wostringstream{};
         std::wifstream input_file(path, std::ios::binary);
         if (!input_file.is_open()) {
