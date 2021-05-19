@@ -49,7 +49,7 @@ namespace file_util {
         boost::filesystem::path p(path);
         std::time_t t = boost::filesystem::last_write_time(p);
         auto tt = epoch_to_date(std::to_string(t));
-        document.modified = tt;
+        document.modified = tt.substr(0, tt.find(' '));
 
         return std::move(document);
     }

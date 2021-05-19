@@ -13,9 +13,7 @@ namespace lucene_api::internal {
         DocumentPtr doc = newLucene<Document>();
 
         std::wstring path(docFile);
-        auto docu = file_util::read(path);
-
-        std::wcout << L"doc_data.modified : " << utf8ToUtf16(docu.modified) << std::endl;
+        auto file = file_util::read(path);
 
         // Add the path of the file as a field named "path".  Use a field that is indexed (ie. searchable), but
         // don't tokenize the field into words.
@@ -23,7 +21,7 @@ namespace lucene_api::internal {
     
         // Add the last modified date of the file a field named "modified".  Use a field that is indexed (ie. searchable),
         // but don't tokenize the field into words.
-        doc->add(newLucene<Field>(L"modified", DateTools::timeToString(FileUtils::fileModified(docFile), DateTools::RESOLUTION_MINUTE),
+        doc->add(newLucene<Field>(L"modified", utf8ToUtf16(file.modified),
             Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
 
         std::wcout << "modified: " << DateTools::timeToString(FileUtils::fileModified(docFile), DateTools::RESOLUTION_MINUTE) << std::endl;;
@@ -32,7 +30,7 @@ namespace lucene_api::internal {
         // tokenized and indexed, but not stored.  Note that FileReader expects the file to be in the system's default
         // encoding.  If that's not the case searching for special characters will fail.
         
-        doc->add(newLucene<Field>(L"contents", docu.content, Field::STORE_YES, Field::INDEX_ANALYZED));
+        doc->add(newLucene<Field>(L"contents", file.content, Field::STORE_YES, Field::INDEX_ANALYZED));
         //doc->add(newLucene<Field>(L"contents", newLucene<FileReader>(docFile)));
     
         return doc;
