@@ -1,10 +1,6 @@
-#include "gtest/gtest.h"
+#include "pch.h"
 
-int main(int argc, char** argv)
-{
-    //--gtest_filter=*Special*  in Properties->CommandArguments
-
-    ::testing::InitGoogleTest(&argc, argv);
-
-    return RUN_ALL_TESTS();
+TEST(TestCaseName, TestName) {
+  EXPECT_EQ(1, 1);
+  EXPECT_TRUE(true);
 }
