@@ -1,2 +1,2 @@
-# documentsearcher
-Indexing and searching of documents based on Lucene++
+# DocumentSearcher
+Fast Indexing and searching of large archives based on Lucene++

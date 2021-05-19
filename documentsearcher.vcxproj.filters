@@ -78,5 +78,6 @@
     <None Include="src\ui\ui.fbp">
       <Filter>src\ui</Filter>
     </None>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

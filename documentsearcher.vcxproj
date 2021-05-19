@@ -40,6 +40,7 @@
     <ClInclude Include="src\ui\noname.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="src\ui\ui.fbp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
