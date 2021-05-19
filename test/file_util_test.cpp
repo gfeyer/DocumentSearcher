@@ -1,6 +1,9 @@
 #include "gtest/gtest.h"
 
-TEST(file_util, test) {
+#include "file_util/file_util.h"
+#include "file_util/file_util.cpp"
 
-    EXPECT_EQ(1, 2);
+TEST(file_util, epoch_to_date) {
+
+    EXPECT_EQ(file_util::epoch_to_date("1612242000"), "2021-02-02 00:00:00");
 }
