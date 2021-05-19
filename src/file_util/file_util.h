@@ -24,6 +24,7 @@ namespace file_util {
 
 	std::string EpochToDate(std::string timestr);
 	std::string FileNameFromPath(std::string);
+	std::string ExtensionFromPath(std::string);
 }
 
 #endif // FILE_UTIL_H_

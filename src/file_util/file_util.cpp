@@ -38,6 +38,12 @@ namespace file_util {
 
 	}
 
+    std::string ExtensionFromPath(std::string path)
+    {
+        auto ext = path.substr(path.find_last_of("\.") + 1);
+        return ext;
+    }
+
     File Read(const std::wstring& path)
     {
         File document;
@@ -60,6 +66,4 @@ namespace file_util {
 
         return std::move(document);
     }
-
-
 }

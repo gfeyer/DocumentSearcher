@@ -11,3 +11,6 @@ TEST(file_util, FileNameFromPath) {
     EXPECT_EQ(file_util::FileNameFromPath("N:\\cpp\\file.txt"), "file.txt");
 }
 
+TEST(file_util, ExtensionFromPath) {
+    EXPECT_EQ(file_util::ExtensionFromPath("N:\\cpp\\file.doc"), "doc");
+}
