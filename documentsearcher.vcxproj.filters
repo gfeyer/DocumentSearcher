@@ -15,6 +15,9 @@
     <Filter Include="src\ui">
       <UniqueIdentifier>{5431964c-2dd6-41b5-9568-cacabfd61033}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\file_util">
+      <UniqueIdentifier>{ac0087c5-68d0-4c9a-8f57-79169e3e91fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\logger.cpp">
@@ -41,6 +44,9 @@
     <ClCompile Include="src\search_ui.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\file_util\file_util.cpp">
+      <Filter>src\file_util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lucene_api\search.h">
@@ -63,6 +69,9 @@
     </ClInclude>
     <ClInclude Include="src\search_ui.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file_util\file_util.h">
+      <Filter>src\file_util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

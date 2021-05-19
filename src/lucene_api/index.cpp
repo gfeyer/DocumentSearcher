@@ -1,37 +1,22 @@
 #include "api.h"
 #include "index.h"
 
+#include "../file_util/file_util.h"
+
 namespace lucene_api::internal {
     using namespace Lucene;
     
     int32_t docNumber = 0;
     
-    std::string readFileIntoString(const std::wstring& path) {
-        auto ss = std::ostringstream{};
-        std::ifstream input_file(path);
-        if (!input_file.is_open()) {
-            std::cerr << "Could not open the file" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        ss << input_file.rdbuf();
-        return ss.str();
-    }
-    
-    std::wstring readFileIntoWString(const std::wstring& path) {
-        auto ss = std::wostringstream{};
-        std::wifstream input_file(path, std::ios::binary);
-        if (!input_file.is_open()) {
-            std::cerr << "Could not open the file" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        ss << input_file.rdbuf();
-        return ss.str();
-    }
-    
     Lucene::DocumentPtr fileDocument(const Lucene::String& docFile) {
     
         DocumentPtr doc = newLucene<Document>();
-    
+
+        std::wstring path(docFile);
+        auto docu = file_util::read(path);
+
+        std::wcout << L"doc_data.modified : " << utf8ToUtf16(docu.modified) << std::endl;
+
         // Add the path of the file as a field named "path".  Use a field that is indexed (ie. searchable), but
         // don't tokenize the field into words.
         doc->add(newLucene<Field>(L"path", docFile, Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
@@ -40,14 +25,14 @@ namespace lucene_api::internal {
         // but don't tokenize the field into words.
         doc->add(newLucene<Field>(L"modified", DateTools::timeToString(FileUtils::fileModified(docFile), DateTools::RESOLUTION_MINUTE),
             Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+
+        std::wcout << "modified: " << DateTools::timeToString(FileUtils::fileModified(docFile), DateTools::RESOLUTION_MINUTE) << std::endl;;
     
         // Add the contents of the file to a field named "contents".  Specify a Reader, so that the text of the file is
         // tokenized and indexed, but not stored.  Note that FileReader expects the file to be in the system's default
         // encoding.  If that's not the case searching for special characters will fail.
-    
-        auto myfile = readFileIntoString(docFile);
-    
-        doc->add(newLucene<Field>(L"contents", utf8ToUtf16(myfile), Field::STORE_YES, Field::INDEX_ANALYZED));
+        
+        doc->add(newLucene<Field>(L"contents", docu.content, Field::STORE_YES, Field::INDEX_ANALYZED));
         //doc->add(newLucene<Field>(L"contents", newLucene<FileReader>(docFile)));
     
         return doc;
