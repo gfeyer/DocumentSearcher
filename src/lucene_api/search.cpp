@@ -87,11 +87,18 @@ namespace lucene_api::internal {
         return filename;
     }
 
+    std::string SearchResults::Modified(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto modified = utf16ToUtf8(doc->get(L"modified"));
+        return modified;
+    }
+
     std::wstring SearchResults::Content(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
         auto content = doc->get(L"contents");
         return content;
     }
-    
+
 }

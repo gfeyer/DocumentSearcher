@@ -6,7 +6,10 @@
 SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 {
     gui_list_view->AppendTextColumn("Id");
+    gui_list_view->GetColumn(0)->SetWidth(40);
+
     gui_list_view->AppendTextColumn("Filename");
+    gui_list_view->AppendTextColumn("Modified");
     gui_list_view->AppendTextColumn("Path");
 
     //_setmode(_fileno(stdout), _O_U16TEXT);
@@ -18,7 +21,8 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     lucene_api::IndexDocs(source, index);
 
     // Perform basic search and get results
-    results_ = lucene_api::NewSearch(index, L"H4R0K2");
+    std::wstring query = L"H4R0K2";
+    results_ = lucene_api::NewSearch(index, query);
     UpdateResults();
 }
 
@@ -34,6 +38,7 @@ void SearchUI::UpdateResults()
         wxVector<wxVariant> data;
         data.push_back(std::to_string(i));
         data.push_back(results_->Name(i));
+        data.push_back(results_->Modified(i));
         data.push_back(results_->Path(i));
 
         //d.push_back(item);
@@ -44,6 +49,10 @@ void SearchUI::UpdateResults()
 void SearchUI::OnSelect(wxDataViewEvent& event)
 {
     auto row = gui_list_view->GetSelectedRow();
+    if (row < 0) {
+        return;
+    }
+
     auto content = results_->Content(row);
     //auto path = gui_list_view->GetTextValue(i, 1);
     gui_text_view->SetText(content);
@@ -52,14 +61,21 @@ void SearchUI::OnSelect(wxDataViewEvent& event)
 void SearchUI::OnSearch(wxCommandEvent& event)
 {
     auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
-    std::wstring query = gui_search_query->GetLabelText().ToStdWstring();
-    results_ = nullptr; // clear any locks on the index
+    std::wstring query = gui_search_query->GetValue();
+    
+    // clear any locks on the index
+    results_ = nullptr; 
 
-    // query gets destroyed and is not copied - hence crash 
+    // perform new search
     results_ = lucene_api::NewSearch(index, query);
     UpdateResults();
 }
 
 void SearchUI::OnKeyUpFilter(wxKeyEvent& event)
 {
+    auto key = event.GetKeyCode();
+    if (key == WXK_RETURN) {
+        wxCommandEvent e;
+        OnSearch(e);
+    }
 }
