@@ -13,7 +13,7 @@ namespace lucene_api::internal {
         DocumentPtr doc = newLucene<Document>();
 
         std::wstring path(docFile);
-        auto file = file_util::read(path);
+        auto file = file_util::Read(path);
 
         // Add the path of the file as a field named "path".  Use a field that is indexed (ie. searchable), but
         // don't tokenize the field into words.

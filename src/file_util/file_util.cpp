@@ -11,7 +11,7 @@
 
 namespace file_util {
 
-    std::string epoch_to_date(std::string timestr) {
+    std::string EpochToDate(std::string timestr) {
 
         //string timestr = "1612242000000000";
         timestr += "000000"; // long -> long long
@@ -31,14 +31,14 @@ namespace file_util {
         return std::string(buffer);
     }
 
-	std::string FilenameFromPath(std::string path)
+	std::string FileNameFromPath(std::string path)
 	{
         auto filename = path.substr(path.find_last_of("/\\") + 1);
         return filename;
 
 	}
 
-    File read(const std::wstring& path)
+    File Read(const std::wstring& path)
     {
         File document;
 
@@ -55,7 +55,7 @@ namespace file_util {
         // Read file attritbutes
         boost::filesystem::path p(path);
         std::time_t t = boost::filesystem::last_write_time(p);
-        auto tt = epoch_to_date(std::to_string(t));
+        auto tt = EpochToDate(std::to_string(t));
         document.modified = tt.substr(0, tt.find(' '));
 
         return std::move(document);

@@ -3,17 +3,12 @@
 
 #include <string>
 #include <iostream>
-
-
 #include <string>
 #include <iostream>
 #include <sstream>
 #include <fstream>
-
-
 #include <ctime>
 #include <boost/filesystem/operations.hpp>
-
 
 namespace file_util {
 	struct File {
@@ -25,10 +20,10 @@ namespace file_util {
 		std::string author;
 	};
 
-	File read(const std::wstring& path);
+	File Read(const std::wstring& path);
 
-	std::string epoch_to_date(std::string timestr);
-	std::string FilenameFromPath(std::string);
+	std::string EpochToDate(std::string timestr);
+	std::string FileNameFromPath(std::string);
 }
 
 #endif // FILE_UTIL_H_
