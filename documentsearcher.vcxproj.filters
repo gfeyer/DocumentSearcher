@@ -1,30 +1,82 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\lucene_api">
+      <UniqueIdentifier>{d7c0a4fa-bd5a-4d7d-aad5-50966b1aa005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{5431964c-2dd6-41b5-9568-cacabfd61033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\file_util">
+      <UniqueIdentifier>{ac0087c5-68d0-4c9a-8f57-79169e3e91fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="documentsearcher.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\logger.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="logger.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\lucene_api\index.cpp">
+      <Filter>src\lucene_api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lucene_api\search.cpp">
+      <Filter>src\lucene_api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lucene_api\api.cpp">
+      <Filter>src\lucene_api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\noname.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\app.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\search_ui.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file_util\file_util.cpp">
+      <Filter>src\file_util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="logger.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\lucene_api\search.h">
+      <Filter>src\lucene_api</Filter>
     </ClInclude>
+    <ClInclude Include="src\lucene_api\index.h">
+      <Filter>src\lucene_api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logger.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lucene_api\api.h">
+      <Filter>src\lucene_api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\noname.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\search_ui.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file_util\file_util.h">
+      <Filter>src\file_util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\ui\ui.fbp">
+      <Filter>src\ui</Filter>
+    </None>
   </ItemGroup>
 </Project>
