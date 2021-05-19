@@ -25,9 +25,10 @@ namespace file_util {
 		std::string author;
 	};
 
-	std::string epoch_to_date(std::string timestr);
+	File read(const std::wstring& path);
 
-    File read(const std::wstring& path);
+	std::string epoch_to_date(std::string timestr);
+	std::string FilenameFromPath(std::string);
 }
 
 #endif // FILE_UTIL_H_

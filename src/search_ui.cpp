@@ -7,7 +7,7 @@
 
 SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 {
-    gui_list_view->AppendTextColumn("Id");
+    gui_list_view->AppendTextColumn("Rank");
     gui_list_view->GetColumn(0)->SetWidth(40);
 
     gui_list_view->AppendTextColumn("Filename");

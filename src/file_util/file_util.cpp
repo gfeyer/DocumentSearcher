@@ -31,6 +31,13 @@ namespace file_util {
         return std::string(buffer);
     }
 
+	std::string FilenameFromPath(std::string path)
+	{
+        auto filename = path.substr(path.find_last_of("/\\") + 1);
+        return filename;
+
+	}
+
     File read(const std::wstring& path)
     {
         File document;
