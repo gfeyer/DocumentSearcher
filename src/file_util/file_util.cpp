@@ -27,8 +27,8 @@ namespace file_util {
         // Uses a fixed-length buffer for `strtftime`
         char buffer[256];
         strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &date);
-
-        return std::string(buffer);
+        auto time = std::string(buffer);
+        return time.substr(0, time.find(' '));;
     }
 
 	std::string FileNameFromPath(std::string path)
@@ -61,8 +61,8 @@ namespace file_util {
         // Read file attritbutes
         boost::filesystem::path p(path);
         std::time_t t = boost::filesystem::last_write_time(p);
-        auto tt = EpochToDate(std::to_string(t));
-        document.modified = tt.substr(0, tt.find(' '));
+        auto time = EpochToDate(std::to_string(t));
+        document.modified = time;
 
         return std::move(document);
     }

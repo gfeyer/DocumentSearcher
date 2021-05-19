@@ -93,6 +93,12 @@ namespace lucene_api::internal {
         auto modified = utf16ToUtf8(doc->get(L"modified"));
         return modified;
     }
+    std::string SearchResults::Created(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto modified = utf16ToUtf8(doc->get(L"created"));
+        return modified;
+    }
 
     std::wstring SearchResults::Content(size_t index)
     {

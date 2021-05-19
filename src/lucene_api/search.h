@@ -22,6 +22,7 @@ namespace lucene_api::internal {
         std::string Path(size_t);
         std::string Name(size_t);
         std::string Modified(size_t);
+        std::string Created(size_t);
         std::wstring Content(size_t);
     };
 }

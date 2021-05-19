@@ -23,6 +23,7 @@ namespace lucene_api {
         virtual std::string Path(size_t) = 0;
         virtual std::string Name(size_t) = 0;
         virtual std::string Modified(size_t) = 0;
+        virtual std::string Created(size_t) = 0;
         virtual std::wstring Content(size_t) = 0;
     };
 

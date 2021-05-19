@@ -3,6 +3,7 @@
 
 #include "ui/noname.h"
 
+#include <unordered_map>
 #include <memory>
 #include <string>
 #include "lucene_api/api.h"
@@ -20,10 +21,17 @@ private:
 	void OnKeyUpFilter(wxKeyEvent& event);
 
 	// Utility Functions
-	void UpdateResults();
-	void ShowErrorDialog(std::string);
+	void LoadResources();
+	wxBitmap GetBitmapForExtension(std::string ext);
+
+	void UpdateResultsList();
+	void PopErrorDialog(std::string);
 
 	// Session data
 	std::shared_ptr<lucene_api::IResults> results_;
+
+	// Preloaded bitmaps storage
+	std::unordered_map<std::string, wxBitmap> bitmaps_;
+
 };
 #endif // INSPECTOR_H
