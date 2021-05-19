@@ -21,6 +21,7 @@ private:
 
 	// Utility Functions
 	void UpdateResults();
+	void ShowErrorDialog(std::string);
 
 	// Session data
 	std::shared_ptr<lucene_api::IResults> results_;

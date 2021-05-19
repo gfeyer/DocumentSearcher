@@ -1,5 +1,7 @@
 #include "search_ui.h"
 
+#include <wx/msgdlg.h>
+
 #include "lucene_api/api.h"
 #include "logger.h"
 
@@ -63,12 +65,16 @@ void SearchUI::OnSearch(wxCommandEvent& event)
     auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
     std::wstring query = gui_search_query->GetValue();
     
-    // clear any locks on the index
-    results_ = nullptr; 
-
     // perform new search
-    results_ = lucene_api::NewSearch(index, query);
-    UpdateResults();
+    try {
+        // clear any locks on the index
+        //results_ = nullptr;
+        results_ = lucene_api::NewSearch(index, query);
+        UpdateResults();
+    }
+    catch (std::exception& e) {
+        ShowErrorDialog(e.what());
+    }
 }
 
 void SearchUI::OnKeyUpFilter(wxKeyEvent& event)
@@ -78,4 +84,14 @@ void SearchUI::OnKeyUpFilter(wxKeyEvent& event)
         wxCommandEvent e;
         OnSearch(e);
     }
+}
+
+void SearchUI::ShowErrorDialog(std::string msg)
+{
+    std::stringstream ss;
+    ss << msg << "\n\n";
+    wxString error(ss.str());
+    wxMessageDialog dial(NULL,
+        error, wxT("Error"), wxOK | wxICON_ERROR);
+    dial.ShowModal();
 }
