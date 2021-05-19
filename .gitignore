@@ -9,4 +9,4 @@
 /src/lucene_api/include/lucene++/out/
 /x64/
 /.vs
-
+/test/x64/
