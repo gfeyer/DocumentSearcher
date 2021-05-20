@@ -16,10 +16,14 @@ TEST(file_util, ExtensionFromPath) {
 }
 
 TEST(file_util, ReadXLSX) {
-    using namespace std;
-
     auto file = file_util::Read("resources\\xlsx.xlsx");
     EXPECT_TRUE(file.content.find(L"Melgar") != std::string::npos);
     EXPECT_TRUE(file.content.find(L"Philip") != std::string::npos);
     EXPECT_TRUE(file.content.find(L"Row2Sheet2") != std::string::npos);
+}
+
+TEST(file_util, ReadDOCX) {
+    auto file = file_util::Read("resources\\docx.docx");
+    EXPECT_TRUE(file.content.find(L"Lorem ipsum dolor") != std::string::npos);
+    EXPECT_TRUE(file.content.find(L"Vivamus auctor imperdiet urna") != std::string::npos);
 }

@@ -78,18 +78,19 @@ namespace file_util {
             auto ss = std::ostringstream{};
             //duckx::Document doc("file.docx");
             //duckx::Document doc("");
-            duckx::Document d(path);
+            duckx::Document doc(path);
 
-            /*doc.open();
+            doc.open();
 
             for (auto p = doc.paragraphs(); p.has_next(); p.next()) {
                 for (auto r = p.runs(); r.has_next(); r.next()) {
                     ss << r.get_text();
                 }
+                ss << "\n";
             }
 
             wxString content(std::move(ss.str()));
-            document.content = std::move(content);*/
+            document.content = std::move(content);
         }
 
         // Read Word .doc files
