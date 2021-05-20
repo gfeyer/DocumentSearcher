@@ -12,3 +12,4 @@
 /test/x64/
 /packages/
 /test/packages.config
+/src/file_util/thirdparty/lib/duckx.lib

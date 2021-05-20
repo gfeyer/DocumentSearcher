@@ -9,10 +9,17 @@
 
 #include <xlnt/xlnt.hpp>
 #include <wx/string.h>
+#include "thirdparty/include/duckx.hpp"
 
 namespace file_util {
 
-    
+    #define CSV     "csv"
+    #define DOC     "doc"
+    #define DOCX    "docx"
+    #define RTF     "rtf"
+    #define TXT     "txt"
+    #define XLSX    "xlsx"
+    #define XLS     "xls"
 
     std::string EpochToDate(std::string timestr) {
 
@@ -55,7 +62,7 @@ namespace file_util {
         auto extension = ExtensionFromPath(path);
         
         // Read plain text files 
-        if (extension == "txt" || extension == "csv") {
+        if (extension == TXT || extension == CSV) {
             auto ss = std::wostringstream{};
             std::wifstream input_file(path, std::ios::binary);
             if (!input_file.is_open()) {
@@ -66,8 +73,37 @@ namespace file_util {
             document.content = std::move(ss.str());
         }
         
-        // Read Excel files
-        else if (extension == "xlsx"){
+        // Read Word .docx files
+        else if (extension == DOCX) {
+            auto ss = std::ostringstream{};
+            //duckx::Document doc("file.docx");
+            //duckx::Document doc("");
+            duckx::Document d(path);
+
+            /*doc.open();
+
+            for (auto p = doc.paragraphs(); p.has_next(); p.next()) {
+                for (auto r = p.runs(); r.has_next(); r.next()) {
+                    ss << r.get_text();
+                }
+            }
+
+            wxString content(std::move(ss.str()));
+            document.content = std::move(content);*/
+        }
+
+        // Read Word .doc files
+        else if (extension == DOC) {
+
+        }
+
+        // Read Excel old .xls
+        else if (extension == XLS) {
+
+        }
+
+        // Read Excel .xlsx 
+        else if (extension == XLSX){
             auto ss = std::ostringstream{};
 
             xlnt::workbook workbook;
@@ -86,11 +122,11 @@ namespace file_util {
             }
             
             wxString content(std::move(ss.str()));
-
-            document.content = content;
+            document.content = std::move(content);
         }
-        else {
 
+        else {
+            // unsupported format
         }
         
 
