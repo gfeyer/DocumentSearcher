@@ -20,7 +20,7 @@ namespace file_util {
 		std::string author;
 	};
 
-	File Read(std::string& path);
+	File Read(std::string path);
 
 	std::string EpochToDate(std::string timestr);
 	std::string FileNameFromPath(std::string);

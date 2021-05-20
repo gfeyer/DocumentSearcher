@@ -4,12 +4,15 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-
-
 #include <ctime>
 #include <boost/filesystem/operations.hpp>
 
+#include <xlnt/xlnt.hpp>
+#include <wx/string.h>
+
 namespace file_util {
+
+    
 
     std::string EpochToDate(std::string timestr) {
 
@@ -44,20 +47,52 @@ namespace file_util {
         return ext;
     }
 
-    File Read(std::string& path)
+    File Read(std::string path)
     {
         File document;
 
         // Read file contents
         auto extension = ExtensionFromPath(path);
-        auto ss = std::wostringstream{};
-        std::wifstream input_file(path, std::ios::binary);
-        if (!input_file.is_open()) {
-            std::cerr << "Could not open the file" << std::endl;
-            exit(EXIT_FAILURE);
+        
+        // Read plain text files 
+        if (extension == "txt" || extension == "csv") {
+            auto ss = std::wostringstream{};
+            std::wifstream input_file(path, std::ios::binary);
+            if (!input_file.is_open()) {
+                std::cerr << "Could not open the file" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+            ss << input_file.rdbuf();
+            document.content = std::move(ss.str());
         }
-        ss << input_file.rdbuf();
-        document.content = std::move(ss.str());
+        
+        // Read Excel files
+        else if (extension == "xlsx"){
+            auto ss = std::ostringstream{};
+
+            xlnt::workbook workbook;
+            workbook.load(path);
+
+            for (int s = 0; s < workbook.sheet_count(); ++s) {
+                auto worksheet = workbook.sheet_by_index(s);
+
+                for (auto row : worksheet.rows(false)) {
+                    for (auto cell : row) {
+                        ss << cell.to_string() << " ";
+                    }
+                    ss << "\n";
+                }
+                ss << "\n";
+            }
+            
+            wxString content(std::move(ss.str()));
+
+            document.content = content;
+        }
+        else {
+
+        }
+        
 
         // Read file attritbutes
         boost::filesystem::path p(path);

@@ -15,12 +15,11 @@ TEST(file_util, ExtensionFromPath) {
     EXPECT_EQ(file_util::ExtensionFromPath("C:\\folder\\file.doc"), "doc");
 }
 
-TEST(file_util, Read) {
+TEST(file_util, Read_xlsx) {
     using namespace std;
 
-    //auto file = file_util::Read("resources\\xlsx.xlsx");
-    
-    //cout << file.author;
-    
-    EXPECT_EQ(1,1);
+    auto file = file_util::Read("resources\\xlsx.xlsx");
+    EXPECT_TRUE(file.content.find(L"Melgar") != std::string::npos);
+    EXPECT_TRUE(file.content.find(L"Philip") != std::string::npos);
+    EXPECT_TRUE(file.content.find(L"Row2Sheet2") != std::string::npos);
 }
