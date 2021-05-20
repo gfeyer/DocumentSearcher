@@ -20,6 +20,9 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 {
     LoadResources();
 
+    // Setup
+    gui_text_view->SetWrapMode(1);
+
     // Rank column
     gui_list_view->AppendTextColumn("Rank");
     gui_list_view->GetColumn(0)->SetWidth(40);

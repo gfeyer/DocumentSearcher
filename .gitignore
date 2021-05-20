@@ -4,9 +4,6 @@
 
 /.vs/documentsearcher/v16
 /Debug
-/src/lucene_api/
-/src/lucene_api/
-/src/lucene_api/
 /x64/
 /.vs
 /test/x64/
