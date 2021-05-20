@@ -9,7 +9,7 @@
 
 #include <xlnt/xlnt.hpp>
 #include <wx/string.h>
-#include "thirdparty/include/duckx.hpp"
+#include "duckx.hpp"
 
 namespace file_util {
 
