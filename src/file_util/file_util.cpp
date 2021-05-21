@@ -22,6 +22,75 @@ namespace file_util {
 }
 
 namespace file_util {
+    FileDocument::FileDocument(std::string p) : path(p) {
+
+        //Create style and extractor params objects
+        params = doctotext_create_extractor_params();
+        style = doctotext_create_formatting_style();
+        doctotext_formatting_style_set_url_style(style, DOCTOTEXT_URL_STYLE_EXTENDED);
+        //doctotext_extractor_params_set_verbose_logging(params, 0);
+        doctotext_extractor_params_set_formatting_style(params, style);
+
+        //Extract text
+        data = doctotext_process_file(path.c_str(), params, NULL);
+
+        //Extract metadata
+        metadata = doctotext_extract_metadata(path.c_str(), params, NULL);
+
+    }
+
+    std::string FileDocument::Content() {
+        if (data != NULL) {
+            // Extract contents
+            return doctotext_extracted_data_get_text(data);
+        }
+        return "";
+    }
+    std::wstring FileDocument::WContent() {
+        if (data != NULL) {
+            // Extract contents
+            // TODO:
+            //return doctotext_extracted_data_get_text(data);
+        }
+        return L"";
+    }
+
+    std::string FileDocument::AuthorCreated() {
+        if (metadata != NULL) {
+            return doctotext_metadata_author(metadata);
+        }
+        return "";
+    }
+    std::string FileDocument::AuthorModified() {
+        if (metadata != NULL) {
+            return doctotext_metadata_last_modify_by(metadata);
+        }
+        return "";
+    }
+    std::string FileDocument::DateCreated() {
+        if (metadata != NULL) {
+            char date[64];
+            strftime(date, 64, "%Y-%m-%d %H:%M:%S", doctotext_metadata_creation_date(metadata));
+            return date;
+        }
+        return "";
+    }
+    std::string FileDocument::DateModified() {
+        if (metadata != NULL) {
+            char date[64];
+            strftime(date, 64, "%Y-%m-%d %H:%M:%S", doctotext_metadata_last_modification_date(metadata));
+            return date;
+        }
+        return "";
+    }
+
+    FileDocument::~FileDocument() {
+        // Release pointers
+        doctotext_free_extractor_params(params);
+        doctotext_free_formatting_style(style);
+        doctotext_free_extracted_data(data);
+        doctotext_free_metadata(metadata);
+    }
 }
 
 
