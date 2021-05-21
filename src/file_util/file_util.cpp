@@ -30,8 +30,13 @@ namespace file_util {
         params = doctotext_create_extractor_params();
         style = doctotext_create_formatting_style();
         doctotext_formatting_style_set_url_style(style, DOCTOTEXT_URL_STYLE_EXTENDED);
-        //doctotext_extractor_params_set_verbose_logging(params, 0);
         doctotext_extractor_params_set_formatting_style(params, style);
+        //doctotext_extractor_params_set_verbose_logging(params, 0);
+
+        // CSV files - use text parser
+        if (ExtensionFromPath(path) == CSV) {
+            doctotext_extractor_params_set_parser_type(params, DOCTOTEXT_PARSER_TXT);
+        }
 
         //Extract text
         data = doctotext_process_file(path.c_str(), params, NULL);
@@ -128,22 +133,6 @@ namespace file_util {
 
     std::shared_ptr<FileDoc> Read(std::string path)
     {
-        auto extension = ExtensionFromPath(path);
-
-        // Read plain text files 
-        // TODO: add support for csv format
-        if (extension == CSV) {
-            auto ss = std::wostringstream{};
-            std::wifstream input_file(path, std::ios::binary);
-            if (!input_file.is_open()) {
-                std::cerr << "Could not open the file" << std::endl;
-                exit(EXIT_FAILURE);
-            }
-            ss << input_file.rdbuf();
-            //document.content = std::move(ss.str());
-            return std::make_shared<FileDoc>("");
-        }
-        
         auto doc = std::make_shared<FileDoc>(path);
         return doc;
     }

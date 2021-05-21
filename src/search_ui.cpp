@@ -38,12 +38,11 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->AppendTextColumn("Location");
     gui_list_view->GetColumn(3)->SetWidth(200);
 
-    gui_list_view->AppendTextColumn("Modified");
-    gui_list_view->AppendTextColumn("ModifiedBy");
     gui_list_view->AppendTextColumn("Created");
-    gui_list_view->AppendTextColumn("CreatedBy");
+    gui_list_view->AppendTextColumn("Author");
+    gui_list_view->AppendTextColumn("ModifiedBy");
+    gui_list_view->AppendTextColumn("Modified");
     
-
     //_setmode(_fileno(stdout), _O_U16TEXT);
 
     // Index documents
@@ -83,15 +82,13 @@ void SearchUI::UpdateResultsList()
         data.push_back(name);
         data.push_back(path);
 
-        // Modified, ModifiedBy, Created, CreatedBy
-        data.push_back(results_->Modified(i));
-        data.push_back(results_->ModifiedBy(i));
+        // Created, Author, ModifiedBy, Modified
         data.push_back(results_->Created(i));
         data.push_back(results_->CreatedBy(i));
+        data.push_back(results_->ModifiedBy(i));
+        data.push_back(results_->Modified(i));
 
         gui_list_view->AppendItem(data);
-
-        
     }
 }
 
