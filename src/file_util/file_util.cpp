@@ -48,9 +48,9 @@ namespace file_util {
     }
     std::wstring FileDocument::WContent() {
         if (data != NULL) {
-            // Extract contents
-            // TODO:
-            //return doctotext_extracted_data_get_text(data);
+            // Extract contents and convert to wise string
+            wxString wstr = std::move(doctotext_extracted_data_get_text(data));
+            return std::move(wstr);
         }
         return L"";
     }
