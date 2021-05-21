@@ -12,7 +12,6 @@
 #include "duckx.hpp"
 
 namespace file_util {
-
     #define CSV     "csv"
     #define DOC     "doc"
     #define DOCX    "docx"
@@ -20,6 +19,14 @@ namespace file_util {
     #define TXT     "txt"
     #define XLSX    "xlsx"
     #define XLS     "xls"
+}
+
+namespace file_util {
+}
+
+
+namespace file_util {
+
 
     std::string EpochToDate(std::string timestr) {
 
@@ -45,7 +52,6 @@ namespace file_util {
 	{
         auto filename = path.substr(path.find_last_of("/\\") + 1);
         return filename;
-
 	}
 
     std::string ExtensionFromPath(std::string path)

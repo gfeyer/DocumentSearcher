@@ -10,7 +10,28 @@
 #include <ctime>
 #include <boost/filesystem/operations.hpp>
 
+#include "doctotext_c_api.h"
+
 namespace file_util {
+
+	class FileDocument {
+	private:
+		DocToTextExtractorParams* params;
+		DocToTextFormattingStyle* style;
+		DocToTextExtractedData* data;
+		DocToTextMetadata* metadata;
+		std::string path;
+	public:
+		FileDocument(std::string);
+		~FileDocument();
+		std::string  Content();
+		std::wstring WContent();
+		std::string  AuthorCreated();
+		std::string  AuthorModified();
+		std::string  DateCreated();
+		std::string  DateModified();
+	};
+
 	struct File {
 		std::wstring content;
 		std::string name;
