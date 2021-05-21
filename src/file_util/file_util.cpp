@@ -26,7 +26,6 @@ namespace file_util {
 namespace file_util {
     FileDoc::FileDoc(std::string p) : path(p) {
 
-        logger_info << "Parsing: " << path;
         //Create style and extractor params objects
         params = doctotext_create_extractor_params();
         style = doctotext_create_formatting_style();
@@ -39,8 +38,6 @@ namespace file_util {
 
         //Extract metadata
         metadata = doctotext_extract_metadata(path.c_str(), params, NULL);
-
-        logger_info << "Done. " << path;
     }
 
     std::wstring FileDoc::Content() {

@@ -24,9 +24,9 @@ namespace lucene_api::internal {
     
         ReaderPtr in;
         
-        std::wcout << L"User query: " << userquery << L"\n";
+        //std::wcout << L"User query: " << userquery << L"\n";
         QueryPtr query = parser->parse(userquery);
-        std::wcout << L"Searching for: " << query->toString(field) << L"\n";
+        //std::wcout << L"Searching for: " << query->toString(field) << L"\n";
     
         searcher_->search(query, FilterPtr(), 100);
     
@@ -39,7 +39,7 @@ namespace lucene_api::internal {
         hits_ = collector_->topDocs()->scoreDocs;
     
         int32_t numTotalHits = collector_->getTotalHits();
-        std::wcout << numTotalHits << L" total matching documents\n";
+        //std::wcout << numTotalHits << L" total matching documents\n";
     
         int32_t start = 0;
         int32_t end = hits_.size();
@@ -61,7 +61,6 @@ namespace lucene_api::internal {
     }
 
     SearchResults::~SearchResults() {
-        std::wcout << "d'tor" << std::endl;
         reader_->close();
     }
     
@@ -75,14 +74,14 @@ namespace lucene_api::internal {
     std::string SearchResults::Path(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        String path = doc->get(L"path");
+        String path = doc->get(FIELD_PATH);
         return utf16ToUtf8(path);
     }
 
     std::string SearchResults::Name(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto path = utf16ToUtf8(doc->get(L"path"));
+        auto path = utf16ToUtf8(doc->get(FIELD_PATH));
         std::string filename = path.substr(path.find_last_of("/\\") + 1);
         return filename;
     }
@@ -90,20 +89,20 @@ namespace lucene_api::internal {
     std::string SearchResults::Modified(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto modified = utf16ToUtf8(doc->get(L"modified"));
+        auto modified = utf16ToUtf8(doc->get(FIELD_MODIFIED));
         return modified;
     }
     std::string SearchResults::Created(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto modified = utf16ToUtf8(doc->get(L"created"));
+        auto modified = utf16ToUtf8(doc->get(FIELD_CREATED));
         return modified;
     }
 
     std::wstring SearchResults::Content(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto content = doc->get(L"contents");
+        auto content = doc->get(FIELD_CONTENT);
         return content;
     }
 
