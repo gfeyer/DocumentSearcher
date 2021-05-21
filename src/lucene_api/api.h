@@ -18,13 +18,15 @@ namespace lucene_api {
     // Interface for interacting with lucene results
     class IResults {
     public:
+        virtual std::wstring Content(size_t) = 0;
+        virtual std::string  Created(size_t) = 0;
+        virtual std::string  CreatedBy(size_t) = 0;
+        virtual std::string  Modified(size_t) = 0;
+        virtual std::string  ModifiedBy(size_t) = 0;
+        virtual std::string  Name(size_t) = 0;
+        virtual std::string  Path(size_t) = 0;
         virtual size_t Size() = 0;
         virtual double Score(size_t) = 0;
-        virtual std::string Path(size_t) = 0;
-        virtual std::string Name(size_t) = 0;
-        virtual std::string Modified(size_t) = 0;
-        virtual std::string Created(size_t) = 0;
-        virtual std::wstring Content(size_t) = 0;
     };
 
     std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query);

@@ -63,34 +63,11 @@ namespace lucene_api::internal {
     SearchResults::~SearchResults() {
         reader_->close();
     }
-    
-    size_t SearchResults::Size() {
-        return collector_->getTotalHits();
-    }
-    double SearchResults::Score(size_t pos) {
-        return hits_[pos]->score;
-    }
-
-    std::string SearchResults::Path(size_t index)
+    std::wstring SearchResults::Content(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        String path = doc->get(FIELD_PATH);
-        return utf16ToUtf8(path);
-    }
-
-    std::string SearchResults::Name(size_t index)
-    {
-        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto path = utf16ToUtf8(doc->get(FIELD_PATH));
-        std::string filename = path.substr(path.find_last_of("/\\") + 1);
-        return filename;
-    }
-
-    std::string SearchResults::Modified(size_t index)
-    {
-        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto modified = utf16ToUtf8(doc->get(FIELD_MODIFIED));
-        return modified;
+        auto content = doc->get(FIELD_CONTENT);
+        return content;
     }
     std::string SearchResults::Created(size_t index)
     {
@@ -98,12 +75,41 @@ namespace lucene_api::internal {
         auto modified = utf16ToUtf8(doc->get(FIELD_CREATED));
         return modified;
     }
-
-    std::wstring SearchResults::Content(size_t index)
+    std::string SearchResults::CreatedBy(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto content = doc->get(FIELD_CONTENT);
-        return content;
+        auto modified = utf16ToUtf8(doc->get(FIELD_CREATED_BY));
+        return modified;
     }
-
+    std::string SearchResults::Modified(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto modified = utf16ToUtf8(doc->get(FIELD_MODIFIED));
+        return modified;
+    }
+    std::string SearchResults::ModifiedBy(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto modified = utf16ToUtf8(doc->get(FIELD_MODIFIED_BY));
+        return modified;
+    }
+    std::string SearchResults::Name(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto path = utf16ToUtf8(doc->get(FIELD_PATH));
+        std::string filename = path.substr(path.find_last_of("/\\") + 1);
+        return filename;
+    }
+    std::string SearchResults::Path(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        String path = doc->get(FIELD_PATH);
+        return utf16ToUtf8(path);
+    }
+    size_t SearchResults::Size() {
+        return collector_->getTotalHits();
+    }
+    double SearchResults::Score(size_t pos) {
+        return hits_[pos]->score;
+    }
 }

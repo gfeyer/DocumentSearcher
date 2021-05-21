@@ -17,13 +17,15 @@ namespace lucene_api::internal {
     public:
         SearchResults(std::string index, std::wstring userquery);
         ~SearchResults();
+        std::wstring Content(size_t);
+        std::string Created(size_t);
+        std::string CreatedBy(size_t);
+        std::string Modified(size_t);
+        std::string ModifiedBy(size_t);
+        std::string Name(size_t);
+        std::string Path(size_t);
         size_t Size();
         double Score(size_t pos);
-        std::string Path(size_t);
-        std::string Name(size_t);
-        std::string Modified(size_t);
-        std::string Created(size_t);
-        std::wstring Content(size_t);
     };
 }
 

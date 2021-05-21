@@ -39,7 +39,9 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->GetColumn(3)->SetWidth(200);
 
     gui_list_view->AppendTextColumn("Modified");
+    gui_list_view->AppendTextColumn("ModifiedBy");
     gui_list_view->AppendTextColumn("Created");
+    gui_list_view->AppendTextColumn("CreatedBy");
     
 
     //_setmode(_fileno(stdout), _O_U16TEXT);
@@ -74,14 +76,18 @@ void SearchUI::UpdateResultsList()
         // Rank
         data.push_back(std::to_string(i));
         
-        // Document icon
+        // Icon
         data.push_back(wxVariant(GetBitmapForExtension(extension)));
 
-        // Name, path, modified, created
+        // Name, path 
         data.push_back(name);
         data.push_back(path);
+
+        // Modified, ModifiedBy, Created, CreatedBy
         data.push_back(results_->Modified(i));
+        data.push_back(results_->ModifiedBy(i));
         data.push_back(results_->Created(i));
+        data.push_back(results_->CreatedBy(i));
 
         gui_list_view->AppendItem(data);
 
