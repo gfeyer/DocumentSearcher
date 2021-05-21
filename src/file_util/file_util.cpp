@@ -65,7 +65,7 @@ namespace file_util {
     std::wstring FileDoc::DateCreated() {
         if (metadata != NULL) {
             char date[64];
-            strftime(date, 64, "%Y-%m-%d %H:%M:%S", doctotext_metadata_creation_date(metadata));
+            strftime(date, 64, "%Y-%m-%d", doctotext_metadata_creation_date(metadata));
             wxString wstr(date);
             return wstr;
         }
@@ -74,7 +74,7 @@ namespace file_util {
     std::wstring FileDoc::DateModified() {
         if (metadata != NULL) {
             char date[64];
-            strftime(date, 64, "%Y-%m-%d %H:%M:%S", doctotext_metadata_last_modification_date(metadata));
+            strftime(date, 64, "%Y-%m-%d", doctotext_metadata_last_modification_date(metadata));
             wxString wstr(date);
             return wstr;
         }
