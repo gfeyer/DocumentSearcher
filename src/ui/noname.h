@@ -29,6 +29,8 @@
 #include <wx/srchctrl.h>
 #include <wx/stc/stc.h>
 #include <wx/splitter.h>
+#include <wx/filepicker.h>
+#include <wx/textctrl.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -44,16 +46,14 @@ class UIFrame : public wxFrame
 		wxAuiNotebook* auinotebook;
 		wxMenuBar* m_menubar1;
 		wxMenu* File;
-		wxMenu* Filters;
+		wxMenu* Index;
 		wxMenu* Help;
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
-		virtual void OnSelectMenuImport( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSelectMenuExport( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSelectMenuQuit( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSelectFiltersSave( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSelectMenuFiltersView( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSelectMenuIndexNew( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSelectMenuIndexView( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAbout( wxCommandEvent& event ) { event.Skip(); }
 
 
@@ -121,6 +121,32 @@ class SearchPanel : public wxPanel
 			m_splitter1->SetSashPosition( 0 );
 			m_splitter1->Disconnect( wxEVT_IDLE, wxIdleEventHandler( SearchPanel::m_splitter1OnIdle ), NULL, this );
 		}
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class FilterFrame
+///////////////////////////////////////////////////////////////////////////////
+class FilterFrame : public wxFrame
+{
+	private:
+
+	protected:
+		wxPanel* m_panel4;
+		wxStaticText* m_staticText13;
+		wxDirPickerCtrl* gui_source_dir;
+		wxStaticText* m_staticText131;
+		wxDirPickerCtrl* gui_index_dir;
+		wxStaticText* m_staticText1311;
+		wxTextCtrl* gui_name;
+		wxButton* gui_button_start;
+		wxStyledTextCtrl* gui_console;
+
+	public:
+
+		FilterFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 700,500 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+
+		~FilterFrame();
 
 };
 

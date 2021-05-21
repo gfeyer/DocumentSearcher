@@ -1,5 +1,5 @@
-#ifndef INSPECTOR_H
-#define INSPECTOR_H
+#ifndef SEARCH_UI_H
+#define SEARCH_UI_H
 
 #include "ui/noname.h"
 
@@ -35,4 +35,4 @@ private:
 	std::unordered_map<std::string, wxBitmap> bitmaps_;
 
 };
-#endif // INSPECTOR_H
+#endif // SEARCH_UI_H
