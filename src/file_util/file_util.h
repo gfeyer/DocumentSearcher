@@ -32,16 +32,7 @@ namespace file_util {
 		std::string  DateModified();
 	};
 
-	struct File {
-		std::wstring content;
-		std::string name;
-		std::string path;
-		std::string created;
-		std::string modified;
-		std::string author;
-	};
-
-	File Read(std::string path);
+	FileDocument Read(std::string path);
 
 	std::string EpochToDate(std::string timestr);
 	std::string FileNameFromPath(std::string);

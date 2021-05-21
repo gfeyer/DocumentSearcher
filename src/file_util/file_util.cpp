@@ -129,15 +129,13 @@ namespace file_util {
         return ext;
     }
 
-    File Read(std::string path)
+    FileDocument Read(std::string path)
     {
-        File document;
-
-        // Read file contents
         auto extension = ExtensionFromPath(path);
-        
+
         // Read plain text files 
-        if (extension == TXT || extension == CSV) {
+        // TODO: add support for csv format
+        if (extension == CSV) {
             auto ss = std::wostringstream{};
             std::wifstream input_file(path, std::ios::binary);
             if (!input_file.is_open()) {
@@ -145,73 +143,11 @@ namespace file_util {
                 exit(EXIT_FAILURE);
             }
             ss << input_file.rdbuf();
-            document.content = std::move(ss.str());
+            //document.content = std::move(ss.str());
+            return FileDocument("");
         }
         
-        // Read Word .docx files
-        else if (extension == DOCX) {
-            auto ss = std::ostringstream{};
-            //duckx::Document doc("file.docx");
-            //duckx::Document doc("");
-            duckx::Document doc(path);
-
-            doc.open();
-
-            for (auto p = doc.paragraphs(); p.has_next(); p.next()) {
-                for (auto r = p.runs(); r.has_next(); r.next()) {
-                    ss << r.get_text();
-                }
-                ss << "\n";
-            }
-
-            wxString content(std::move(ss.str()));
-            document.content = std::move(content);
-        }
-
-        // Read Word .doc files
-        else if (extension == DOC) {
-
-        }
-
-        // Read Excel old .xls
-        else if (extension == XLS) {
-
-        }
-
-        // Read Excel .xlsx 
-        else if (extension == XLSX){
-            auto ss = std::ostringstream{};
-
-            xlnt::workbook workbook;
-            workbook.load(path);
-
-            for (int s = 0; s < workbook.sheet_count(); ++s) {
-                auto worksheet = workbook.sheet_by_index(s);
-
-                for (auto row : worksheet.rows(false)) {
-                    for (auto cell : row) {
-                        ss << cell.to_string() << " ";
-                    }
-                    ss << "\n";
-                }
-                ss << "\n";
-            }
-            
-            wxString content(std::move(ss.str()));
-            document.content = std::move(content);
-        }
-
-        else {
-            // unsupported format
-        }
-        
-
-        // Read file attritbutes
-        boost::filesystem::path p(path);
-        std::time_t t = boost::filesystem::last_write_time(p);
-        auto time = EpochToDate(std::to_string(t));
-        document.modified = time;
-
-        return std::move(document);
+        FileDocument doc(path);
+        return std::move(doc);
     }
 }
