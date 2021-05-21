@@ -223,6 +223,7 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	// Connect Events
 	gui_button_search->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
 	gui_search_query->Connect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
+	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( SearchPanel::OnDoubleClick ), NULL, this );
 	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelect ), NULL, this );
 	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( SearchPanel::OnDocSearchCancel ), NULL, this );
 	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( SearchPanel::OnDocSearch ), NULL, this );
@@ -234,6 +235,7 @@ SearchPanel::~SearchPanel()
 	// Disconnect Events
 	gui_button_search->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
 	gui_search_query->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
+	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( SearchPanel::OnDoubleClick ), NULL, this );
 	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelect ), NULL, this );
 	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( SearchPanel::OnDocSearchCancel ), NULL, this );
 	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( SearchPanel::OnDocSearch ), NULL, this );

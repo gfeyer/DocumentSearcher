@@ -51,7 +51,7 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     lucene_api::IndexDocs(source, index);
 
     // Perform basic search and get results
-    std::wstring query = L"H4R0K2";
+    std::wstring query = L"H4R*";
     results_ = lucene_api::NewSearch(index, query);
     UpdateResultsList();
 }
@@ -87,6 +87,16 @@ void SearchUI::UpdateResultsList()
 
         
     }
+}
+
+void SearchUI::OnDoubleClick(wxDataViewEvent& event)
+{
+    auto row = gui_list_view->GetSelectedRow();
+    auto path = results_->Path(row);
+    std::thread t([path]() {
+        system(path.c_str());
+    });
+    t.detach();
 }
 
 void SearchUI::OnSelect(wxDataViewEvent& event)

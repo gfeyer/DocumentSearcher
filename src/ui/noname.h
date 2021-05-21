@@ -104,6 +104,7 @@ class SearchPanel : public wxPanel
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnSearch( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnKeyUpFilter( wxKeyEvent& event ) { event.Skip(); }
+		virtual void OnDoubleClick( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void OnSelect( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void OnDocSearchCancel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDocSearch( wxCommandEvent& event ) { event.Skip(); }
