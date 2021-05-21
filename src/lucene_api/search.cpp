@@ -8,7 +8,7 @@ namespace lucene_api::internal {
     SearchResults::SearchResults(std::string index, std::wstring userquery) {
         // Search
         // String index = L"index";
-        String field = L"contents";
+        String field = FIELD_CONTENT;
         String queries;
         int32_t repeat = 0;
         bool raw = false;

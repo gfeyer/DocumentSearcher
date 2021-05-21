@@ -14,7 +14,7 @@
 
 namespace file_util {
 
-	class FileDocument {
+	class FileDoc {
 	private:
 		DocToTextExtractorParams* params;
 		DocToTextFormattingStyle* style;
@@ -22,17 +22,16 @@ namespace file_util {
 		DocToTextMetadata* metadata;
 		std::string path;
 	public:
-		FileDocument(std::string);
-		~FileDocument();
-		std::string  Content();
-		std::wstring WContent();
-		std::string  AuthorCreated();
-		std::string  AuthorModified();
-		std::string  DateCreated();
-		std::string  DateModified();
+		FileDoc(std::string);
+		~FileDoc();
+		std::wstring  Content();
+		std::wstring  AuthorCreated();
+		std::wstring  AuthorModified();
+		std::wstring  DateCreated();
+		std::wstring  DateModified();
 	};
 
-	FileDocument Read(std::string path);
+	std::shared_ptr<FileDoc> Read(std::string path);
 
 	std::string EpochToDate(std::string timestr);
 	std::string FileNameFromPath(std::string);

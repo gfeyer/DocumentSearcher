@@ -39,4 +39,13 @@ namespace lucene_api {
     
 }
 
+namespace lucene_api::internal {
+    #define FIELD_PATH  L"path"
+    #define FIELD_CREATED L"created"
+    #define FIELD_CREATED_BY  L"createdby"
+    #define FIELD_MODIFIED L"modified"
+    #define FIELD_MODIFIED_BY L"modifiedby"
+    #define FIELD_CONTENT L"content"
+}
+
 #endif // LUCENE_API_H_

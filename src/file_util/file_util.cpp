@@ -11,6 +11,8 @@
 #include <wx/string.h>
 #include "duckx.hpp"
 
+#include "../logger.h"
+
 namespace file_util {
     #define CSV     "csv"
     #define DOC     "doc"
@@ -22,8 +24,9 @@ namespace file_util {
 }
 
 namespace file_util {
-    FileDocument::FileDocument(std::string p) : path(p) {
+    FileDoc::FileDoc(std::string p) : path(p) {
 
+        logger_info << "Parsing: " << path;
         //Create style and extractor params objects
         params = doctotext_create_extractor_params();
         style = doctotext_create_formatting_style();
@@ -37,59 +40,56 @@ namespace file_util {
         //Extract metadata
         metadata = doctotext_extract_metadata(path.c_str(), params, NULL);
 
+        logger_info << "Done. " << path;
     }
 
-    std::string FileDocument::Content() {
-        if (data != NULL) {
-            // Extract contents
-            return doctotext_extracted_data_get_text(data);
-        }
-        return "";
-    }
-    std::wstring FileDocument::WContent() {
+    std::wstring FileDoc::Content() {
         if (data != NULL) {
             // Extract contents and convert to wise string
-            wxString wstr = std::move(doctotext_extracted_data_get_text(data));
+            wxString wstr = doctotext_extracted_data_get_text(data);
+            return wstr;
+        }
+        return L"";
+    }
+    std::wstring FileDoc::AuthorCreated() {
+        if (metadata != NULL) {
+            wxString wstr = doctotext_metadata_author(metadata);
+            return wstr;
+        }
+        return L"";
+    }
+    std::wstring FileDoc::AuthorModified() {
+        if (metadata != NULL) {
+            wxString wstr = doctotext_metadata_last_modify_by(metadata);
             return std::move(wstr);
         }
         return L"";
     }
-
-    std::string FileDocument::AuthorCreated() {
-        if (metadata != NULL) {
-            return doctotext_metadata_author(metadata);
-        }
-        return "";
-    }
-    std::string FileDocument::AuthorModified() {
-        if (metadata != NULL) {
-            return doctotext_metadata_last_modify_by(metadata);
-        }
-        return "";
-    }
-    std::string FileDocument::DateCreated() {
+    std::wstring FileDoc::DateCreated() {
         if (metadata != NULL) {
             char date[64];
             strftime(date, 64, "%Y-%m-%d %H:%M:%S", doctotext_metadata_creation_date(metadata));
-            return date;
+            wxString wstr(date);
+            return wstr;
         }
-        return "";
+        return L"";
     }
-    std::string FileDocument::DateModified() {
+    std::wstring FileDoc::DateModified() {
         if (metadata != NULL) {
             char date[64];
             strftime(date, 64, "%Y-%m-%d %H:%M:%S", doctotext_metadata_last_modification_date(metadata));
-            return date;
+            wxString wstr(date);
+            return wstr;
         }
-        return "";
+        return L"";
     }
 
-    FileDocument::~FileDocument() {
+    FileDoc::~FileDoc() {
         // Release pointers
         doctotext_free_extractor_params(params);
         doctotext_free_formatting_style(style);
-        doctotext_free_extracted_data(data);
         doctotext_free_metadata(metadata);
+        doctotext_free_extracted_data(data);
     }
 }
 
@@ -129,7 +129,7 @@ namespace file_util {
         return ext;
     }
 
-    FileDocument Read(std::string path)
+    std::shared_ptr<FileDoc> Read(std::string path)
     {
         auto extension = ExtensionFromPath(path);
 
@@ -144,10 +144,10 @@ namespace file_util {
             }
             ss << input_file.rdbuf();
             //document.content = std::move(ss.str());
-            return FileDocument("");
+            return std::make_shared<FileDoc>("");
         }
         
-        FileDocument doc(path);
-        return std::move(doc);
+        auto doc = std::make_shared<FileDoc>(path);
+        return doc;
     }
 }
