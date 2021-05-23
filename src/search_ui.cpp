@@ -1,6 +1,7 @@
 #include "search_ui.h"
 
 #include <wx/msgdlg.h>
+#include <wx/checkbox.h>
 #include <nlohmann/json.hpp>
 
 #include "file_util/file_util.h"
@@ -119,14 +120,25 @@ void SearchUI::OnDoubleClick(wxDataViewEvent& event)
 
 void SearchUI::OnSelectResult(wxDataViewEvent& event)
 {
+    // Retrieve selection
     auto row = gui_list_view->GetSelectedRow();
     if (row < 0) {
         return;
     }
 
+    // Populate text content
     auto content = results_->Content(row);
-    //auto path = gui_list_view->GetTextValue(i, 1);
     gui_text_view->SetText(content);
+
+    // TODO: Add checkboxes and colors
+    auto sizer = gui_checkboxes->GetSizer();
+    auto m_checkBox1 = new wxCheckBox(gui_checkboxes, wxID_ANY, wxT("word(5)"), wxDefaultPosition, wxDefaultSize, 0);
+    sizer->Add(m_checkBox1, 0, wxALL, 5);
+
+    gui_checkboxes->Layout();
+    sizer->Fit(gui_checkboxes);
+    gui_checkboxes->GetParent()->Layout();
+    this->Layout();
 }
 
 void SearchUI::OnSelectIndex(wxCommandEvent& event)
