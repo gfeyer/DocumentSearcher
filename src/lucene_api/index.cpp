@@ -49,10 +49,10 @@ namespace lucene_api::internal {
                 std::wcout << L"Adding [" << ++docNumber << L"]: " << *dirFile << L"\n";
     
                 try {
-                    std::wcout << L"addDocument->\n";
+                    //std::wcout << L"addDocument->\n";
                     auto fdoc = fileDocument(docFile);
                     writer->addDocument(fdoc);
-                    std::wcout << L"done->\n";
+                    //std::wcout << L"done->\n";
                 }
                 catch (FileNotFoundException&) {
                 }

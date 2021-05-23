@@ -24,7 +24,7 @@ namespace lucene_api::internal {
         std::string ModifiedBy(size_t);
         std::string Name(size_t);
         std::string Path(size_t);
-        size_t Size();
+        size_t Hits();
         double Score(size_t pos);
     };
 }

@@ -25,7 +25,7 @@ namespace lucene_api {
         virtual std::string  ModifiedBy(size_t) = 0;
         virtual std::string  Name(size_t) = 0;
         virtual std::string  Path(size_t) = 0;
-        virtual size_t Size() = 0;
+        virtual size_t Hits() = 0;
         virtual double Score(size_t) = 0;
     };
 

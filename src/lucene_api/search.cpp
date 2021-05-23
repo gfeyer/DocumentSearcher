@@ -101,12 +101,14 @@ namespace lucene_api::internal {
     }
     std::string SearchResults::Path(size_t index)
     {
+        std::cout << "SearchResults::Path: hist_ size = " << hits_.size()<< std::endl;
+        std::cout << "SearchResults::Path: index = " << index << std::endl;
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
         String path = doc->get(FIELD_PATH);
         return utf16ToUtf8(path);
     }
-    size_t SearchResults::Size() {
-        return collector_->getTotalHits();
+    size_t SearchResults::Hits() {
+        return hits_.size();
     }
     double SearchResults::Score(size_t pos) {
         return hits_[pos]->score;

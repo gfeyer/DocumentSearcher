@@ -44,7 +44,7 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->AppendTextColumn("Modified");
     
     //_setmode(_fileno(stdout), _O_U16TEXT);
-    auto source = "C:\\Users\\Vlad\\Documents\\temp\\source";
+    auto source = "C:\\Users\\Vlad\\Documents\\temp\\source2";
     auto index = "C:\\Users\\Vlad\\Documents\\temp\\index";
     lucene_api::IndexDocs(source, index);
 
@@ -64,7 +64,8 @@ void SearchUI::NewSearch(std::string query, std::string index)
 
     gui_list_view->DeleteAllItems();
 
-    for (auto i = 0; i < results_->Size(); ++i) {
+    logger_info << "results size: " << results_->Hits();
+    for (auto i = 0; i < results_->Hits(); ++i) {
         wxVector<wxVariant> data;
 
         auto path = results_->Path(i);
