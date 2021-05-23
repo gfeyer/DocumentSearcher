@@ -1,11 +1,10 @@
 #include "api.h"
 #include "search.h"
 
-
 namespace lucene_api::internal {
     using namespace Lucene;
 
-    SearchResults::SearchResults(std::string index, std::wstring userquery) {
+    SearchResults::SearchResults(std::wstring userquery, std::string index) {
         // Search
         // String index = L"index";
         String field = FIELD_CONTENT;

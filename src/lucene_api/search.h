@@ -15,7 +15,7 @@ namespace lucene_api::internal {
         Lucene::TopScoreDocCollectorPtr collector_;
         Lucene::Collection<Lucene::ScoreDocPtr> hits_;
     public:
-        SearchResults(std::string index, std::wstring userquery);
+        SearchResults(std::wstring userquery, std::string index);
         ~SearchResults();
         std::wstring Content(size_t);
         std::string Created(size_t);

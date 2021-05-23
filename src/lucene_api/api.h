@@ -29,7 +29,7 @@ namespace lucene_api {
         virtual double Score(size_t) = 0;
     };
 
-    std::shared_ptr<IResults> NewSearch(std::string index, std::wstring query);
+    std::shared_ptr<IResults> NewSearch(std::string query, std::string index);
 
     // Interface for indexing directory and updating the index
     int IndexDocs(std::string source, std::string index);
