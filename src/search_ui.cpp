@@ -44,25 +44,24 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->AppendTextColumn("Modified");
     
     //_setmode(_fileno(stdout), _O_U16TEXT);
-
-    // Index documents
-    auto source = R"#(C:\Users\Vlad\Documents\temp\source)#";
-    auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
-
+    auto source = "C:\\Users\\Vlad\\Documents\\temp\\source";
+    auto index = "C:\\Users\\Vlad\\Documents\\temp\\index";
     lucene_api::IndexDocs(source, index);
 
     // Perform basic search and get results
-    std::wstring query = L"H4R*";
-    results_ = lucene_api::NewSearch(index, query);
-    UpdateResultsList();
+    NewSearch("H4R*", index);
 }
 
 SearchUI::~SearchUI()
 {
 }
 
-void SearchUI::UpdateResultsList()
+void SearchUI::NewSearch(std::string query, std::string index)
 {
+    // clear any locks on the index
+    //results_ = nullptr;
+    results_ = lucene_api::NewSearch(index, wxString(query));
+
     gui_list_view->DeleteAllItems();
 
     for (auto i = 0; i < results_->Size(); ++i) {
@@ -117,14 +116,10 @@ void SearchUI::OnSelect(wxDataViewEvent& event)
 void SearchUI::OnSearch(wxCommandEvent& event)
 {
     auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
-    std::wstring query = gui_search_query->GetValue();
+    std::string query = gui_search_query->GetValue();
     
-    // perform new search
     try {
-        // clear any locks on the index
-        //results_ = nullptr;
-        results_ = lucene_api::NewSearch(index, query);
-        UpdateResultsList();
+        NewSearch(query, index);
     }
     catch (std::exception& e) {
         PopErrorDialog(e.what());

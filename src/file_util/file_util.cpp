@@ -131,9 +131,42 @@ namespace file_util {
         return ext;
     }
 
-    std::shared_ptr<FileDoc> Read(std::string path)
+    std::shared_ptr<FileDoc> ReadDocument(std::string path)
     {
         auto doc = std::make_shared<FileDoc>(path);
         return doc;
+    }
+    std::shared_ptr<std::string> ReadText(std::string path)
+    {
+       try {
+           std::ifstream instream(path);
+           std::stringstream buffer;
+           buffer << instream.rdbuf();
+
+           auto contents = std::make_shared<std::string>(buffer.str());
+           return contents;
+
+       }
+       catch (...) {
+           logger_error << "Could not read file: " << path;
+          
+       }
+       return std::shared_ptr<std::string>();
+    }
+    void WriteText(std::string path, std::string data)
+    {
+        
+        std::ofstream outstream;
+        
+        outstream.open(path);
+        
+        if (!outstream) {
+            logger_error << "could not open file for writing, " << path;
+            return;
+        }
+        
+        outstream << data;
+        outstream.close();
+        
     }
 }

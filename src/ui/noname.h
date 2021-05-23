@@ -142,9 +142,13 @@ class FilterFrame : public wxFrame
 		wxButton* gui_button_start;
 		wxStyledTextCtrl* gui_console;
 
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnStart( wxCommandEvent& event ) { event.Skip(); }
+
+
 	public:
 
-		FilterFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 700,500 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		FilterFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Create new index"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 700,500 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~FilterFrame();
 

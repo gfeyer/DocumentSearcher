@@ -31,7 +31,9 @@ namespace file_util {
 		std::wstring  DateModified();
 	};
 
-	std::shared_ptr<FileDoc> Read(std::string path);
+	std::shared_ptr<FileDoc> ReadDocument(std::string path);
+	std::shared_ptr<std::string> ReadText(std::string path);
+	void WriteText(std::string path, std::string data);
 
 	std::string EpochToDate(std::string timestr);
 	std::string FileNameFromPath(std::string);

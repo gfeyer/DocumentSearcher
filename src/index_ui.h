@@ -10,7 +10,8 @@ public:
 	~FiltersUI() { }
 
 private:
-
+	void OnStart(wxCommandEvent& event);
+	void PopErrorDialog(std::string);
 };
 
 

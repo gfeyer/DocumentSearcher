@@ -25,7 +25,7 @@ private:
 	void LoadResources();
 	wxBitmap GetBitmapForExtension(std::string ext);
 
-	void UpdateResultsList();
+	void NewSearch(std::string, std::string);
 	void PopErrorDialog(std::string);
 
 	// Session data
