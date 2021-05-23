@@ -47,6 +47,9 @@
     <ClCompile Include="src\file_util\file_util.cpp">
       <Filter>src\file_util</Filter>
     </ClCompile>
+    <ClCompile Include="src\index_ui.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lucene_api\search.h">
@@ -72,6 +75,9 @@
     </ClInclude>
     <ClInclude Include="src\file_util\file_util.h">
       <Filter>src\file_util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\index_ui.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,24 @@
+{
+    "indexes": [
+        {
+            "index": "C:\\Users\\Vlad\\Documents\\temp\\index",
+            "name": "a1",
+            "source": "C:\\Users\\Vlad\\Documents\\temp\\source"
+        },
+        {
+            "index": "C:\\Users\\Vlad\\Documents\\temp\\index",
+            "name": "a1",
+            "source": "C:\\Users\\Vlad\\Documents\\temp\\source"
+        },
+        {
+            "index": "C:\\Users\\Vlad\\Documents\\temp\\index",
+            "name": "a2",
+            "source": "C:\\Users\\Vlad\\Documents\\temp\\source"
+        },
+        {
+            "index": "C:\\Users\\Vlad\\Documents\\temp\\index",
+            "name": "a3",
+            "source": "C:\\Users\\Vlad\\Documents\\temp\\source"
+        }
+    ]
+}

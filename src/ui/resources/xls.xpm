@@ -1,0 +1,33 @@
+/* XPM */
+static const char *xls_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 11 1 ",
+"  c None",
+". c #098540",
+"X c #0B8D48",
+"o c #0F9D57",
+"O c #25A565",
+"+ c #29A86A",
+"@ c #2CA96C",
+"# c #45AE78",
+"$ c #45AF79",
+"% c #58BB8A",
+"& c #A2D9BE",
+/* pixels */
+"  ooooooooo+    ",
+"  ooooooooo@%   ",
+"  oooooooooO##  ",
+"  ooooooooooX.  ",
+"  oooooooooooX  ",
+"  oo&&&&&&&&oo  ",
+"  oo&oo&ooo&oo  ",
+"  oo&&&&&&&&oo  ",
+"  oo&oo&ooo&oo  ",
+"  oo&&&&&&&&oo  ",
+"  oo&oo&ooo&oo  ",
+"  oo&&&&&&&&oo  ",
+"  oooooooooooo  ",
+"  oooooooooooo  ",
+"  oooooooooooo  ",
+"  oooooooooooo  "
+};

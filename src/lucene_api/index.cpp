@@ -3,6 +3,8 @@
 
 #include "../file_util/file_util.h"
 
+
+
 namespace lucene_api::internal {
     using namespace Lucene;
     
@@ -10,28 +12,23 @@ namespace lucene_api::internal {
     
     Lucene::DocumentPtr fileDocument(const Lucene::String& docFile) {
     
-        DocumentPtr doc = newLucene<Document>();
+        DocumentPtr doc = newLucene<Document>(); 
 
-        std::wstring path(docFile);
-        auto file = file_util::read(path);
+        std::string  path = utf16ToUtf8(docFile);
+        auto fileDoc = file_util::ReadDocument(path);
 
+        // Add metadata
         // Add the path of the file as a field named "path".  Use a field that is indexed (ie. searchable), but
         // don't tokenize the field into words.
-        doc->add(newLucene<Field>(L"path", docFile, Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
-    
-        // Add the last modified date of the file a field named "modified".  Use a field that is indexed (ie. searchable),
-        // but don't tokenize the field into words.
-        doc->add(newLucene<Field>(L"modified", utf8ToUtf16(file.modified),
-            Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
 
-        std::wcout << "modified: " << DateTools::timeToString(FileUtils::fileModified(docFile), DateTools::RESOLUTION_MINUTE) << std::endl;;
-    
-        // Add the contents of the file to a field named "contents".  Specify a Reader, so that the text of the file is
-        // tokenized and indexed, but not stored.  Note that FileReader expects the file to be in the system's default
-        // encoding.  If that's not the case searching for special characters will fail.
-        
-        doc->add(newLucene<Field>(L"contents", file.content, Field::STORE_YES, Field::INDEX_ANALYZED));
-        //doc->add(newLucene<Field>(L"contents", newLucene<FileReader>(docFile)));
+        doc->add(newLucene<Field>(FIELD_PATH, docFile, Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+        doc->add(newLucene<Field>(FIELD_CREATED, fileDoc->DateCreated(),Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+        doc->add(newLucene<Field>(FIELD_CREATED_BY, fileDoc->AuthorCreated(),Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+        doc->add(newLucene<Field>(FIELD_MODIFIED, fileDoc->DateModified(), Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+        doc->add(newLucene<Field>(FIELD_MODIFIED_BY, fileDoc->AuthorModified(), Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+
+        // Add file contents:
+        doc->add(newLucene<Field>(FIELD_CONTENT, fileDoc->Content(), Field::STORE_YES, Field::INDEX_ANALYZED));
     
         return doc;
     }
@@ -52,7 +49,10 @@ namespace lucene_api::internal {
                 std::wcout << L"Adding [" << ++docNumber << L"]: " << *dirFile << L"\n";
     
                 try {
-                    writer->addDocument(fileDocument(docFile));
+                    //std::wcout << L"addDocument->\n";
+                    auto fdoc = fileDocument(docFile);
+                    writer->addDocument(fdoc);
+                    //std::wcout << L"done->\n";
                 }
                 catch (FileNotFoundException&) {
                 }

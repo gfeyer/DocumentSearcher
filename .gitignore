@@ -4,9 +4,10 @@
 
 /.vs/documentsearcher/v16
 /Debug
-/src/lucene_api/dll/*.dll
-/src/lucene_api/dll/*.lib
-/src/lucene_api/include/lucene++/out/
 /x64/
 /.vs
-
+/test/x64/
+/packages/
+/test/packages.config
+/thirdparty/include/lucene++/out/
+/thirdparty/lib/

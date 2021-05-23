@@ -4,9 +4,9 @@
 #include <thread>
 #include <sstream>
 
-#define err  LOG(logger::Level::kError, "")
+#define logger_error  LOG(logger::Level::kError, "")
 #define logger_info LOG(logger::Level::kInfo,  "")
-#define debug LOG(logger::Level::kDebug,"")
+#define logger_debug LOG(logger::Level::kDebug,"")
 #define trace LOG(logger::Level::kTrace,"")
 
 #define trace_entry LOG(logger::Level::kTrace,"->")

@@ -1,20 +1,16 @@
 #include "api.h"
 #include "search.h"
 
-
 namespace lucene_api::internal {
     using namespace Lucene;
 
-    SearchResults::SearchResults(std::string index, std::wstring userquery) {
+    const int32_t kMaxHits = 200;
+
+
+    SearchResults::SearchResults(std::wstring userquery, std::string index) {
         // Search
         // String index = L"index";
-        String field = L"contents";
-        String queries;
-        int32_t repeat = 0;
-        bool raw = false;
-        String normsField;
-        bool paging = true;
-        int32_t maxHits = 10;
+        String field = FIELD_CONTENT;
     
         // only searching, so read-only=true
         reader_ = IndexReader::open(FSDirectory::open(utf8ToUtf16(index)), true);
@@ -24,9 +20,9 @@ namespace lucene_api::internal {
     
         ReaderPtr in;
         
-        std::wcout << L"User query: " << userquery << L"\n";
+        //std::wcout << L"User query: " << userquery << L"\n";
         QueryPtr query = parser->parse(userquery);
-        std::wcout << L"Searching for: " << query->toString(field) << L"\n";
+        //std::wcout << L"Searching for: " << query->toString(field) << L"\n";
     
         searcher_->search(query, FilterPtr(), 100);
     
@@ -34,12 +30,12 @@ namespace lucene_api::internal {
         //doPagingSearch(searcher, query, hitsPerPage);
     
         // Collect enough docs for maxHits
-        collector_ = TopScoreDocCollector::create(maxHits, false);
+        collector_ = TopScoreDocCollector::create(kMaxHits, false);
         searcher_->search(query, collector_);
         hits_ = collector_->topDocs()->scoreDocs;
     
         int32_t numTotalHits = collector_->getTotalHits();
-        std::wcout << numTotalHits << L" total matching documents\n";
+        //std::wcout << numTotalHits << L" total matching documents\n";
     
         int32_t start = 0;
         int32_t end = hits_.size();
@@ -61,44 +57,57 @@ namespace lucene_api::internal {
     }
 
     SearchResults::~SearchResults() {
-        std::wcout << "d'tor" << std::endl;
         reader_->close();
     }
-    
-    size_t SearchResults::Size() {
-        return collector_->getTotalHits();
+    std::wstring SearchResults::Content(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto content = doc->get(FIELD_CONTENT);
+        return content;
+    }
+    std::string SearchResults::Created(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto modified = utf16ToUtf8(doc->get(FIELD_CREATED));
+        return modified;
+    }
+    std::string SearchResults::CreatedBy(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto modified = utf16ToUtf8(doc->get(FIELD_CREATED_BY));
+        return modified;
+    }
+    std::string SearchResults::Modified(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto modified = utf16ToUtf8(doc->get(FIELD_MODIFIED));
+        return modified;
+    }
+    std::string SearchResults::ModifiedBy(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto modified = utf16ToUtf8(doc->get(FIELD_MODIFIED_BY));
+        return modified;
+    }
+    std::string SearchResults::Name(size_t index)
+    {
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        auto path = utf16ToUtf8(doc->get(FIELD_PATH));
+        std::string filename = path.substr(path.find_last_of("/\\") + 1);
+        return filename;
+    }
+    std::string SearchResults::Path(size_t index)
+    {
+        std::cout << "SearchResults::Path: hist_ size = " << hits_.size()<< std::endl;
+        std::cout << "SearchResults::Path: index = " << index << std::endl;
+        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
+        String path = doc->get(FIELD_PATH);
+        return utf16ToUtf8(path);
+    }
+    size_t SearchResults::Hits() {
+        return hits_.size();
     }
     double SearchResults::Score(size_t pos) {
         return hits_[pos]->score;
     }
-
-    std::string SearchResults::Path(size_t index)
-    {
-        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        String path = doc->get(L"path");
-        return utf16ToUtf8(path);
-    }
-
-    std::string SearchResults::Name(size_t index)
-    {
-        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto path = utf16ToUtf8(doc->get(L"path"));
-        std::string filename = path.substr(path.find_last_of("/\\") + 1);
-        return filename;
-    }
-
-    std::string SearchResults::Modified(size_t index)
-    {
-        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto modified = utf16ToUtf8(doc->get(L"modified"));
-        return modified;
-    }
-
-    std::wstring SearchResults::Content(size_t index)
-    {
-        DocumentPtr doc = searcher_->doc(hits_[index]->doc);
-        auto content = doc->get(L"contents");
-        return content;
-    }
-
 }

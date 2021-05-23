@@ -1,8 +1,9 @@
-#ifndef INSPECTOR_H
-#define INSPECTOR_H
+#ifndef SEARCH_UI_H
+#define SEARCH_UI_H
 
 #include "ui/noname.h"
 
+#include <unordered_map>
 #include <memory>
 #include <string>
 #include "lucene_api/api.h"
@@ -15,15 +16,23 @@ public:
 private:
 
 	// Events
+	void OnDoubleClick(wxDataViewEvent& event);
 	void OnSelect(wxDataViewEvent& event);
 	void OnSearch(wxCommandEvent& event);
 	void OnKeyUpFilter(wxKeyEvent& event);
 
 	// Utility Functions
-	void UpdateResults();
-	void ShowErrorDialog(std::string);
+	void LoadResources();
+	wxBitmap GetBitmapForExtension(std::string ext);
+
+	void NewSearch(std::string, std::string);
+	void PopErrorDialog(std::string);
 
 	// Session data
 	std::shared_ptr<lucene_api::IResults> results_;
+
+	// Preloaded bitmaps storage
+	std::unordered_map<std::string, wxBitmap> bitmaps_;
+
 };
-#endif // INSPECTOR_H
+#endif // SEARCH_UI_H

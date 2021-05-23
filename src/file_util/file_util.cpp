@@ -4,14 +4,102 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-
-
 #include <ctime>
 #include <boost/filesystem/operations.hpp>
 
+#include <xlnt/xlnt.hpp>
+#include <wx/string.h>
+#include "duckx.hpp"
+
+#include "../logger.h"
+
+namespace file_util {
+    #define CSV     "csv"
+    #define DOC     "doc"
+    #define DOCX    "docx"
+    #define RTF     "rtf"
+    #define TXT     "txt"
+    #define XLSX    "xlsx"
+    #define XLS     "xls"
+}
+
+namespace file_util {
+    FileDoc::FileDoc(std::string p) : path(p) {
+
+        //Create style and extractor params objects
+        params = doctotext_create_extractor_params();
+        style = doctotext_create_formatting_style();
+        doctotext_formatting_style_set_url_style(style, DOCTOTEXT_URL_STYLE_EXTENDED);
+        doctotext_extractor_params_set_formatting_style(params, style);
+        //doctotext_extractor_params_set_verbose_logging(params, 0);
+
+        // CSV files - use text parser
+        if (ExtensionFromPath(path) == CSV) {
+            doctotext_extractor_params_set_parser_type(params, DOCTOTEXT_PARSER_TXT);
+        }
+
+        //Extract text
+        data = doctotext_process_file(path.c_str(), params, NULL);
+
+        //Extract metadata
+        metadata = doctotext_extract_metadata(path.c_str(), params, NULL);
+    }
+
+    std::wstring FileDoc::Content() {
+        if (data != NULL) {
+            // Extract contents and convert to wise string
+            wxString wstr = doctotext_extracted_data_get_text(data);
+            return wstr;
+        }
+        return L"";
+    }
+    std::wstring FileDoc::AuthorCreated() {
+        if (metadata != NULL) {
+            wxString wstr = doctotext_metadata_author(metadata);
+            return wstr;
+        }
+        return L"";
+    }
+    std::wstring FileDoc::AuthorModified() {
+        if (metadata != NULL) {
+            wxString wstr = doctotext_metadata_last_modify_by(metadata);
+            return std::move(wstr);
+        }
+        return L"";
+    }
+    std::wstring FileDoc::DateCreated() {
+        if (metadata != NULL) {
+            char date[64];
+            strftime(date, 64, "%Y-%m-%d", doctotext_metadata_creation_date(metadata));
+            wxString wstr(date);
+            return wstr;
+        }
+        return L"";
+    }
+    std::wstring FileDoc::DateModified() {
+        if (metadata != NULL) {
+            char date[64];
+            strftime(date, 64, "%Y-%m-%d", doctotext_metadata_last_modification_date(metadata));
+            wxString wstr(date);
+            return wstr;
+        }
+        return L"";
+    }
+
+    FileDoc::~FileDoc() {
+        // Release pointers
+        doctotext_free_extractor_params(params);
+        doctotext_free_formatting_style(style);
+        doctotext_free_metadata(metadata);
+        doctotext_free_extracted_data(data);
+    }
+}
+
+
 namespace file_util {
 
-    std::string epoch_to_date(std::string timestr) {
+
+    std::string EpochToDate(std::string timestr) {
 
         //string timestr = "1612242000000000";
         timestr += "000000"; // long -> long long
@@ -27,32 +115,58 @@ namespace file_util {
         // Uses a fixed-length buffer for `strtftime`
         char buffer[256];
         strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &date);
-
-        return std::string(buffer);
+        auto time = std::string(buffer);
+        return time.substr(0, time.find(' '));;
     }
 
-    File read(const std::wstring& path)
+	std::string FileNameFromPath(std::string path)
+	{
+        auto filename = path.substr(path.find_last_of("/\\") + 1);
+        return filename;
+	}
+
+    std::string ExtensionFromPath(std::string path)
     {
-        File document;
-
-        // Read file contents
-        auto ss = std::wostringstream{};
-        std::wifstream input_file(path, std::ios::binary);
-        if (!input_file.is_open()) {
-            std::cerr << "Could not open the file" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        ss << input_file.rdbuf();
-        document.content = std::move(ss.str());
-
-        // Read file attritbutes
-        boost::filesystem::path p(path);
-        std::time_t t = boost::filesystem::last_write_time(p);
-        auto tt = epoch_to_date(std::to_string(t));
-        document.modified = tt.substr(0, tt.find(' '));
-
-        return std::move(document);
+        auto ext = path.substr(path.find_last_of("\.") + 1);
+        return ext;
     }
 
+    std::shared_ptr<FileDoc> ReadDocument(std::string path)
+    {
+        auto doc = std::make_shared<FileDoc>(path);
+        return doc;
+    }
+    std::shared_ptr<std::string> ReadText(std::string path)
+    {
+       try {
+           std::ifstream instream(path);
+           std::stringstream buffer;
+           buffer << instream.rdbuf();
 
+           auto contents = std::make_shared<std::string>(buffer.str());
+           return contents;
+
+       }
+       catch (...) {
+           logger_error << "Could not read file: " << path;
+          
+       }
+       return std::shared_ptr<std::string>();
+    }
+    void WriteText(std::string path, std::string data)
+    {
+        
+        std::ofstream outstream;
+        
+        outstream.open(path);
+        
+        if (!outstream) {
+            logger_error << "could not open file for writing, " << path;
+            return;
+        }
+        
+        outstream << data;
+        outstream.close();
+        
+    }
 }

@@ -25,30 +25,22 @@ UIFrame::UIFrame( wxWindow* parent, wxWindowID id, const wxString& title, const 
 	this->Layout();
 	m_menubar1 = new wxMenuBar( 0 );
 	File = new wxMenu();
-	wxMenuItem* gui_menu_import;
-	gui_menu_import = new wxMenuItem( File, wxID_ANY, wxString( wxT("Import...") ) , wxEmptyString, wxITEM_NORMAL );
-	File->Append( gui_menu_import );
-
-	wxMenuItem* gui_menu_file_export;
-	gui_menu_file_export = new wxMenuItem( File, wxID_ANY, wxString( wxT("Export...") ) , wxEmptyString, wxITEM_NORMAL );
-	File->Append( gui_menu_file_export );
-
 	wxMenuItem* gui_menu_file_quit;
 	gui_menu_file_quit = new wxMenuItem( File, wxID_ANY, wxString( wxT("Quit") ) , wxEmptyString, wxITEM_NORMAL );
 	File->Append( gui_menu_file_quit );
 
 	m_menubar1->Append( File, wxT("File") );
 
-	Filters = new wxMenu();
-	wxMenuItem* gui_menu_filters_save;
-	gui_menu_filters_save = new wxMenuItem( Filters, wxID_ANY, wxString( wxT("Add to Favorites") ) , wxEmptyString, wxITEM_NORMAL );
-	Filters->Append( gui_menu_filters_save );
+	Index = new wxMenu();
+	wxMenuItem* gui_menu_index_new;
+	gui_menu_index_new = new wxMenuItem( Index, wxID_ANY, wxString( wxT("New") ) , wxEmptyString, wxITEM_NORMAL );
+	Index->Append( gui_menu_index_new );
 
-	wxMenuItem* gui_menu_filters_view;
-	gui_menu_filters_view = new wxMenuItem( Filters, wxID_ANY, wxString( wxT("View All") ) , wxEmptyString, wxITEM_NORMAL );
-	Filters->Append( gui_menu_filters_view );
+	wxMenuItem* gui_menu_index_view;
+	gui_menu_index_view = new wxMenuItem( Index, wxID_ANY, wxString( wxT("View") ) , wxEmptyString, wxITEM_NORMAL );
+	Index->Append( gui_menu_index_view );
 
-	m_menubar1->Append( Filters, wxT("Filters") );
+	m_menubar1->Append( Index, wxT("Index") );
 
 	Help = new wxMenu();
 	wxMenuItem* m_menuItem3;
@@ -64,11 +56,9 @@ UIFrame::UIFrame( wxWindow* parent, wxWindowID id, const wxString& title, const 
 
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( UIFrame::OnClose ) );
-	File->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( UIFrame::OnSelectMenuImport ), this, gui_menu_import->GetId());
-	File->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( UIFrame::OnSelectMenuExport ), this, gui_menu_file_export->GetId());
 	File->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( UIFrame::OnSelectMenuQuit ), this, gui_menu_file_quit->GetId());
-	Filters->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( UIFrame::OnSelectFiltersSave ), this, gui_menu_filters_save->GetId());
-	Filters->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( UIFrame::OnSelectMenuFiltersView ), this, gui_menu_filters_view->GetId());
+	Index->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( UIFrame::OnSelectMenuIndexNew ), this, gui_menu_index_new->GetId());
+	Index->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( UIFrame::OnSelectMenuIndexView ), this, gui_menu_index_view->GetId());
 	Help->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( UIFrame::OnAbout ), this, m_menuItem3->GetId());
 }
 
@@ -223,6 +213,7 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	// Connect Events
 	gui_button_search->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
 	gui_search_query->Connect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
+	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( SearchPanel::OnDoubleClick ), NULL, this );
 	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelect ), NULL, this );
 	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( SearchPanel::OnDocSearchCancel ), NULL, this );
 	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( SearchPanel::OnDocSearch ), NULL, this );
@@ -234,9 +225,129 @@ SearchPanel::~SearchPanel()
 	// Disconnect Events
 	gui_button_search->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
 	gui_search_query->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
+	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( SearchPanel::OnDoubleClick ), NULL, this );
 	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelect ), NULL, this );
 	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( SearchPanel::OnDocSearchCancel ), NULL, this );
 	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( SearchPanel::OnDocSearch ), NULL, this );
 	gui_search->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( SearchPanel::OnDocSearchPartial ), NULL, this );
+
+}
+
+FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizer10;
+	bSizer10 = new wxBoxSizer( wxVERTICAL );
+
+	m_panel4 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer30;
+	bSizer30 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer31;
+	bSizer31 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText13 = new wxStaticText( m_panel4, wxID_ANY, wxT("Source directory"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText13->Wrap( -1 );
+	bSizer31->Add( m_staticText13, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	gui_source_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("C:\\Users\\Vlad\\Documents\\temp\\source"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	bSizer31->Add( gui_source_dir, 5, wxALL, 5 );
+
+
+	bSizer30->Add( bSizer31, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer311;
+	bSizer311 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText131 = new wxStaticText( m_panel4, wxID_ANY, wxT("Save new index to"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText131->Wrap( -1 );
+	bSizer311->Add( m_staticText131, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	gui_index_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("C:\\Users\\Vlad\\Documents\\temp\\index"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	bSizer311->Add( gui_index_dir, 5, wxALL, 5 );
+
+
+	bSizer30->Add( bSizer311, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer3111;
+	bSizer3111 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText1311 = new wxStaticText( m_panel4, wxID_ANY, wxT("Name"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1311->Wrap( -1 );
+	bSizer3111->Add( m_staticText1311, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	gui_name = new wxTextCtrl( m_panel4, wxID_ANY, wxT("a1"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer3111->Add( gui_name, 5, wxALL, 5 );
+
+
+	bSizer30->Add( bSizer3111, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer31111;
+	bSizer31111 = new wxBoxSizer( wxVERTICAL );
+
+	gui_button_start = new wxButton( m_panel4, wxID_ANY, wxT("Start"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer31111->Add( gui_button_start, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxALL, 5 );
+
+
+	bSizer30->Add( bSizer31111, 0, wxEXPAND, 5 );
+
+	gui_console = new wxStyledTextCtrl( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString );
+	gui_console->SetUseTabs( true );
+	gui_console->SetTabWidth( 4 );
+	gui_console->SetIndent( 4 );
+	gui_console->SetTabIndents( true );
+	gui_console->SetBackSpaceUnIndents( true );
+	gui_console->SetViewEOL( false );
+	gui_console->SetViewWhiteSpace( false );
+	gui_console->SetMarginWidth( 2, 0 );
+	gui_console->SetIndentationGuides( true );
+	gui_console->SetMarginType( 1, wxSTC_MARGIN_SYMBOL );
+	gui_console->SetMarginMask( 1, wxSTC_MASK_FOLDERS );
+	gui_console->SetMarginWidth( 1, 16);
+	gui_console->SetMarginSensitive( 1, true );
+	gui_console->SetProperty( wxT("fold"), wxT("1") );
+	gui_console->SetFoldFlags( wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED );
+	gui_console->SetMarginType( 0, wxSTC_MARGIN_NUMBER );
+	gui_console->SetMarginWidth( 0, gui_console->TextWidth( wxSTC_STYLE_LINENUMBER, wxT("_99999") ) );
+	gui_console->MarkerDefine( wxSTC_MARKNUM_FOLDER, wxSTC_MARK_BOXPLUS );
+	gui_console->MarkerSetBackground( wxSTC_MARKNUM_FOLDER, wxColour( wxT("BLACK") ) );
+	gui_console->MarkerSetForeground( wxSTC_MARKNUM_FOLDER, wxColour( wxT("WHITE") ) );
+	gui_console->MarkerDefine( wxSTC_MARKNUM_FOLDEROPEN, wxSTC_MARK_BOXMINUS );
+	gui_console->MarkerSetBackground( wxSTC_MARKNUM_FOLDEROPEN, wxColour( wxT("BLACK") ) );
+	gui_console->MarkerSetForeground( wxSTC_MARKNUM_FOLDEROPEN, wxColour( wxT("WHITE") ) );
+	gui_console->MarkerDefine( wxSTC_MARKNUM_FOLDERSUB, wxSTC_MARK_EMPTY );
+	gui_console->MarkerDefine( wxSTC_MARKNUM_FOLDEREND, wxSTC_MARK_BOXPLUS );
+	gui_console->MarkerSetBackground( wxSTC_MARKNUM_FOLDEREND, wxColour( wxT("BLACK") ) );
+	gui_console->MarkerSetForeground( wxSTC_MARKNUM_FOLDEREND, wxColour( wxT("WHITE") ) );
+	gui_console->MarkerDefine( wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_BOXMINUS );
+	gui_console->MarkerSetBackground( wxSTC_MARKNUM_FOLDEROPENMID, wxColour( wxT("BLACK") ) );
+	gui_console->MarkerSetForeground( wxSTC_MARKNUM_FOLDEROPENMID, wxColour( wxT("WHITE") ) );
+	gui_console->MarkerDefine( wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY );
+	gui_console->MarkerDefine( wxSTC_MARKNUM_FOLDERTAIL, wxSTC_MARK_EMPTY );
+	gui_console->SetSelBackground( true, wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHT ) );
+	gui_console->SetSelForeground( true, wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHTTEXT ) );
+	bSizer30->Add( gui_console, 1, wxEXPAND | wxALL, 5 );
+
+
+	m_panel4->SetSizer( bSizer30 );
+	m_panel4->Layout();
+	bSizer30->Fit( m_panel4 );
+	bSizer10->Add( m_panel4, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( bSizer10 );
+	this->Layout();
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	gui_button_start->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( FilterFrame::OnStart ), NULL, this );
+}
+
+FilterFrame::~FilterFrame()
+{
+	// Disconnect Events
+	gui_button_start->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( FilterFrame::OnStart ), NULL, this );
 
 }

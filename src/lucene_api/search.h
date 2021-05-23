@@ -15,14 +15,17 @@ namespace lucene_api::internal {
         Lucene::TopScoreDocCollectorPtr collector_;
         Lucene::Collection<Lucene::ScoreDocPtr> hits_;
     public:
-        SearchResults(std::string index, std::wstring userquery);
+        SearchResults(std::wstring userquery, std::string index);
         ~SearchResults();
-        size_t Size();
-        double Score(size_t pos);
-        std::string Path(size_t);
-        std::string Name(size_t);
-        std::string Modified(size_t);
         std::wstring Content(size_t);
+        std::string Created(size_t);
+        std::string CreatedBy(size_t);
+        std::string Modified(size_t);
+        std::string ModifiedBy(size_t);
+        std::string Name(size_t);
+        std::string Path(size_t);
+        size_t Hits();
+        double Score(size_t pos);
     };
 }
 
