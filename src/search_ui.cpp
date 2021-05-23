@@ -1,6 +1,7 @@
 #include "search_ui.h"
 
 #include <wx/msgdlg.h>
+#include <nlohmann/json.hpp>
 
 #include "file_util/file_util.h"
 #include "lucene_api/api.h"
@@ -16,9 +17,18 @@
 #include "ui/resources/xls.xpm"
 #include "ui/resources/xlsx.xpm"
 
+/*
+    TODO:
+        - refactor settings into its own class rather than reading file from everywhere
+
+*/
+
+using nlohmann::json;
+
 SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 {
     LoadResources();
+    LoadIndexes();
 
     // Setup
     gui_text_view->SetWrapMode(1);
@@ -145,6 +155,25 @@ void SearchUI::PopErrorDialog(std::string msg)
     wxMessageDialog dial(NULL,
         error, wxT("Error"), wxOK | wxICON_ERROR);
     dial.ShowModal();
+}
+
+void SearchUI::LoadIndexes()
+{
+    file_util::ReadText("settings.json");
+    auto settings_txt = file_util::ReadText("settings.json");
+    if (!settings_txt->empty()) {
+        auto settings = json::parse(*settings_txt);
+        auto indexes = settings["indexes"];
+
+        for (size_t i = 0; i < indexes.size(); ++i) {
+            auto index_path = indexes[i]["index"].get<std::string>();
+            gui_choice_index->AppendString(index_path);
+        }
+    }
+
+    if (gui_choice_index->GetCount() == 0) {
+        gui_choice_index->AppendString("New...");
+    }
 }
 
 void SearchUI::LoadResources()

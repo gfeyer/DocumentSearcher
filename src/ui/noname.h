@@ -22,9 +22,10 @@
 #include <wx/menu.h>
 #include <wx/frame.h>
 #include <wx/panel.h>
+#include <wx/stattext.h>
+#include <wx/choice.h>
 #include <wx/button.h>
 #include <wx/combobox.h>
-#include <wx/stattext.h>
 #include <wx/dataview.h>
 #include <wx/srchctrl.h>
 #include <wx/stc/stc.h>
@@ -91,6 +92,8 @@ class SearchPanel : public wxPanel
 	private:
 
 	protected:
+		wxStaticText* m_staticText5;
+		wxChoice* gui_choice_index;
 		wxButton* gui_button_search;
 		wxComboBox* gui_search_query;
 		wxStaticText* gui_console;

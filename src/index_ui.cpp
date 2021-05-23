@@ -23,6 +23,8 @@ void FiltersUI::OnStart(wxCommandEvent& event)
     auto index = gui_index_dir->GetTextCtrlValue();
     auto name = gui_name->GetValue();
 
+    logger_info << index;
+
     if (source.empty() || index.empty() || name.empty()) {
         PopErrorDialog("Please complete all fields");
         return;
@@ -32,9 +34,9 @@ void FiltersUI::OnStart(wxCommandEvent& event)
 
     try {
         logger_info << "saving to settings";
-        auto cache_ptr = file_util::ReadText("settings.json");
-        if (!cache_ptr->empty()) {
-            auto settings = json::parse(*cache_ptr);
+        auto settings_txt = file_util::ReadText("settings.json");
+        if (!settings_txt->empty()) {
+            auto settings = json::parse(*settings_txt);
 
             settings["indexes"].push_back({
                 {"source",source}, 

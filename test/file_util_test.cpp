@@ -3,6 +3,9 @@
 #include "file_util/file_util.h"
 #include "file_util/file_util.cpp"
 
+#include "logger.h"
+#include "logger.cpp"
+
 TEST(file_util, EpochToDate) {
     EXPECT_EQ(file_util::EpochToDate("1621448661"), "2021-05-19");
 }

@@ -98,22 +98,35 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizer14;
 	bSizer14 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer19;
-	bSizer19 = new wxBoxSizer( wxHORIZONTAL );
+	wxFlexGridSizer* fgSizer1;
+	fgSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer1->AddGrowableCol( 1 );
+	fgSizer1->AddGrowableRow( 0 );
+	fgSizer1->SetFlexibleDirection( wxHORIZONTAL );
+	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
+
+	m_staticText5 = new wxStaticText( this, wxID_ANY, wxT("Index"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	m_staticText5->Wrap( -1 );
+	fgSizer1->Add( m_staticText5, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	wxArrayString gui_choice_indexChoices;
+	gui_choice_index = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, gui_choice_indexChoices, 0 );
+	gui_choice_index->SetSelection( 0 );
+	fgSizer1->Add( gui_choice_index, 14, wxALL|wxEXPAND, 5 );
 
 	gui_button_search = new wxButton( this, wxID_ANY, wxT("Search"), wxDefaultPosition, wxDefaultSize, 0 );
 	gui_button_search->SetToolTip( wxT("execute filter") );
 
-	bSizer19->Add( gui_button_search, 0, wxALL, 5 );
+	fgSizer1->Add( gui_button_search, 1, wxALL, 5 );
 
 	gui_search_query = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
 	gui_search_query->Append( wxT(".request") );
 	gui_search_query->SetToolTip( wxT("filter jq") );
 
-	bSizer19->Add( gui_search_query, 14, wxALL, 5 );
+	fgSizer1->Add( gui_search_query, 14, wxALL|wxEXPAND, 5 );
 
 
-	bSizer14->Add( bSizer19, 0, wxEXPAND, 5 );
+	bSizer14->Add( fgSizer1, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer81;
 	bSizer81 = new wxBoxSizer( wxHORIZONTAL );

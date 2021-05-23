@@ -22,6 +22,8 @@ private:
 	void OnKeyUpFilter(wxKeyEvent& event);
 
 	// Utility Functions
+	void AddIndex(std::string);
+	void LoadIndexes();
 	void LoadResources();
 	wxBitmap GetBitmapForExtension(std::string ext);
 
