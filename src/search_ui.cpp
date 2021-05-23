@@ -64,7 +64,6 @@ void SearchUI::NewSearch(std::string query, std::string index)
 
     gui_list_view->DeleteAllItems();
 
-    logger_info << "results size: " << results_->Hits();
     for (auto i = 0; i < results_->Hits(); ++i) {
         wxVector<wxVariant> data;
 
@@ -97,7 +96,9 @@ void SearchUI::OnDoubleClick(wxDataViewEvent& event)
     auto row = gui_list_view->GetSelectedRow();
     auto path = results_->Path(row);
     std::thread t([path]() {
-        system(path.c_str());
+        std::stringstream ss;
+        ss << "\"" << path << "\"";
+        system(ss.str().c_str());
     });
     t.detach();
 }

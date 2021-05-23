@@ -4,16 +4,13 @@
 namespace lucene_api::internal {
     using namespace Lucene;
 
+    const int32_t kMaxHits = 200;
+
+
     SearchResults::SearchResults(std::wstring userquery, std::string index) {
         // Search
         // String index = L"index";
         String field = FIELD_CONTENT;
-        String queries;
-        int32_t repeat = 0;
-        bool raw = false;
-        String normsField;
-        bool paging = true;
-        int32_t maxHits = 10;
     
         // only searching, so read-only=true
         reader_ = IndexReader::open(FSDirectory::open(utf8ToUtf16(index)), true);
@@ -33,7 +30,7 @@ namespace lucene_api::internal {
         //doPagingSearch(searcher, query, hitsPerPage);
     
         // Collect enough docs for maxHits
-        collector_ = TopScoreDocCollector::create(maxHits, false);
+        collector_ = TopScoreDocCollector::create(kMaxHits, false);
         searcher_->search(query, collector_);
         hits_ = collector_->topDocs()->scoreDocs;
     
