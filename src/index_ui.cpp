@@ -1,5 +1,6 @@
 #include "index_ui.h"
 
+#include <functional>
 #include <sstream>
 #include <wx/msgdlg.h>
 #include <nlohmann/json.hpp>
@@ -14,6 +15,11 @@ using json = nlohmann::json;
 FiltersUI::FiltersUI(wxWindow* parent) : FilterFrame(parent)
 {
     
+}
+
+void FiltersUI::AddCallbackOnCompleted(std::function<void()> callback)
+{
+    callback_ = callback;
 }
 
 void FiltersUI::OnStart(wxCommandEvent& event)
@@ -61,6 +67,11 @@ void FiltersUI::OnStart(wxCommandEvent& event)
             file_util::WriteText("settings.json", settings.dump(4));
         }
         logger_info << "settings saved";
+
+        // Handle callback if any
+        if (callback_) {
+            callback_();
+        }
     }
     catch (std::exception& e) {
         std::stringstream ss;

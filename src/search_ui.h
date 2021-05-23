@@ -17,7 +17,9 @@ private:
 
 	// Events
 	void OnDoubleClick(wxDataViewEvent& event);
-	void OnSelect(wxDataViewEvent& event);
+	void OnSelectResult(wxDataViewEvent& event);
+	void OnSelectIndex(wxCommandEvent& event);
+
 	void OnSearch(wxCommandEvent& event);
 	void OnKeyUpFilter(wxKeyEvent& event);
 

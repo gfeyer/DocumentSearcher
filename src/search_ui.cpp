@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 
 #include "file_util/file_util.h"
+#include "index_ui.h"
 #include "lucene_api/api.h"
 #include "logger.h"
 
@@ -54,12 +55,15 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->AppendTextColumn("Modified");
     
     //_setmode(_fileno(stdout), _O_U16TEXT);
-    auto source = "C:\\Users\\Vlad\\Documents\\temp\\source2";
-    auto index = "C:\\Users\\Vlad\\Documents\\temp\\index";
-    lucene_api::IndexDocs(source, index);
+    //auto source = "C:\\Users\\Vlad\\Documents\\temp\\source2";
+    //auto index = "C:\\Users\\Vlad\\Documents\\temp\\index";
+    //lucene_api::IndexDocs(source, index);
 
     // Perform basic search and get results
-    NewSearch("H4R*", index);
+    auto index = gui_choice_index->GetStringSelection();
+    if (!index.empty()) {
+        NewSearch("H4R*", index);
+    }
 }
 
 SearchUI::~SearchUI()
@@ -113,7 +117,7 @@ void SearchUI::OnDoubleClick(wxDataViewEvent& event)
     t.detach();
 }
 
-void SearchUI::OnSelect(wxDataViewEvent& event)
+void SearchUI::OnSelectResult(wxDataViewEvent& event)
 {
     auto row = gui_list_view->GetSelectedRow();
     if (row < 0) {
@@ -123,6 +127,19 @@ void SearchUI::OnSelect(wxDataViewEvent& event)
     auto content = results_->Content(row);
     //auto path = gui_list_view->GetTextValue(i, 1);
     gui_text_view->SetText(content);
+}
+
+void SearchUI::OnSelectIndex(wxCommandEvent& event)
+{
+    auto selection = gui_choice_index->GetStringSelection();
+    if (selection == "New...") {
+        auto ui_filters = new FiltersUI(this);
+        ui_filters->AddCallbackOnCompleted([this]() {
+            LoadIndexes();
+        });
+        ui_filters->Show();
+    }
+    
 }
 
 void SearchUI::OnSearch(wxCommandEvent& event)
@@ -161,6 +178,10 @@ void SearchUI::LoadIndexes()
 {
     file_util::ReadText("settings.json");
     auto settings_txt = file_util::ReadText("settings.json");
+
+    // Clear indexes/reloading
+    gui_choice_index->Clear();
+
     if (!settings_txt->empty()) {
         auto settings = json::parse(*settings_txt);
         auto indexes = settings["indexes"];
@@ -171,9 +192,12 @@ void SearchUI::LoadIndexes()
         }
     }
 
-    if (gui_choice_index->GetCount() == 0) {
-        gui_choice_index->AppendString("New...");
+    if (gui_choice_index->GetCount() > 0) {
+        gui_choice_index->SetSelection(0);
     }
+    
+    gui_choice_index->AppendString("New...");
+    
 }
 
 void SearchUI::LoadResources()
