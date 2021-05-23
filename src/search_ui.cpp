@@ -139,12 +139,11 @@ void SearchUI::OnSelectIndex(wxCommandEvent& event)
         });
         ui_filters->Show();
     }
-    
 }
 
 void SearchUI::OnSearch(wxCommandEvent& event)
 {
-    auto index = R"#(C:\Users\Vlad\Documents\temp\index)#";
+    auto index = gui_choice_index->GetStringSelection();
     std::string query = gui_search_query->GetValue();
     
     try {

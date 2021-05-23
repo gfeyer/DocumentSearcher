@@ -9,16 +9,9 @@ App::App(wxWindow* parent) : UIFrame(parent)
 	auinotebook->AddPage(search_panel_, wxT("Search"), false, wxNullBitmap);
 }
 
-void App::OnSelectMenuIndexNew(wxCommandEvent& event)
-{
-    auto ui_filters = new FiltersUI(this);
-    ui_filters->Show();
-}
-
 void App::OnSelectMenuIndexView(wxCommandEvent& event)
 {
-	auto ui_filters = new FiltersUI(this);
-	ui_filters->Show();
+	// TODO: open settings.json
 }
 
 void App::OnClose()
