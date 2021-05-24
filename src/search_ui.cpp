@@ -8,8 +8,9 @@
 
 #include "util/file_util.h"
 #include "util/gui_util.h"
-#include "index_ui.h"
+#include "util/word_util.h"
 #include "lucene_api/api.h"
+#include "index_ui.h"
 #include "logger.h"
 
 #include "ui/resources/filter.xpm"
@@ -139,8 +140,7 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
     // Clear previous results
     sizer->Clear();
 
-    // TODO: Get list of words to display
-    std::vector<std::string> words = {"H4R0K2","sold"};
+    std::vector<std::string> words = word_util::GetWords(gui_search_query->GetValue());
 
     // Display words in query as checkboxes
     for (auto w : words) {
