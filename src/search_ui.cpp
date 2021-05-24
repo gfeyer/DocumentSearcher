@@ -6,7 +6,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include "file_util/file_util.h"
+#include "util/file_util.h"
 #include "index_ui.h"
 #include "lucene_api/api.h"
 #include "logger.h"
