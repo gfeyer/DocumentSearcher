@@ -136,9 +136,7 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
     gui_text_view->SetText(content);
 
     auto sizer = gui_checkboxes->GetSizer();
-
-    // Clear previous results
-    sizer->Clear();
+    sizer->Clear(true);
 
     std::vector<std::string> words = word_util::GetWords(gui_search_query->GetValue());
 
