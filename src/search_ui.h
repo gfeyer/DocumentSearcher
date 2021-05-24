@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
+
+#include <wx/checkbox.h>
+
 #include "lucene_api/api.h"
 
 class SearchUI : public SearchPanel {
@@ -24,10 +27,11 @@ private:
 	void OnKeyUpFilter(wxKeyEvent& event);
 
 	// Utility Functions
-	void AddIndex(std::string);
 	void LoadIndexes();
 	void LoadResources();
 	wxBitmap GetBitmapForExtension(std::string ext);
+	void OnCheck(wxCommandEvent& event);
+	void OnCheck(wxCheckBox* checkbox);
 
 	void NewSearch(std::string, std::string);
 	void PopErrorDialog(std::string);

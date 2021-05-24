@@ -132,9 +132,24 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
 
     // TODO: Add checkboxes and colors
     auto sizer = gui_checkboxes->GetSizer();
-    auto m_checkBox1 = new wxCheckBox(gui_checkboxes, wxID_ANY, wxT("word(5)"), wxDefaultPosition, wxDefaultSize, 0);
-    sizer->Add(m_checkBox1, 0, wxALL, 5);
 
+    // Clear previous results
+    sizer->Clear();
+
+    // TODO: Get list of words to display
+    std::vector<std::string> words = {"H4R0K2","sold"};
+
+    // Display words in query as checkboxes
+    for (auto w : words) {
+        auto checkbox = new wxCheckBox(gui_checkboxes, wxID_ANY, w, wxDefaultPosition, wxDefaultSize, 0);
+        checkbox->SetValue(1);
+        sizer->Add(checkbox, 0, wxALL, 5);
+        checkbox->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(SearchUI::OnCheck), NULL, this);
+
+        OnCheck(checkbox);
+    }
+
+    // Perform a resize and autofit
     gui_checkboxes->Layout();
     sizer->Fit(gui_checkboxes);
     gui_checkboxes->GetParent()->Layout();
@@ -230,4 +245,15 @@ wxBitmap SearchUI::GetBitmapForExtension(std::string ext)
         return bitmaps_[ext];
     }
     return wxBitmap();
+}
+
+void SearchUI::OnCheck(wxCommandEvent& event)
+{
+    wxCheckBox* box = wxDynamicCast(event.GetEventObject(), wxCheckBox);
+    OnCheck(box);
+}
+
+void SearchUI::OnCheck(wxCheckBox* box)
+{
+    logger_info << "OnCheck: " << box->IsChecked() << ", " << box->GetLabelText();
 }
