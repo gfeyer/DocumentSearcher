@@ -50,6 +50,12 @@
     <ClCompile Include="src\util\file_util.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\gui_util.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\word_util.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lucene_api\search.h">
@@ -77,6 +83,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\util\file_util.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\gui_util.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\word_util.h">
       <Filter>src\util</Filter>
     </ClInclude>
   </ItemGroup>

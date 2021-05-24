@@ -29,6 +29,8 @@
     <ClCompile Include="src\lucene_api\search.cpp" />
     <ClCompile Include="src\ui\noname.cpp" />
     <ClCompile Include="src\util\file_util.cpp" />
+    <ClCompile Include="src\util\gui_util.cpp" />
+    <ClCompile Include="src\util\word_util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
@@ -40,6 +42,8 @@
     <ClInclude Include="src\lucene_api\search.h" />
     <ClInclude Include="src\ui\noname.h" />
     <ClInclude Include="src\util\file_util.h" />
+    <ClInclude Include="src\util\gui_util.h" />
+    <ClInclude Include="src\util\word_util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
