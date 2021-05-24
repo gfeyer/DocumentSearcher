@@ -4,6 +4,8 @@
 #include <wx/checkbox.h>
 #include <nlohmann/json.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include "file_util/file_util.h"
 #include "index_ui.h"
 #include "lucene_api/api.h"
@@ -26,6 +28,21 @@
 */
 
 using nlohmann::json;
+
+namespace colors {
+    const std::vector<wxColour> kHighlightColors = {
+        wxColour(255,111,140),
+        wxColour(223,29,108),
+        wxColour(175,0,0),
+        wxColour(238,102,10),
+        wxColour(255,163,21),
+        wxColour(0,15,179),
+        wxColour(243,11,54),
+        wxColour(138,43,226),
+        wxColour(218,250,40),
+        wxColour(15,241,206),
+    };
+}
 
 SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 {
@@ -130,7 +147,6 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
     auto content = results_->Content(row);
     gui_text_view->SetText(content);
 
-    // TODO: Add checkboxes and colors
     auto sizer = gui_checkboxes->GetSizer();
 
     // Clear previous results
@@ -256,4 +272,80 @@ void SearchUI::OnCheck(wxCommandEvent& event)
 void SearchUI::OnCheck(wxCheckBox* box)
 {
     logger_info << "OnCheck: " << box->IsChecked() << ", " << box->GetLabelText();
+
+    HighlightWord(box->GetLabelText());
+}
+
+void SearchUI::HighlightWord(std::string word)
+{
+    auto ctrl = gui_text_view;
+
+    if (word.size() < 3) {
+        return;
+    }
+
+    // Select highlight color
+    // simple hash: get first letter of word, convert to int and mod against the size of color vector
+    // and use the resulting color from the vector.
+    size_t idx = int(word[0]) % colors::kHighlightColors.size();
+    wxColour color = colors::kHighlightColors[idx];
+    SetColor(color, 8 + idx);
+
+    // Perform the search
+    std::string text = ctrl->GetText();
+
+    boost::algorithm::to_lower(text);
+    boost::algorithm::to_lower(word);
+
+    std::vector<size_t> positions; // holds all the positions that sub occurs within str
+    size_t pos = text.find(word, 0);
+    while (pos != std::string::npos)
+    {
+        positions.push_back(pos);
+        pos = text.find(word, pos + 1);
+    }
+
+    // no matches, exit
+    if (positions.empty()) {
+        return;
+    }
+
+    for (auto& p : positions) {
+        ctrl->IndicatorFillRange(p, word.size());
+    }
+
+    // selection
+    auto caret = ctrl->GetSelectionNCaret(0);
+    for (auto& p : positions) {
+        if (p > caret) {
+            auto anchor = p;
+            caret = p + word.size();
+
+            ctrl->SetAnchor(anchor);
+            ctrl->SetSelectionNCaret(0, caret);
+
+            ctrl->EnsureCaretVisible();
+            return;
+        }
+    }
+
+    // at this point, it means we reached the end. Scroll to beginning
+    auto anchor = positions[0];
+    ctrl->SetAnchor(anchor);
+    ctrl->SetSelectionNCaret(0, anchor + word.size());
+    ctrl->EnsureCaretVisible();
+}
+
+void SearchUI::SetColor(wxColour colour, int indicator)
+{
+    // indicator: can be between 8 and 32, sets color only for this indicator.
+
+    // highlight a word
+    gui_text_view->SetIndicatorCurrent(indicator);
+    //gui_text_view->IndicatorClearRange(0, gui_text_view->GetLength());
+    gui_text_view->IndicatorSetStyle(indicator, wxSTC_INDIC_STRAIGHTBOX);
+    gui_text_view->IndicatorSetUnder(indicator, true);
+    gui_text_view->IndicatorSetForeground(indicator, colour);
+    gui_text_view->IndicatorSetOutlineAlpha(indicator, 50);
+    gui_text_view->IndicatorSetAlpha(indicator, 50);
 }

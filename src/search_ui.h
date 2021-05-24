@@ -32,6 +32,8 @@ private:
 	wxBitmap GetBitmapForExtension(std::string ext);
 	void OnCheck(wxCommandEvent& event);
 	void OnCheck(wxCheckBox* checkbox);
+	void HighlightWord(std::string);
+	void SetColor(wxColour, int);
 
 	void NewSearch(std::string, std::string);
 	void PopErrorDialog(std::string);
