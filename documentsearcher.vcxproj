@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
-    <ClCompile Include="src\file_util\file_util.cpp" />
     <ClCompile Include="src\index_ui.cpp" />
     <ClCompile Include="src\search_ui.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -29,10 +28,12 @@
     <ClCompile Include="src\lucene_api\index.cpp" />
     <ClCompile Include="src\lucene_api\search.cpp" />
     <ClCompile Include="src\ui\noname.cpp" />
+    <ClCompile Include="src\util\file_util.cpp" />
+    <ClCompile Include="src\util\gui_util.cpp" />
+    <ClCompile Include="src\util\word_util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
-    <ClInclude Include="src\file_util\file_util.h" />
     <ClInclude Include="src\index_ui.h" />
     <ClInclude Include="src\search_ui.h" />
     <ClInclude Include="src\logger.h" />
@@ -40,6 +41,9 @@
     <ClInclude Include="src\lucene_api\api.h" />
     <ClInclude Include="src\lucene_api\search.h" />
     <ClInclude Include="src\ui\noname.h" />
+    <ClInclude Include="src\util\file_util.h" />
+    <ClInclude Include="src\util\gui_util.h" />
+    <ClInclude Include="src\util\word_util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

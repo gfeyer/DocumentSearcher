@@ -22,11 +22,11 @@
 #include <wx/menu.h>
 #include <wx/frame.h>
 #include <wx/panel.h>
+#include <wx/stattext.h>
+#include <wx/choice.h>
 #include <wx/button.h>
 #include <wx/combobox.h>
-#include <wx/stattext.h>
 #include <wx/dataview.h>
-#include <wx/srchctrl.h>
 #include <wx/stc/stc.h>
 #include <wx/splitter.h>
 #include <wx/filepicker.h>
@@ -91,6 +91,8 @@ class SearchPanel : public wxPanel
 	private:
 
 	protected:
+		wxStaticText* m_staticText5;
+		wxChoice* gui_choice_index;
 		wxButton* gui_button_search;
 		wxComboBox* gui_search_query;
 		wxStaticText* gui_console;
@@ -98,17 +100,15 @@ class SearchPanel : public wxPanel
 		wxPanel* m_panel5;
 		wxDataViewListCtrl* gui_list_view;
 		wxPanel* m_panel6;
-		wxSearchCtrl* gui_search;
+		wxPanel* gui_checkboxes;
 		wxStyledTextCtrl* gui_text_view;
 
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnSelectIndex( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSearch( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnKeyUpFilter( wxKeyEvent& event ) { event.Skip(); }
 		virtual void OnDoubleClick( wxDataViewEvent& event ) { event.Skip(); }
-		virtual void OnSelect( wxDataViewEvent& event ) { event.Skip(); }
-		virtual void OnDocSearchCancel( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnDocSearch( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnDocSearchPartial( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSelectResult( wxDataViewEvent& event ) { event.Skip(); }
 
 
 	public:

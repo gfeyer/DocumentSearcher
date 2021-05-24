@@ -11,3 +11,4 @@
 /test/packages.config
 /thirdparty/include/lucene++/out/
 /thirdparty/lib/
+/settings.json

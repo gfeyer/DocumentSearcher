@@ -1,11 +1,12 @@
 #include "index_ui.h"
 
+#include <functional>
 #include <sstream>
 #include <wx/msgdlg.h>
 #include <nlohmann/json.hpp>
 
 #include "app.h"
-#include "file_util/file_util.h"
+#include "util/file_util.h"
 #include "logger.h"
 
 using json = nlohmann::json;
@@ -16,12 +17,19 @@ FiltersUI::FiltersUI(wxWindow* parent) : FilterFrame(parent)
     
 }
 
+void FiltersUI::AddCallbackOnCompleted(std::function<void()> callback)
+{
+    callback_ = callback;
+}
+
 void FiltersUI::OnStart(wxCommandEvent& event)
 {
     // Index documents
     auto source = gui_source_dir->GetTextCtrlValue();
     auto index = gui_index_dir->GetTextCtrlValue();
     auto name = gui_name->GetValue();
+
+    logger_info << index;
 
     if (source.empty() || index.empty() || name.empty()) {
         PopErrorDialog("Please complete all fields");
@@ -32,9 +40,9 @@ void FiltersUI::OnStart(wxCommandEvent& event)
 
     try {
         logger_info << "saving to settings";
-        auto cache_ptr = file_util::ReadText("settings.json");
-        if (!cache_ptr->empty()) {
-            auto settings = json::parse(*cache_ptr);
+        auto settings_txt = file_util::ReadText("settings.json");
+        if (!settings_txt->empty()) {
+            auto settings = json::parse(*settings_txt);
 
             settings["indexes"].push_back({
                 {"source",source}, 
@@ -59,6 +67,11 @@ void FiltersUI::OnStart(wxCommandEvent& event)
             file_util::WriteText("settings.json", settings.dump(4));
         }
         logger_info << "settings saved";
+
+        // Handle callback if any
+        if (callback_) {
+            callback_();
+        }
     }
     catch (std::exception& e) {
         std::stringstream ss;

@@ -98,22 +98,35 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizer14;
 	bSizer14 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer19;
-	bSizer19 = new wxBoxSizer( wxHORIZONTAL );
+	wxFlexGridSizer* fgSizer1;
+	fgSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer1->AddGrowableCol( 1 );
+	fgSizer1->AddGrowableRow( 0 );
+	fgSizer1->SetFlexibleDirection( wxHORIZONTAL );
+	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
+
+	m_staticText5 = new wxStaticText( this, wxID_ANY, wxT("Index"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	m_staticText5->Wrap( -1 );
+	fgSizer1->Add( m_staticText5, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	wxArrayString gui_choice_indexChoices;
+	gui_choice_index = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, gui_choice_indexChoices, 0 );
+	gui_choice_index->SetSelection( 0 );
+	fgSizer1->Add( gui_choice_index, 14, wxALL|wxEXPAND, 5 );
 
 	gui_button_search = new wxButton( this, wxID_ANY, wxT("Search"), wxDefaultPosition, wxDefaultSize, 0 );
 	gui_button_search->SetToolTip( wxT("execute filter") );
 
-	bSizer19->Add( gui_button_search, 0, wxALL, 5 );
+	fgSizer1->Add( gui_button_search, 1, wxALL, 5 );
 
 	gui_search_query = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
 	gui_search_query->Append( wxT(".request") );
 	gui_search_query->SetToolTip( wxT("filter jq") );
 
-	bSizer19->Add( gui_search_query, 14, wxALL, 5 );
+	fgSizer1->Add( gui_search_query, 14, wxALL|wxEXPAND, 5 );
 
 
-	bSizer14->Add( bSizer19, 0, wxEXPAND, 5 );
+	bSizer14->Add( fgSizer1, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer81;
 	bSizer81 = new wxBoxSizer( wxHORIZONTAL );
@@ -146,18 +159,21 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizer23;
 	bSizer23 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer37;
-	bSizer37 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* sizer_checkbox;
+	sizer_checkbox = new wxBoxSizer( wxHORIZONTAL );
 
-	gui_search = new wxSearchCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	#ifndef __WXMAC__
-	gui_search->ShowSearchButton( true );
-	#endif
-	gui_search->ShowCancelButton( true );
-	bSizer37->Add( gui_search, 1, wxALL, 2 );
+	gui_checkboxes = new wxPanel( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer18;
+	bSizer18 = new wxBoxSizer( wxHORIZONTAL );
 
 
-	bSizer23->Add( bSizer37, 0, wxEXPAND, 5 );
+	gui_checkboxes->SetSizer( bSizer18 );
+	gui_checkboxes->Layout();
+	bSizer18->Fit( gui_checkboxes );
+	sizer_checkbox->Add( gui_checkboxes, 1, wxEXPAND | wxALL, 5 );
+
+
+	bSizer23->Add( sizer_checkbox, 0, wxEXPAND, 5 );
 
 	gui_text_view = new wxStyledTextCtrl( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString );
 	gui_text_view->SetUseTabs( true );
@@ -211,25 +227,21 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	this->Layout();
 
 	// Connect Events
+	gui_choice_index->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( SearchPanel::OnSelectIndex ), NULL, this );
 	gui_button_search->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
 	gui_search_query->Connect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
 	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( SearchPanel::OnDoubleClick ), NULL, this );
-	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelect ), NULL, this );
-	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( SearchPanel::OnDocSearchCancel ), NULL, this );
-	gui_search->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( SearchPanel::OnDocSearch ), NULL, this );
-	gui_search->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( SearchPanel::OnDocSearchPartial ), NULL, this );
+	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelectResult ), NULL, this );
 }
 
 SearchPanel::~SearchPanel()
 {
 	// Disconnect Events
+	gui_choice_index->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( SearchPanel::OnSelectIndex ), NULL, this );
 	gui_button_search->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
 	gui_search_query->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
 	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( SearchPanel::OnDoubleClick ), NULL, this );
-	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelect ), NULL, this );
-	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( SearchPanel::OnDocSearchCancel ), NULL, this );
-	gui_search->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( SearchPanel::OnDocSearch ), NULL, this );
-	gui_search->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( SearchPanel::OnDocSearchPartial ), NULL, this );
+	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( SearchPanel::OnSelectResult ), NULL, this );
 
 }
 
