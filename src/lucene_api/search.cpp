@@ -1,5 +1,6 @@
 #include "api.h"
 #include "search.h"
+#include <vector>
 
 namespace lucene_api::internal {
     using namespace Lucene;
@@ -7,14 +8,23 @@ namespace lucene_api::internal {
     const int32_t kMaxHits = 200;
 
 
-    SearchResults::SearchResults(std::wstring userquery, std::string index) {
+    SearchResults::SearchResults(std::wstring userquery, std::vector<std::string> indexes) {
         // Search
         // String index = L"index";
         String field = FIELD_CONTENT;
-    
+
+        Collection<IndexReaderPtr> readers(Collection<IndexReaderPtr>::newInstance(0));
+
+        for (auto index : indexes) {
+            auto reader = IndexReader::open(FSDirectory::open(utf8ToUtf16(index)), true);
+            readers.add(reader);
+        }
+
+        reader_ = newLucene<MultiReader>(readers);
+
         // only searching, so read-only=true
-        reader_ = IndexReader::open(FSDirectory::open(utf8ToUtf16(index)), true);
-        searcher_ = newLucene<IndexSearcher>(reader_);
+        searcher_ = newLucene<IndexSearcher>(reader_);        
+
         AnalyzerPtr analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_CURRENT);
         QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_CURRENT, field, analyzer);
     

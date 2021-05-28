@@ -10,10 +10,13 @@
 #include <wx/wx.h>
 #endif
 #include "ui/noname.h"
-
 #include "logger.h"
-
 #include "app.h"
+
+/*
+TODO:
+	- use multireader for multiple indexes
+*/
 
 class MainApp : public wxApp
 {

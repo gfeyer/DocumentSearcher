@@ -10,6 +10,7 @@
 #endif
 
 #include <memory>
+#include <vector>
 
 #include "LuceneHeaders.h"
 
@@ -29,7 +30,7 @@ namespace lucene_api {
         virtual double Score(size_t) = 0;
     };
 
-    std::shared_ptr<IResults> NewSearch(std::string query, std::string index);
+    std::shared_ptr<IResults> NewSearch(std::string query, std::vector<std::string> indexes);
 
     // Interface for indexing directory and updating the index
     int IndexDocs(std::string source, std::string index);

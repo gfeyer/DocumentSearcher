@@ -80,7 +80,8 @@ void SearchUI::NewSearch(std::string query, std::string index)
 {
     // clear any locks on the index
     //results_ = nullptr;
-    results_ = lucene_api::NewSearch(query, index);
+    // TODO: -> add multiple indexes instead of jsut one { index }
+    results_ = lucene_api::NewSearch(query, { index });
 
     gui_list_view->DeleteAllItems();
 
