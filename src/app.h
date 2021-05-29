@@ -22,6 +22,7 @@ private:
     SearchUI* search_panel_;
     // Event handlers
     void OnSelectMenuIndexView(wxCommandEvent& event);
+    void OnSelectMenuIndexNew(wxCommandEvent& event);
 
     // Closing & Cleanup
     void OnClose();

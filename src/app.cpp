@@ -11,7 +11,12 @@ App::App(wxWindow* parent) : UIFrame(parent)
 
 void App::OnSelectMenuIndexView(wxCommandEvent& event)
 {
-	// TODO: open settings.json
+	
+}
+
+void App::OnSelectMenuIndexNew(wxCommandEvent& event)
+{
+	search_panel_->OnNewIndex();
 }
 
 void App::OnClose()

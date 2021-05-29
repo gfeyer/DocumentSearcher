@@ -3,9 +3,10 @@
 
 #include "ui/noname.h"
 
-#include <unordered_map>
 #include <memory>
 #include <string>
+#include <vector>
+#include <tuple>
 
 #include <wx/checkbox.h>
 
@@ -14,6 +15,7 @@
 class SearchUI : public SearchPanel {
 public:
 	SearchUI(wxWindow* window);
+	void OnNewIndex();
 	~SearchUI();
 
 private:
@@ -21,7 +23,6 @@ private:
 	// Events
 	void OnDoubleClick(wxDataViewEvent& event);
 	void OnSelectResult(wxDataViewEvent& event);
-	void OnSelectIndex(wxCommandEvent& event);
 
 	void OnSearch(wxCommandEvent& event);
 	void OnKeyUpFilter(wxKeyEvent& event);
@@ -34,10 +35,13 @@ private:
 	void OnCheck(wxCheckBox* checkbox);
 	void SetColor(wxColour, int);
 
-	void NewSearch(std::string, std::string);
+	void NewSearch(std::string, std::vector<std::string>);
 	void PopErrorDialog(std::string);
 
 	// Session data
+	std::unordered_map<std::string, std::string> index_name_to_path_;
+	std::unordered_map<std::string, wxCheckBox*> index_name_to_checkbox_;
+
 	std::shared_ptr<lucene_api::IResults> results_;
 
 	// Preloaded bitmaps storage

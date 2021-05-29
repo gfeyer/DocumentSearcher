@@ -15,7 +15,10 @@
 
 /*
 TODO:
-	- use multireader for multiple indexes
+	- Update GUI when doing index (right now only prints in log)
+	- Word checkboxes: only create once on new search and use them throughout the session.
+	- Refactor settings into its own class rather than reading file from everywhere
+	- Menu->Index->View: open settings.json
 */
 
 class MainApp : public wxApp

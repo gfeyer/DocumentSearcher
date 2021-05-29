@@ -105,14 +105,19 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	fgSizer1->SetFlexibleDirection( wxHORIZONTAL );
 	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
 
-	m_staticText5 = new wxStaticText( this, wxID_ANY, wxT("Index"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	m_staticText5 = new wxStaticText( this, wxID_ANY, wxT("Indexes"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	m_staticText5->Wrap( -1 );
 	fgSizer1->Add( m_staticText5, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	wxArrayString gui_choice_indexChoices;
-	gui_choice_index = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, gui_choice_indexChoices, 0 );
-	gui_choice_index->SetSelection( 0 );
-	fgSizer1->Add( gui_choice_index, 14, wxALL|wxEXPAND, 5 );
+	gui_panel_indexes = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer181;
+	bSizer181 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	gui_panel_indexes->SetSizer( bSizer181 );
+	gui_panel_indexes->Layout();
+	bSizer181->Fit( gui_panel_indexes );
+	fgSizer1->Add( gui_panel_indexes, 1, wxEXPAND | wxALL, 5 );
 
 	gui_button_search = new wxButton( this, wxID_ANY, wxT("Search"), wxDefaultPosition, wxDefaultSize, 0 );
 	gui_button_search->SetToolTip( wxT("execute filter") );
@@ -162,15 +167,15 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* sizer_checkbox;
 	sizer_checkbox = new wxBoxSizer( wxHORIZONTAL );
 
-	gui_checkboxes = new wxPanel( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	gui_panel_selected_words = new wxPanel( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer18;
 	bSizer18 = new wxBoxSizer( wxHORIZONTAL );
 
 
-	gui_checkboxes->SetSizer( bSizer18 );
-	gui_checkboxes->Layout();
-	bSizer18->Fit( gui_checkboxes );
-	sizer_checkbox->Add( gui_checkboxes, 1, wxEXPAND | wxALL, 5 );
+	gui_panel_selected_words->SetSizer( bSizer18 );
+	gui_panel_selected_words->Layout();
+	bSizer18->Fit( gui_panel_selected_words );
+	sizer_checkbox->Add( gui_panel_selected_words, 1, wxEXPAND | wxALL, 5 );
 
 
 	bSizer23->Add( sizer_checkbox, 0, wxEXPAND, 5 );
@@ -227,7 +232,6 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	this->Layout();
 
 	// Connect Events
-	gui_choice_index->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( SearchPanel::OnSelectIndex ), NULL, this );
 	gui_button_search->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
 	gui_search_query->Connect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
 	gui_list_view->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( SearchPanel::OnDoubleClick ), NULL, this );
@@ -237,7 +241,6 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 SearchPanel::~SearchPanel()
 {
 	// Disconnect Events
-	gui_choice_index->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( SearchPanel::OnSelectIndex ), NULL, this );
 	gui_button_search->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SearchPanel::OnSearch ), NULL, this );
 	gui_search_query->Disconnect( wxEVT_KEY_UP, wxKeyEventHandler( SearchPanel::OnKeyUpFilter ), NULL, this );
 	gui_list_view->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEventHandler( SearchPanel::OnDoubleClick ), NULL, this );

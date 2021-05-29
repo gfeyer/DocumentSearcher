@@ -23,7 +23,6 @@
 #include <wx/frame.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>
-#include <wx/choice.h>
 #include <wx/button.h>
 #include <wx/combobox.h>
 #include <wx/dataview.h>
@@ -59,7 +58,7 @@ class UIFrame : public wxFrame
 
 	public:
 
-		UIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("KafkaDesktopClient X.Y"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 900,600 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		UIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("DocumentSearcher"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 900,600 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~UIFrame();
 
@@ -92,7 +91,7 @@ class SearchPanel : public wxPanel
 
 	protected:
 		wxStaticText* m_staticText5;
-		wxChoice* gui_choice_index;
+		wxPanel* gui_panel_indexes;
 		wxButton* gui_button_search;
 		wxComboBox* gui_search_query;
 		wxStaticText* gui_console;
@@ -100,11 +99,10 @@ class SearchPanel : public wxPanel
 		wxPanel* m_panel5;
 		wxDataViewListCtrl* gui_list_view;
 		wxPanel* m_panel6;
-		wxPanel* gui_checkboxes;
+		wxPanel* gui_panel_selected_words;
 		wxStyledTextCtrl* gui_text_view;
 
 		// Virtual event handlers, overide them in your derived class
-		virtual void OnSelectIndex( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSearch( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnKeyUpFilter( wxKeyEvent& event ) { event.Skip(); }
 		virtual void OnDoubleClick( wxDataViewEvent& event ) { event.Skip(); }
