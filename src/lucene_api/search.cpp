@@ -5,7 +5,7 @@
 namespace lucene_api::internal {
     using namespace Lucene;
 
-    const int32_t kMaxHits = 200;
+    const int32_t kMaxHits = 2000;
 
 
     SearchResults::SearchResults(std::wstring userquery, std::vector<std::string> indexes) {

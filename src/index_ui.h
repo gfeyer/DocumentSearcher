@@ -4,6 +4,9 @@
 #include "ui/noname.h"
 
 #include <functional>
+#include <memory>
+
+#include "scheduler.h"
 
 class FiltersUI : public FilterFrame
 {
@@ -18,6 +21,9 @@ private:
 
 	// Callback
 	std::function<void()> callback_;
+
+	// Scheduler for calling function on main thread
+	std::shared_ptr<Scheduler> scheduler_;
 };
 
 

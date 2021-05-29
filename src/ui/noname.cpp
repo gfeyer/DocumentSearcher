@@ -266,7 +266,7 @@ FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText13->Wrap( -1 );
 	bSizer31->Add( m_staticText13, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	gui_source_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("C:\\Users\\Vlad\\Documents\\temp\\source"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	gui_source_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("C:\\Users\\Vlad\\Documents\\temp\\source_large"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
 	bSizer31->Add( gui_source_dir, 5, wxALL, 5 );
 
 
@@ -279,7 +279,7 @@ FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText131->Wrap( -1 );
 	bSizer311->Add( m_staticText131, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	gui_index_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("C:\\Users\\Vlad\\Documents\\temp\\index"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	gui_index_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("C:\\Users\\Vlad\\Documents\\temp\\index_large"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
 	bSizer311->Add( gui_index_dir, 5, wxALL, 5 );
 
 
@@ -292,7 +292,7 @@ FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText1311->Wrap( -1 );
 	bSizer3111->Add( m_staticText1311, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	gui_name = new wxTextCtrl( m_panel4, wxID_ANY, wxT("a1"), wxDefaultPosition, wxDefaultSize, 0 );
+	gui_name = new wxTextCtrl( m_panel4, wxID_ANY, wxT("large_archive"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer3111->Add( gui_name, 5, wxALL, 5 );
 
 
@@ -311,20 +311,14 @@ FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	gui_console->SetUseTabs( true );
 	gui_console->SetTabWidth( 4 );
 	gui_console->SetIndent( 4 );
-	gui_console->SetTabIndents( true );
-	gui_console->SetBackSpaceUnIndents( true );
+	gui_console->SetTabIndents( false );
+	gui_console->SetBackSpaceUnIndents( false );
 	gui_console->SetViewEOL( false );
 	gui_console->SetViewWhiteSpace( false );
 	gui_console->SetMarginWidth( 2, 0 );
-	gui_console->SetIndentationGuides( true );
-	gui_console->SetMarginType( 1, wxSTC_MARGIN_SYMBOL );
-	gui_console->SetMarginMask( 1, wxSTC_MASK_FOLDERS );
-	gui_console->SetMarginWidth( 1, 16);
-	gui_console->SetMarginSensitive( 1, true );
-	gui_console->SetProperty( wxT("fold"), wxT("1") );
-	gui_console->SetFoldFlags( wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED );
-	gui_console->SetMarginType( 0, wxSTC_MARGIN_NUMBER );
-	gui_console->SetMarginWidth( 0, gui_console->TextWidth( wxSTC_STYLE_LINENUMBER, wxT("_99999") ) );
+	gui_console->SetIndentationGuides( false );
+	gui_console->SetMarginWidth( 1, 0 );
+	gui_console->SetMarginWidth( 0, 0 );
 	gui_console->MarkerDefine( wxSTC_MARKNUM_FOLDER, wxSTC_MARK_BOXPLUS );
 	gui_console->MarkerSetBackground( wxSTC_MARKNUM_FOLDER, wxColour( wxT("BLACK") ) );
 	gui_console->MarkerSetForeground( wxSTC_MARKNUM_FOLDER, wxColour( wxT("WHITE") ) );

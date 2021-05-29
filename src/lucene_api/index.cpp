@@ -1,8 +1,9 @@
 #include "api.h"
 #include "index.h"
 
-#include "../util/file_util.h"
+#include <functional>
 
+#include "../util/file_util.h"
 
 
 namespace lucene_api::internal {
@@ -33,7 +34,7 @@ namespace lucene_api::internal {
         return doc;
     }
     
-    void IndexDocsWithWriter(const Lucene::IndexWriterPtr& writer, const Lucene::String& sourceDir) {
+    void IndexDocsWithWriter(const Lucene::IndexWriterPtr& writer, const Lucene::String& sourceDir, std::function<void(std::wstring)> callback) {
     
         HashSet<String> dirList(HashSet<String>::newInstance());
         if (!FileUtils::listDirectory(sourceDir, false, dirList)) {
@@ -41,13 +42,18 @@ namespace lucene_api::internal {
         }
     
         for (HashSet<String>::iterator dirFile = dirList.begin(); dirFile != dirList.end(); ++dirFile) {
-            String docFile(FileUtils::joinPath(sourceDir, *dirFile));
+            
+            auto path = FileUtils::joinPath(sourceDir, *dirFile);
+            String docFile(path);
             if (FileUtils::isDirectory(docFile)) {
-                IndexDocsWithWriter(writer, docFile);
+                IndexDocsWithWriter(writer, docFile, callback);
             }
             else {
-                std::wcout << L"Adding [" << ++docNumber << L"]: " << *dirFile << L"\n";
-    
+                //std::wcout << L"Adding [" << ++docNumber << L"]: " << *dirFile << L"\n";
+                std::wstringstream ss;
+                ss << L"Adding [" << ++docNumber << L"]: " << path << L"\n";
+                callback(ss.str());
+                
                 try {
                     //std::wcout << L"addDocument->\n";
                     auto fdoc = fileDocument(docFile);
@@ -62,7 +68,7 @@ namespace lucene_api::internal {
 }
 
 namespace lucene_api {
-    int IndexDocs(std::string source, std::string index) {
+    int IndexDocs(std::string source, std::string index, std::function<void(std::wstring)> callback) {
         using namespace Lucene;
         String sourceDir(StringUtils::toUnicode(source));
         String indexDir(StringUtils::toUnicode(index));
@@ -90,7 +96,7 @@ namespace lucene_api {
 
             std::wcout << L"Indexing to directory: " << indexDir << L"...\n";
 
-            internal::IndexDocsWithWriter(writer, sourceDir);
+            internal::IndexDocsWithWriter(writer, sourceDir, callback);
 
             uint64_t endIndex = MiscUtils::currentTimeMillis();
             uint64_t indexDuration = endIndex - beginIndex;

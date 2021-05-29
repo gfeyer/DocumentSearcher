@@ -9,6 +9,7 @@
 #define NOMINMAX
 #endif
 
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -33,7 +34,7 @@ namespace lucene_api {
     std::shared_ptr<IResults> NewSearch(std::string query, std::vector<std::string> indexes);
 
     // Interface for indexing directory and updating the index
-    int IndexDocs(std::string source, std::string index);
+    int IndexDocs(std::string source, std::string index, std::function<void(std::wstring)>);
     int UpdateDocs(std::string source, std::string index);
 
     // Utility functions
