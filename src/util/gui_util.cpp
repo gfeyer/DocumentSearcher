@@ -70,6 +70,23 @@ void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clea
     ctrl->EnsureCaretVisible();
 }
 
+void gui_util::ScrollToFirstOccurence(std::vector<std::string> words, wxStyledTextCtrl* ctrl)
+{
+    auto text = ctrl->GetText();
+    size_t min = 0;
+    for (auto word : words) {
+        std::size_t found = text.find(word);
+        if (found != std::string::npos) {
+            if (min > found) {
+                min = found;
+            }
+        }
+    }
+
+    ctrl->SetCurrentPos(min);
+    ctrl->HideSelection(true);
+}
+
 void gui_util::SetColor(wxColour color, int indicator, wxStyledTextCtrl* ctrl)
 {
     // indicator: can be between 8 and 32, sets color only for this indicator.

@@ -30,7 +30,7 @@ namespace lucene_api::internal {
 
         // Add file contents:
         doc->add(newLucene<Field>(FIELD_CONTENT, fileDoc->Content(), Field::STORE_YES, Field::INDEX_ANALYZED));
-    
+        
         return doc;
     }
     

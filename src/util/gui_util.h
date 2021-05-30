@@ -2,10 +2,12 @@
 #define GUI_UTIL_H_
 
 #include <string>
+#include <vector>
 #include <wx/stc/stc.h>
 
 namespace gui_util {
 	void HighlightWord(std::string, wxStyledTextCtrl*, bool clear = false);
+	void ScrollToFirstOccurence(std::vector<std::string>, wxStyledTextCtrl*);
 	void SetColor(wxColour, int, wxStyledTextCtrl*);
 
     const std::vector<wxColour> kHighlightColors = {

@@ -27,12 +27,15 @@ private:
 	void OnSearch(wxCommandEvent& event);
 	void OnKeyUpFilter(wxKeyEvent& event);
 
+	void OnCheck(wxCommandEvent& event);
+	void OnCheck(wxCheckBox* checkbox);
+
 	// Utility Functions
 	void LoadIndexes();
 	void LoadResources();
+	void ClearSearchSession();
 	wxBitmap GetBitmapForExtension(std::string ext);
-	void OnCheck(wxCommandEvent& event);
-	void OnCheck(wxCheckBox* checkbox);
+
 	void SetColor(wxColour, int);
 
 	void NewSearch(std::string, std::vector<std::string>);

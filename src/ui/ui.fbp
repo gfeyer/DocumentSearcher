@@ -1272,7 +1272,7 @@
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
                                             <property name="validator_variable"></property>
-                                            <property name="value">C:\Users\Vlad\Documents\temp\source_large</property>
+                                            <property name="value">C:\Users\Vlad\Documents\temp\docs</property>
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>
@@ -1408,7 +1408,7 @@
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
                                             <property name="validator_variable"></property>
-                                            <property name="value">C:\Users\Vlad\Documents\temp\index_large</property>
+                                            <property name="value">C:\Users\Vlad\Documents\temp\index_docs</property>
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>
@@ -1544,7 +1544,7 @@
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
                                             <property name="validator_variable"></property>
-                                            <property name="value">large_archive</property>
+                                            <property name="value">docs</property>
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>

@@ -68,26 +68,55 @@ namespace file_util {
         return L"";
     }
     std::wstring FileDoc::DateCreated() {
+        std::cout << "Reading DateCreated from: " << path << std::endl;
         if (metadata != NULL) {
+            
             char date[64];
-            strftime(date, 64, "%Y-%m-%d", doctotext_metadata_creation_date(metadata));
+            memset(date, 0, sizeof date);
+            auto tm_ptr = doctotext_metadata_creation_date(metadata);
+            
+            if (!IsTimeValid(tm_ptr)) {
+                return L"";
+            }
+            
+            strftime(date, 64, "%Y-%m-%d", tm_ptr);
+            std::cout << "Using date: " << date << std::endl;
             wxString wstr(date);
             return wstr;
+           
         }
         return L"";
     }
     std::wstring FileDoc::DateModified() {
         if (metadata != NULL) {
             char date[64];
-            strftime(date, 64, "%Y-%m-%d", doctotext_metadata_last_modification_date(metadata));
+            auto tm_ptr = doctotext_metadata_last_modification_date(metadata);
+
+            if (!IsTimeValid(tm_ptr)) {
+                return L"";
+            }
+
+            strftime(date, 64, "%Y-%m-%d", tm_ptr);
             wxString wstr(date);
             return wstr;
         }
         return L"";
     }
 
+    bool FileDoc::IsTimeValid(const tm* tm_ptr)
+    {
+        if (tm_ptr->tm_year<0 || tm_ptr->tm_year > 200 ||
+            tm_ptr->tm_mon < 0 || tm_ptr->tm_mon > 12 ||
+            tm_ptr->tm_mday < 0 || tm_ptr->tm_mday > 31) {
+            return false;
+        }
+
+        return true;
+    }
+
     FileDoc::~FileDoc() {
         // Release pointers
+        std::wcout << "releasing pointer: " << path << std::endl;
         doctotext_free_extractor_params(params);
         doctotext_free_formatting_style(style);
         doctotext_free_metadata(metadata);
