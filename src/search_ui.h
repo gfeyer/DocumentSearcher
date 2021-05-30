@@ -41,6 +41,7 @@ private:
 	// Session data
 	std::unordered_map<std::string, std::string> index_name_to_path_;
 	std::unordered_map<std::string, wxCheckBox*> index_name_to_checkbox_;
+	std::unordered_map<std::string, wxCheckBox*> searchword_to_checkbox_;
 
 	std::shared_ptr<lucene_api::IResults> results_;
 

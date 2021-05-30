@@ -70,6 +70,7 @@ void SearchUI::NewSearch(std::string query, std::vector<std::string> indexes)
     
     results_ = lucene_api::NewSearch(query, indexes);
 
+    // Populate results
     gui_list_view->DeleteAllItems();
 
     for (auto i = 0; i < results_->Hits(); ++i) {
@@ -97,6 +98,33 @@ void SearchUI::NewSearch(std::string query, std::vector<std::string> indexes)
 
         gui_list_view->AppendItem(data);
     }
+
+    // Create checkboxes
+    
+    auto sizer = gui_panel_selected_words->GetSizer();
+    sizer->Clear(true);
+    searchword_to_checkbox_.clear();
+
+    std::vector<std::string> words = word_util::GetWords(gui_search_query->GetValue());
+    for (auto& w : words) {
+        logger_info << w;
+    }
+
+    // Display words in query as checkboxes
+    for (auto w : words) {
+        auto checkbox = new wxCheckBox(gui_panel_selected_words, wxID_ANY, w, wxDefaultPosition, wxDefaultSize, 0);
+        checkbox->SetValue(1);
+        sizer->Add(checkbox, 0, wxALL, 5);
+        checkbox->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(SearchUI::OnCheck), NULL, this);
+
+        OnCheck(checkbox);
+    }
+
+    // Perform a resize and autofit
+    gui_panel_selected_words->Layout();
+    sizer->Fit(gui_panel_selected_words);
+    gui_panel_selected_words->GetParent()->Layout();
+    this->Layout();
 }
 
 void SearchUI::OnDoubleClick(wxDataViewEvent& event)
@@ -122,27 +150,6 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
     // Populate text content
     auto content = results_->Content(row);
     gui_text_view->SetText(content);
-
-    auto sizer = gui_panel_selected_words->GetSizer();
-    sizer->Clear(true);
-
-    std::vector<std::string> words = word_util::GetWords(gui_search_query->GetValue());
-
-    // Display words in query as checkboxes
-    for (auto w : words) {
-        auto checkbox = new wxCheckBox(gui_panel_selected_words, wxID_ANY, w, wxDefaultPosition, wxDefaultSize, 0);
-        checkbox->SetValue(1);
-        sizer->Add(checkbox, 0, wxALL, 5);
-        checkbox->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(SearchUI::OnCheck), NULL, this);
-
-        OnCheck(checkbox);
-    }
-
-    // Perform a resize and autofit
-    gui_panel_selected_words->Layout();
-    sizer->Fit(gui_panel_selected_words);
-    gui_panel_selected_words->GetParent()->Layout();
-    this->Layout();
 }
 
 void SearchUI::OnNewIndex()
