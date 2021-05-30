@@ -11,7 +11,13 @@ App::App(wxWindow* parent) : UIFrame(parent)
 
 void App::OnSelectMenuIndexView(wxCommandEvent& event)
 {
-	
+    auto path = "settings.json";
+    std::thread t([path]() {
+        std::stringstream ss;
+        ss << "\"" << path << "\"";
+        system(ss.str().c_str());
+    });
+    t.detach();
 }
 
 void App::OnSelectMenuIndexNew(wxCommandEvent& event)
