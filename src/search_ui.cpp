@@ -54,7 +54,7 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->AppendTextColumn("Modified");
 
     // temporary
-    NewSearch("H4R0K2 document sold giennes", { "C:\\Users\\Vlad\\Documents\\temp\\index" });
+    NewSearch("wikipedia ", { "C:\\Users\\Vlad\\Documents\\temp\\index_docs" });
 }
 
 SearchUI::~SearchUI()

@@ -2,6 +2,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include "../logger.h"
+
 void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clear)
 {
 
@@ -26,18 +28,18 @@ void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clea
     SetColor(color, 8 + idx, ctrl); // set color for indicator for control view
 
     // Perform the search
-    std::string text = ctrl->GetText();
 
-    boost::algorithm::to_lower(text);
-    boost::algorithm::to_lower(word);
+    std::vector<int> positions; // holds all the positions that sub occurs within str
 
-    std::vector<size_t> positions; // holds all the positions that sub occurs within str
-    size_t pos = text.find(word, 0);
-    while (pos != std::string::npos)
+    wxString wword(word);
+    int pos = ctrl->FindText(0, 3000, wword);
+
+    while (pos != -1)
     {
         positions.push_back(pos);
-        pos = text.find(word, pos + 1);
+        pos = ctrl->FindText(pos + wword.size(), ctrl->GetLastPosition(), L"Wikipedia");
     }
+
 
     // no matches, exit
     if (positions.empty()) {
