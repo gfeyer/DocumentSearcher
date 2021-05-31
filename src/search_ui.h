@@ -12,6 +12,8 @@
 
 #include "lucene_api/api.h"
 
+#include "scheduler.h"
+
 class SearchUI : public SearchPanel {
 public:
 	SearchUI(wxWindow* window);
@@ -50,6 +52,9 @@ private:
 
 	// Preloaded bitmaps storage
 	std::unordered_map<std::string, wxBitmap> bitmaps_;
+
+	// Scheduler for calling function on main thread
+	std::shared_ptr<Scheduler> scheduler_;
 
 };
 #endif // SEARCH_UI_H

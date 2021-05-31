@@ -6,6 +6,7 @@
 #include <wx/stc/stc.h>
 
 namespace gui_util {
+    std::vector<int> FindWordOccurences(wxStyledTextCtrl*, std::string);
 	void HighlightWord(std::string, wxStyledTextCtrl*, bool clear = false);
 	void ScrollToFirstOccurence(std::vector<std::string>, wxStyledTextCtrl*);
 	void SetColor(wxColour, int, wxStyledTextCtrl*);

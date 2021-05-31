@@ -181,15 +181,15 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	bSizer23->Add( sizer_checkbox, 0, wxEXPAND, 5 );
 
 	gui_text_view = new wxStyledTextCtrl( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString );
-	gui_text_view->SetUseTabs( true );
+	gui_text_view->SetUseTabs( false );
 	gui_text_view->SetTabWidth( 4 );
 	gui_text_view->SetIndent( 4 );
-	gui_text_view->SetTabIndents( true );
-	gui_text_view->SetBackSpaceUnIndents( true );
+	gui_text_view->SetTabIndents( false );
+	gui_text_view->SetBackSpaceUnIndents( false );
 	gui_text_view->SetViewEOL( false );
 	gui_text_view->SetViewWhiteSpace( false );
 	gui_text_view->SetMarginWidth( 2, 0 );
-	gui_text_view->SetIndentationGuides( true );
+	gui_text_view->SetIndentationGuides( false );
 	gui_text_view->SetMarginType( 1, wxSTC_MARGIN_SYMBOL );
 	gui_text_view->SetMarginMask( 1, wxSTC_MASK_FOLDERS );
 	gui_text_view->SetMarginWidth( 1, 16);

@@ -1,5 +1,7 @@
 #include "search_ui.h"
 
+#include <memory>
+
 #include <wx/msgdlg.h>
 #include <wx/checkbox.h>
 #include <nlohmann/json.hpp>
@@ -12,6 +14,7 @@
 #include "lucene_api/api.h"
 #include "index_ui.h"
 #include "logger.h"
+#include "scheduler.h"
 
 #include "ui/resources/filter.xpm"
 #include "ui/resources/csv.xpm"
@@ -27,6 +30,10 @@ using nlohmann::json;
 
 SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 {
+    // Create sacheduler for X miliseconds
+    scheduler_ = std::make_shared<Scheduler>(200);
+
+
     LoadResources();
     LoadIndexes();
 
@@ -163,7 +170,9 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
     }
 
     // Scroll to first result
-    gui_util::ScrollToFirstOccurence(selected_words, gui_text_view);
+    scheduler_->CallLaterOnMainThread([this, selected_words]() {
+        gui_util::ScrollToFirstOccurence(selected_words, gui_text_view);
+    });
 }
 
 void SearchUI::OnNewIndex()

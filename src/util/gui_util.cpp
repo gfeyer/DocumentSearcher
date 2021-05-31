@@ -4,6 +4,22 @@
 
 #include "../logger.h"
 
+std::vector<int> gui_util::FindWordOccurences(wxStyledTextCtrl* ctrl, std::string word)
+{
+    std::vector<int> positions; // holds all the positions that sub occurs within str
+
+    wxString wword(word);
+    int pos = ctrl->FindText(0, ctrl->GetLastPosition(), wword);
+
+    while (pos != -1)
+    {
+        positions.push_back(pos);
+        pos = ctrl->FindText(pos + wword.size(), ctrl->GetLastPosition(), wword);
+    }
+
+    return positions;
+}
+
 void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clear)
 {
 
@@ -28,18 +44,7 @@ void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clea
     SetColor(color, 8 + idx, ctrl); // set color for indicator for control view
 
     // Perform the search
-
-    std::vector<int> positions; // holds all the positions that sub occurs within str
-
-    wxString wword(word);
-    int pos = ctrl->FindText(0, 3000, wword);
-
-    while (pos != -1)
-    {
-        positions.push_back(pos);
-        pos = ctrl->FindText(pos + wword.size(), ctrl->GetLastPosition(), L"Wikipedia");
-    }
-
+    auto positions = FindWordOccurences(ctrl, word);
 
     // no matches, exit
     if (positions.empty()) {
@@ -74,19 +79,29 @@ void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clea
 
 void gui_util::ScrollToFirstOccurence(std::vector<std::string> words, wxStyledTextCtrl* ctrl)
 {
+    //wxString wword(word);
+    //int pos = ctrl->FindText(0, ctrl->GetLastPosition(), wword);
+
+    ctrl->Refresh(true);
+
     auto text = ctrl->GetText();
     size_t min = 0;
     for (auto word : words) {
-        std::size_t found = text.find(word);
-        if (found != std::string::npos) {
-            if (min > found) {
-                min = found;
+        wxString wword(word);
+        int pos = ctrl->FindText(0, ctrl->GetLastPosition(), wword);
+        if (pos != -1) {
+            if (min < pos) {
+                min = pos;
             }
         }
     }
-
-    ctrl->SetCurrentPos(min);
-    ctrl->HideSelection(true);
+    
+    auto caret = ctrl->GetSelectionNCaret(0);
+    auto anchor = min;
+    caret = min + 10;
+    ctrl->SetAnchor(anchor);
+    ctrl->SetSelectionNCaret(0, caret);
+    ctrl->EnsureCaretVisible();
 }
 
 void gui_util::SetColor(wxColour color, int indicator, wxStyledTextCtrl* ctrl)
