@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 
-std::vector<std::string> word_util::GetWords(std::string sentence)
+std::vector<std::string> word_util::SplitIntoWords(std::string sentence)
 {
     
     // Used to split string around spaces.

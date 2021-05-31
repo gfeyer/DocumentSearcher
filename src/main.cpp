@@ -15,7 +15,7 @@
 
 /*
 TODO:
-	- Word checkboxes: only create once on new search and use them throughout the session.
+	- after indexing, new archive does not show
 	- Refactor settings into its own class rather than reading file from everywhere
 	- When indexing some pdf, created/modified date returns corrupted
 */

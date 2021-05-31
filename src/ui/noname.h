@@ -100,6 +100,10 @@ class SearchPanel : public wxPanel
 		wxDataViewListCtrl* gui_list_view;
 		wxPanel* m_panel6;
 		wxPanel* gui_panel_selected_words;
+		wxAuiNotebook* m_auinotebook2;
+		wxPanel* m_panel10;
+		wxStyledTextCtrl* gui_excerpts_view;
+		wxPanel* m_panel101;
 		wxStyledTextCtrl* gui_text_view;
 
 		// Virtual event handlers, overide them in your derived class

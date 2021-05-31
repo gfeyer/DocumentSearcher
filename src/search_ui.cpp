@@ -1,6 +1,8 @@
 #include "search_ui.h"
 
+#include <algorithm>    // std::sort
 #include <memory>
+#include <set>
 
 #include <wx/msgdlg.h>
 #include <wx/checkbox.h>
@@ -113,7 +115,7 @@ void SearchUI::NewSearch(std::string query, std::vector<std::string> indexes)
     ClearSearchSession();
 
     // Split query into separate words
-    std::vector<std::string> words = word_util::GetWords(query);
+    std::vector<std::string> words = word_util::SplitIntoWords(query);
 
     // One word per checkbox
     auto sizer = gui_panel_selected_words->GetSizer();
@@ -153,6 +155,10 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
         return;
     }
 
+    // Clear views
+    gui_text_view->ClearAll();
+    gui_excerpts_view->ClearAll();
+
     // Populate text content
     auto content = results_->Content(row);
     gui_text_view->SetText(content);
@@ -173,6 +179,9 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
     scheduler_->CallLaterOnMainThread([this, selected_words]() {
         gui_util::ScrollToFirstOccurence(selected_words, gui_text_view);
     });
+
+    // Extract excerpts from text view and populate excerpts view
+    gui_util::ExtractExcerpts(selected_words, gui_text_view, gui_excerpts_view);
 }
 
 void SearchUI::OnNewIndex()
@@ -284,6 +293,9 @@ void SearchUI::ClearSearchSession()
     auto sizer = gui_panel_selected_words->GetSizer();
     sizer->Clear(true);
     searchword_to_checkbox_.clear();
+
+    gui_text_view->Clear();
+    gui_excerpts_view->Clear();
 }
 
 wxBitmap SearchUI::GetBitmapForExtension(std::string ext)

@@ -180,16 +180,67 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 
 	bSizer23->Add( sizer_checkbox, 0, wxEXPAND, 5 );
 
-	gui_text_view = new wxStyledTextCtrl( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString );
-	gui_text_view->SetUseTabs( false );
+	m_auinotebook2 = new wxAuiNotebook( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TAB_MOVE );
+	m_panel10 = new wxPanel( m_auinotebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer182;
+	bSizer182 = new wxBoxSizer( wxVERTICAL );
+
+	gui_excerpts_view = new wxStyledTextCtrl( m_panel10, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString );
+	gui_excerpts_view->SetUseTabs( true );
+	gui_excerpts_view->SetTabWidth( 4 );
+	gui_excerpts_view->SetIndent( 4 );
+	gui_excerpts_view->SetTabIndents( true );
+	gui_excerpts_view->SetBackSpaceUnIndents( true );
+	gui_excerpts_view->SetViewEOL( false );
+	gui_excerpts_view->SetViewWhiteSpace( false );
+	gui_excerpts_view->SetMarginWidth( 2, 0 );
+	gui_excerpts_view->SetIndentationGuides( true );
+	gui_excerpts_view->SetMarginType( 1, wxSTC_MARGIN_SYMBOL );
+	gui_excerpts_view->SetMarginMask( 1, wxSTC_MASK_FOLDERS );
+	gui_excerpts_view->SetMarginWidth( 1, 16);
+	gui_excerpts_view->SetMarginSensitive( 1, true );
+	gui_excerpts_view->SetProperty( wxT("fold"), wxT("1") );
+	gui_excerpts_view->SetFoldFlags( wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED );
+	gui_excerpts_view->SetMarginType( 0, wxSTC_MARGIN_NUMBER );
+	gui_excerpts_view->SetMarginWidth( 0, gui_excerpts_view->TextWidth( wxSTC_STYLE_LINENUMBER, wxT("_99999") ) );
+	gui_excerpts_view->MarkerDefine( wxSTC_MARKNUM_FOLDER, wxSTC_MARK_BOXPLUS );
+	gui_excerpts_view->MarkerSetBackground( wxSTC_MARKNUM_FOLDER, wxColour( wxT("BLACK") ) );
+	gui_excerpts_view->MarkerSetForeground( wxSTC_MARKNUM_FOLDER, wxColour( wxT("WHITE") ) );
+	gui_excerpts_view->MarkerDefine( wxSTC_MARKNUM_FOLDEROPEN, wxSTC_MARK_BOXMINUS );
+	gui_excerpts_view->MarkerSetBackground( wxSTC_MARKNUM_FOLDEROPEN, wxColour( wxT("BLACK") ) );
+	gui_excerpts_view->MarkerSetForeground( wxSTC_MARKNUM_FOLDEROPEN, wxColour( wxT("WHITE") ) );
+	gui_excerpts_view->MarkerDefine( wxSTC_MARKNUM_FOLDERSUB, wxSTC_MARK_EMPTY );
+	gui_excerpts_view->MarkerDefine( wxSTC_MARKNUM_FOLDEREND, wxSTC_MARK_BOXPLUS );
+	gui_excerpts_view->MarkerSetBackground( wxSTC_MARKNUM_FOLDEREND, wxColour( wxT("BLACK") ) );
+	gui_excerpts_view->MarkerSetForeground( wxSTC_MARKNUM_FOLDEREND, wxColour( wxT("WHITE") ) );
+	gui_excerpts_view->MarkerDefine( wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_BOXMINUS );
+	gui_excerpts_view->MarkerSetBackground( wxSTC_MARKNUM_FOLDEROPENMID, wxColour( wxT("BLACK") ) );
+	gui_excerpts_view->MarkerSetForeground( wxSTC_MARKNUM_FOLDEROPENMID, wxColour( wxT("WHITE") ) );
+	gui_excerpts_view->MarkerDefine( wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY );
+	gui_excerpts_view->MarkerDefine( wxSTC_MARKNUM_FOLDERTAIL, wxSTC_MARK_EMPTY );
+	gui_excerpts_view->SetSelBackground( true, wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHT ) );
+	gui_excerpts_view->SetSelForeground( true, wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHTTEXT ) );
+	bSizer182->Add( gui_excerpts_view, 1, wxEXPAND | wxALL, 0 );
+
+
+	m_panel10->SetSizer( bSizer182 );
+	m_panel10->Layout();
+	bSizer182->Fit( m_panel10 );
+	m_auinotebook2->AddPage( m_panel10, wxT("Excerpts"), false, wxNullBitmap );
+	m_panel101 = new wxPanel( m_auinotebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer1821;
+	bSizer1821 = new wxBoxSizer( wxVERTICAL );
+
+	gui_text_view = new wxStyledTextCtrl( m_panel101, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, wxEmptyString );
+	gui_text_view->SetUseTabs( true );
 	gui_text_view->SetTabWidth( 4 );
 	gui_text_view->SetIndent( 4 );
-	gui_text_view->SetTabIndents( false );
-	gui_text_view->SetBackSpaceUnIndents( false );
+	gui_text_view->SetTabIndents( true );
+	gui_text_view->SetBackSpaceUnIndents( true );
 	gui_text_view->SetViewEOL( false );
 	gui_text_view->SetViewWhiteSpace( false );
 	gui_text_view->SetMarginWidth( 2, 0 );
-	gui_text_view->SetIndentationGuides( false );
+	gui_text_view->SetIndentationGuides( true );
 	gui_text_view->SetMarginType( 1, wxSTC_MARGIN_SYMBOL );
 	gui_text_view->SetMarginMask( 1, wxSTC_MASK_FOLDERS );
 	gui_text_view->SetMarginWidth( 1, 16);
@@ -215,7 +266,15 @@ SearchPanel::SearchPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	gui_text_view->MarkerDefine( wxSTC_MARKNUM_FOLDERTAIL, wxSTC_MARK_EMPTY );
 	gui_text_view->SetSelBackground( true, wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHT ) );
 	gui_text_view->SetSelForeground( true, wxSystemSettings::GetColour( wxSYS_COLOUR_HIGHLIGHTTEXT ) );
-	bSizer23->Add( gui_text_view, 1, wxEXPAND | wxALL, 2 );
+	bSizer1821->Add( gui_text_view, 1, wxEXPAND | wxALL, 0 );
+
+
+	m_panel101->SetSizer( bSizer1821 );
+	m_panel101->Layout();
+	bSizer1821->Fit( m_panel101 );
+	m_auinotebook2->AddPage( m_panel101, wxT("Doc Preview"), true, wxNullBitmap );
+
+	bSizer23->Add( m_auinotebook2, 1, wxEXPAND | wxALL, 0 );
 
 
 	m_panel6->SetSizer( bSizer23 );
