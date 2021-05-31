@@ -28,22 +28,19 @@ void gui_util::ExtractExcerpts(std::vector<std::string> keywords, wxStyledTextCt
         if (p1 == -1 && p2 == -1) {
             p1 = positions[i] - distMax;
             p2 = positions[i] + distMax;
-            continue;
-        }
-
-        // another word is near the first, extend the end of the segment
-        if (positions[i] < p2) {
+        }else if (positions[i] < p2) {
+            // another word is near the first, extend the end of the segment
             p2 = positions[i] + distMax;
-            continue;
         }
-
-        // save excerpt and reset p1, p2
-        excerpts.push_back(ExtractTextFromCtrl(source,p1,p2));
-        p1 = -1;
-        p2 = -1;
+        else {
+            // save excerpt and reset p1, p2
+            excerpts.push_back(ExtractTextFromCtrl(source, p1, p2));
+            p1 = positions[i] - distMax;
+            p2 = positions[i] + distMax;
+        }
     }
 
-    if (p1 != -1 && p2 != -1) {
+    if (p1 != -1 || p2 != -1) {
         excerpts.push_back(ExtractTextFromCtrl(source, p1, p2));
     }
 

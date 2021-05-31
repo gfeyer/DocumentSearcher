@@ -44,7 +44,7 @@ bool MainApp::OnInit()
 	//logger::WriteToFile("log.txt");
 
 	ui_frame = new App(nullptr);
-	ui_frame->SetTitle(VERSION);
+	ui_frame->SetTitle(VERSION + " | Build date: " + BUILD_DATE + " " + BUILD_TIME);
 	ui_frame->Show();
 
 	//wxIcon mainicon;

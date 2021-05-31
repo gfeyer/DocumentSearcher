@@ -64,7 +64,7 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->AppendTextColumn("Modified");
 
     // temporary
-    NewSearch("H4R0K2 american princess", { "C:\\Users\\Vlad\\Documents\\temp\\index", "C:\\Users\\Vlad\\Documents\\temp\\index_docs" });
+    //NewSearch("american princess", { "C:\\Users\\Vlad\\Documents\\temp\\index", "C:\\Users\\Vlad\\Documents\\temp\\index_docs" });
 }
 
 SearchUI::~SearchUI()
@@ -298,9 +298,6 @@ void SearchUI::ClearSearchSession()
     auto sizer = gui_panel_selected_words->GetSizer();
     sizer->Clear(true);
     searchword_to_checkbox_.clear();
-
-    gui_text_view->Clear();
-    gui_excerpts_view->Clear();
 }
 
 wxBitmap SearchUI::GetBitmapForExtension(std::string ext)
