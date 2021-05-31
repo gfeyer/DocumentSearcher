@@ -38,22 +38,45 @@ void gui_util::ExtractExcerpts(std::vector<std::string> keywords, wxStyledTextCt
         }
 
         // save excerpt and reset p1, p2
-        excerpts.push_back(source->GetTextRange(p1, p2));
+        excerpts.push_back(ExtractTextFromCtrl(source,p1,p2));
         p1 = -1;
         p2 = -1;
     }
 
     if (p1 != -1 && p2 != -1) {
-        excerpts.push_back(source->GetTextRange(p1, p2));
+        excerpts.push_back(ExtractTextFromCtrl(source, p1, p2));
     }
 
     for (auto excerpt : excerpts) {
+        std::stringstream ss;
+        ss << "[...]";
         // remove last newline
         std::size_t newline = excerpt.find_last_of("\n");
-        excerpt = excerpt.substr(0, newline);
+        excerpt =  excerpt.substr(0, newline);
 
-        destination->AppendText(excerpt);
+        // remove double newlines
+        excerpt.erase(std::remove(excerpt.begin(), excerpt.end(), '\n\n'), excerpt.end());
+
+        ss << excerpt;
+        ss << "[...]";
+        ss << "\n";
+
+        destination->AppendText(ss.str());
+        destination->AppendText("\n\n");
     }
+}
+
+std::string gui_util::ExtractTextFromCtrl(wxStyledTextCtrl* ctrl, int from, int to)
+{
+    if (from < 0) {
+        from = 0;
+    }
+
+    if (to > ctrl->GetLength()) {
+        to = ctrl->GetLength();
+    }
+
+    return ctrl->GetTextRange(from,to);
 }
 
 std::vector<int> gui_util::FindWordOccurences(wxStyledTextCtrl* ctrl, std::string word)
@@ -150,7 +173,7 @@ void gui_util::ScrollToFirstOccurence(std::vector<std::string> words, wxStyledTe
     
     auto caret = ctrl->GetSelectionNCaret(0);
     auto anchor = min;
-    caret = min + 10;
+    caret = min + 5;
     ctrl->SetAnchor(anchor);
     ctrl->SetSelectionNCaret(0, caret);
     ctrl->EnsureCaretVisible();

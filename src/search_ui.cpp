@@ -41,6 +41,7 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 
     // Setup
     gui_text_view->SetWrapMode(1);
+    gui_excerpts_view->SetWrapMode(1);
 
     // Rank column
     gui_list_view->AppendTextColumn("Rank");
@@ -63,7 +64,7 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->AppendTextColumn("Modified");
 
     // temporary
-    NewSearch("wikipedia ", { "C:\\Users\\Vlad\\Documents\\temp\\index_docs" });
+    NewSearch("H4R0K2 american princess", { "C:\\Users\\Vlad\\Documents\\temp\\index", "C:\\Users\\Vlad\\Documents\\temp\\index_docs" });
 }
 
 SearchUI::~SearchUI()
@@ -163,25 +164,29 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
     auto content = results_->Content(row);
     gui_text_view->SetText(content);
 
-    std::vector<std::string> selected_words;
+    std::vector<std::string> checked_words;
     for (auto& p : searchword_to_checkbox_) {
         auto searchword = p.first;
         auto checkbox = p.second;
 
         if (checkbox->IsChecked()) {
-            selected_words.push_back(searchword);
+            checked_words.push_back(searchword);
         }
-
-        OnCheck(checkbox);
     }
 
     // Scroll to first result
-    scheduler_->CallLaterOnMainThread([this, selected_words]() {
-        gui_util::ScrollToFirstOccurence(selected_words, gui_text_view);
+    scheduler_->CallLaterOnMainThread([this, checked_words]() {
+        gui_util::ScrollToFirstOccurence(checked_words, gui_text_view);
     });
 
     // Extract excerpts from text view and populate excerpts view
-    gui_util::ExtractExcerpts(selected_words, gui_text_view, gui_excerpts_view);
+    gui_util::ExtractExcerpts(checked_words, gui_text_view, gui_excerpts_view);
+
+    // OnCheck for all currently selected words
+    for (auto checked : checked_words) {
+        auto checkbox = searchword_to_checkbox_[checked];
+        OnCheck(checkbox);
+    }
 }
 
 void SearchUI::OnNewIndex()
@@ -318,5 +323,6 @@ void SearchUI::OnCheck(wxCheckBox* box)
     auto isChecked = box->IsChecked();
      
     gui_util::HighlightWord(word, gui_text_view, !isChecked);
+    gui_util::HighlightWord(word, gui_excerpts_view, !isChecked);
 }
 
