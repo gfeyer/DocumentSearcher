@@ -119,8 +119,13 @@ namespace file_util {
         std::wcout << "releasing pointer: " << path << std::endl;
         doctotext_free_extractor_params(params);
         doctotext_free_formatting_style(style);
-        doctotext_free_metadata(metadata);
-        doctotext_free_extracted_data(data);
+
+        if (metadata != NULL) {
+            doctotext_free_metadata(metadata);
+        }
+        if (data != NULL) {
+            doctotext_free_extracted_data(data);
+        }
     }
 }
 

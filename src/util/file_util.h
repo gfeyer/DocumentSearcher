@@ -16,10 +16,10 @@ namespace file_util {
 
 	class FileDoc {
 	private:
-		DocToTextExtractorParams* params;
-		DocToTextFormattingStyle* style;
-		DocToTextExtractedData* data;
-		DocToTextMetadata* metadata;
+		DocToTextExtractorParams* params = NULL;
+		DocToTextFormattingStyle* style = NULL;
+		DocToTextExtractedData* data = NULL;
+		DocToTextMetadata* metadata = NULL;
 		std::string path;
 	public:
 		FileDoc(std::string);
