@@ -65,9 +65,10 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 
     // temporary
     //NewSearch("american princess", { "C:\\Users\\Vlad\\Documents\\temp\\index", "C:\\Users\\Vlad\\Documents\\temp\\index_docs" });
-    auto source = R"(C:\Users\Vlad\Documents\temp\source_large\t2)";
-    auto index = R"(C:\Users\Vlad\Documents\temp\index_large)";
-    lucene_api::IndexDocs(source, index, [](std::wstring) {});
+    //auto source = R"(C:\Users\Vlad\Documents\temp\source_large\t2)";
+    //auto source = R"(C:\Users\Vlad\Documents\temp\source_large\t2.solo)";
+    //auto index = R"(C:\Users\Vlad\Documents\temp\index_large)";
+    //lucene_api::IndexDocs(source, index, [](std::wstring) {});
 }
 
 SearchUI::~SearchUI()

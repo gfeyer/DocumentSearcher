@@ -17,15 +17,22 @@ namespace file_util {
     #define CSV     "csv"
     #define DOC     "doc"
     #define DOCX    "docx"
+    #define PDF     "pdf"
     #define RTF     "rtf"
     #define TXT     "txt"
     #define XLSX    "xlsx"
     #define XLS     "xls"
+
+    #define PDF_READER  "pdftotext.exe"
+    #define TEMPFILE        "temp.txt"
 }
 
 namespace file_util {
     FileDoc::FileDoc(std::string p) : path(p) {
-
+        
+        is_pdf = ExtensionFromPath(path) == PDF;
+        is_csv = ExtensionFromPath(path) == CSV;
+        
         //Create style and extractor params objects
         params = doctotext_create_extractor_params();
         style = doctotext_create_formatting_style();
@@ -33,19 +40,50 @@ namespace file_util {
         doctotext_extractor_params_set_formatting_style(params, style);
         //doctotext_extractor_params_set_verbose_logging(params, 0);
 
-        // CSV files - use text parser
-        if (ExtensionFromPath(path) == CSV) {
+        // PDF data is extracted using another library due to a memory leak in the doctotext lib
+        // CSV files always use text parser
+        if (is_csv || is_pdf) {
             doctotext_extractor_params_set_parser_type(params, DOCTOTEXT_PARSER_TXT);
         }
 
         //Extract text
-        data = doctotext_process_file(path.c_str(), params, NULL);
-
+        if (!is_pdf) {
+            data = doctotext_process_file(path.c_str(), params, NULL);
+        }
         //Extract metadata
         metadata = doctotext_extract_metadata(path.c_str(), params, NULL);
     }
 
     std::wstring FileDoc::Content() {
+
+        if (ExtensionFromPath(path) == PDF) {
+            std::stringstream readCmd;
+            readCmd << PDF_READER;
+            readCmd << " \"";
+            readCmd << path;
+            readCmd << "\" ";
+            readCmd << TEMPFILE;
+            auto read = readCmd.str();
+
+            std::stringstream delCmd;
+            delCmd << "del ";
+            delCmd << TEMPFILE;
+            auto delTempFile = delCmd.str();
+
+            // Read file
+            logger_info << read;
+
+            system(read.c_str());
+            auto content = ReadText(TEMPFILE);
+
+            // Delete temporary file
+            logger_info << delTempFile;
+            system(delTempFile.c_str());
+
+            wxString wstr = *content;
+            return wstr;
+        }
+
         if (data != NULL) {
             // Extract contents and convert to wise string
             wxString wstr = doctotext_extracted_data_get_text(data);
@@ -68,7 +106,6 @@ namespace file_util {
         return L"";
     }
     std::wstring FileDoc::DateCreated() {
-        std::cout << "Reading DateCreated from: " << path << std::endl;
         if (metadata != NULL) {
             
             char date[64];
@@ -116,10 +153,12 @@ namespace file_util {
 
     FileDoc::~FileDoc() {
         // Release pointers
-        std::wcout << "releasing pointer: " << path << std::endl;
-        doctotext_free_extractor_params(params);
-        doctotext_free_formatting_style(style);
-
+        if (params != NULL) {
+            doctotext_free_extractor_params(params);
+        }
+        if (style != NULL) {
+            doctotext_free_formatting_style(style);
+        }
         if (metadata != NULL) {
             doctotext_free_metadata(metadata);
         }
@@ -163,6 +202,18 @@ namespace file_util {
     {
         auto ext = path.substr(path.find_last_of("\.") + 1);
         return ext;
+    }
+
+    bool IsSupported(std::string path)
+    {
+        auto ext = ExtensionFromPath(path);
+        return ext == CSV || ext == DOC || ext == DOCX || ext == PDF || ext == RTF || ext == TXT || ext == XLSX || ext == XLS;
+    }
+
+    bool IsSupported(std::wstring path)
+    {
+        wxString wstr = path;
+        return IsSupported(wstr.ToStdString());
     }
 
     std::shared_ptr<FileDoc> ReadDocument(std::string path)

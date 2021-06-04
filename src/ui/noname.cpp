@@ -325,7 +325,7 @@ FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText13->Wrap( -1 );
 	bSizer31->Add( m_staticText13, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	gui_source_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("C:\\Users\\Vlad\\Documents\\temp\\source_large\\t2"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	gui_source_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("X:\\DocumentArchive\\docs"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
 	bSizer31->Add( gui_source_dir, 5, wxALL, 5 );
 
 
@@ -338,7 +338,7 @@ FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText131->Wrap( -1 );
 	bSizer311->Add( m_staticText131, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	gui_index_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("C:\\Users\\Vlad\\Documents\\temp\\index_large"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	gui_index_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("X:\\DocumentArchive\\index"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
 	bSizer311->Add( gui_index_dir, 5, wxALL, 5 );
 
 
@@ -351,7 +351,7 @@ FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText1311->Wrap( -1 );
 	bSizer3111->Add( m_staticText1311, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	gui_name = new wxTextCtrl( m_panel4, wxID_ANY, wxT("large"), wxDefaultPosition, wxDefaultSize, 0 );
+	gui_name = new wxTextCtrl( m_panel4, wxID_ANY, wxT("archive"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer3111->Add( gui_name, 5, wxALL, 5 );
 
 

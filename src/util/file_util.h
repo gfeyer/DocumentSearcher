@@ -21,6 +21,8 @@ namespace file_util {
 		DocToTextExtractedData* data = NULL;
 		DocToTextMetadata* metadata = NULL;
 		std::string path;
+		bool is_pdf = false;
+		bool is_csv = false;
 	public:
 		FileDoc(std::string);
 		~FileDoc();
@@ -40,6 +42,9 @@ namespace file_util {
 	std::string EpochToDate(std::string timestr);
 	std::string FileNameFromPath(std::string);
 	std::string ExtensionFromPath(std::string);
+
+	bool IsSupported(std::string path);
+	bool IsSupported(std::wstring path);
 
 
 }

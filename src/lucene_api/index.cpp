@@ -49,8 +49,14 @@ namespace lucene_api::internal {
                 IndexDocsWithWriter(writer, docFile, callback);
             }
             else {
-                //std::wcout << L"Adding [" << ++docNumber << L"]: " << *dirFile << L"\n";
                 std::wstringstream ss;
+
+                if (!file_util::IsSupported(path)) {
+                    ss << L"Extension not supported, skipping: " << path << L"\n";
+                    callback(ss.str());
+                    continue;
+                }
+
                 ss << L"Adding [" << ++docNumber << L"]: " << path << L"\n";
                 callback(ss.str());
                 
