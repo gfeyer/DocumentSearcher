@@ -15,6 +15,7 @@
 
 /*
 TODO:
+	- memory increases a lot when indexing t2
 	- after indexing, new archive does not show
 	- Refactor settings into its own class rather than reading file from everywhere
 	- When indexing some pdf, created/modified date returns corrupted
