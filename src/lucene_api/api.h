@@ -35,7 +35,7 @@ namespace lucene_api {
     std::shared_ptr<IResults> NewSearch(std::string query, std::vector<std::string> indexes);
 
     // Interface for indexing directory and updating the index
-    int IndexDocs(std::string source, std::string index, std::function<void(std::wstring)>);
+    int IndexDocs(std::string source, std::string index, std::function<void(std::wstring,bool)>);
     int UpdateDocs(std::string source, std::string index);
 
     // Utility functions

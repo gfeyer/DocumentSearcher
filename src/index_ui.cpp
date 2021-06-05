@@ -40,9 +40,19 @@ void FiltersUI::OnStart(wxCommandEvent& event)
     }
 
     auto t = std::thread([this, source, index, name]() {
-        lucene_api::IndexDocs(source, index, [this](std::wstring msg) {
-            scheduler_->CallLaterOnMainThread([this, msg]() {
+        int indexed_docs = 0;
+        int failed_docs = 0;
+
+        lucene_api::IndexDocs(source, index, [this,&indexed_docs,&failed_docs](std::wstring msg, bool success) {
+            scheduler_->CallLaterOnMainThread([this, &indexed_docs, &failed_docs, msg, success]() {
                 gui_console->InsertText(0, msg);
+
+                if (!success) {
+                    indexed_docs++;
+                }
+                else {
+                    failed_docs++;
+                }
             });
         });
 
@@ -75,6 +85,13 @@ void FiltersUI::OnStart(wxCommandEvent& event)
                 file_util::WriteText("settings.json", settings.dump(4));
             }
             logger_info << "settings saved";
+
+            std::stringstream ss;
+            ss << "SUMMARY: Total docs: " << indexed_docs + failed_docs << ", ";
+            ss << "Success: " << indexed_docs << ", ";
+            ss << "Failed: " << failed_docs << "\n";
+            std::string summary = ss.str();
+            gui_console->InsertText(0, summary);
 
             // Handle callback if any
             if (callback_) {

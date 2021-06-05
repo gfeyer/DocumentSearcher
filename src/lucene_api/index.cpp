@@ -11,7 +11,7 @@ namespace lucene_api::internal {
     
     int32_t docNumber = 0;
     
-    Lucene::DocumentPtr fileDocument(const Lucene::String& docFile) {
+    Lucene::DocumentPtr fileDocument(const Lucene::String& docFile, bool& success) {
     
         DocumentPtr doc = newLucene<Document>(); 
 
@@ -29,12 +29,19 @@ namespace lucene_api::internal {
         doc->add(newLucene<Field>(FIELD_MODIFIED_BY, fileDoc->AuthorModified(), Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
 
         // Add file contents:
+        auto content = fileDoc->Content();
+        if (content.size() > 5) {
+            success = true;
+        }
+        else {
+            success = false;
+        }
         doc->add(newLucene<Field>(FIELD_CONTENT, fileDoc->Content(), Field::STORE_YES, Field::INDEX_ANALYZED));
         
         return doc;
     }
     
-    void IndexDocsWithWriter(const Lucene::IndexWriterPtr& writer, const Lucene::String& sourceDir, std::function<void(std::wstring)> callback) {
+    void IndexDocsWithWriter(const Lucene::IndexWriterPtr& writer, const Lucene::String& sourceDir, std::function<void(std::wstring,bool)> callback) {
     
         HashSet<String> dirList(HashSet<String>::newInstance());
         if (!FileUtils::listDirectory(sourceDir, false, dirList)) {
@@ -53,16 +60,23 @@ namespace lucene_api::internal {
 
                 if (!file_util::IsSupported(path)) {
                     ss << L"Extension not supported, skipping: " << path << L"\n";
-                    callback(ss.str());
+                    callback(ss.str(),true);
                     continue;
                 }
 
-                ss << L"Adding [" << ++docNumber << L"]: " << path << L"\n";
-                callback(ss.str());
-                
                 try {
                     //std::wcout << L"addDocument->\n";
-                    auto fdoc = fileDocument(docFile);
+                    bool success;
+                    auto fdoc = fileDocument(docFile, success);
+
+                    if (success) {
+                        ss << L"Adding [" << ++docNumber << L"]: " << path << L"\n";
+                    }
+                    else {
+                        ss << L"Cannot extract text from [" << ++docNumber << L"]: " << path << L"\n";
+                    }
+                    callback(ss.str(), success);
+
                     writer->addDocument(fdoc);
                     //std::wcout << L"done->\n";
                 }
@@ -74,7 +88,7 @@ namespace lucene_api::internal {
 }
 
 namespace lucene_api {
-    int IndexDocs(std::string source, std::string index, std::function<void(std::wstring)> callback) {
+    int IndexDocs(std::string source, std::string index, std::function<void(std::wstring,bool)> callback) {
         using namespace Lucene;
         String sourceDir(StringUtils::toUnicode(source));
         String indexDir(StringUtils::toUnicode(index));
