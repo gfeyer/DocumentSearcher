@@ -6,6 +6,7 @@
 
 void gui_util::ExtractExcerpts(std::vector<std::string> keywords, wxStyledTextCtrl* source, wxStyledTextCtrl* destination)
 {
+    destination->ClearAll();
     // Extract excerpts from one text view and populate another
     int distMax = 100;
     std::vector<int> positions;

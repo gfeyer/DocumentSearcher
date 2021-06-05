@@ -38,6 +38,9 @@ private:
 	void ClearSearchSession();
 	wxBitmap GetBitmapForExtension(std::string ext);
 
+	void RefreshHighlights();
+	void RefreshExcerpts();
+
 	void SetColor(wxColour, int);
 
 	void NewSearch(std::string, std::vector<std::string>);
