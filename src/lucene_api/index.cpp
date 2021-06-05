@@ -2,7 +2,7 @@
 #include "index.h"
 
 #include <functional>
-
+#include <wx/string.h>
 #include "../util/file_util.h"
 
 
@@ -15,8 +15,8 @@ namespace lucene_api::internal {
     
         DocumentPtr doc = newLucene<Document>(); 
 
-        std::string  path = utf16ToUtf8(docFile);
-        auto fileDoc = file_util::ReadDocument(path);
+        wxString path = docFile;
+        auto fileDoc = file_util::ReadDocument(path.ToStdWstring());
 
         // Add metadata
         // Add the path of the file as a field named "path".  Use a field that is indexed (ie. searchable), but

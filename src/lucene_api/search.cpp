@@ -106,11 +106,11 @@ namespace lucene_api::internal {
         std::string filename = path.substr(path.find_last_of("/\\") + 1);
         return filename;
     }
-    std::string SearchResults::Path(size_t index)
+    std::wstring SearchResults::Path(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
         String path = doc->get(FIELD_PATH);
-        return utf16ToUtf8(path);
+        return path;
     }
     size_t SearchResults::Hits() {
         return hits_.size();

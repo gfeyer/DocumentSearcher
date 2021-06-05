@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "LuceneHeaders.h"
+#include <string>
 
 namespace lucene_api {
 
@@ -26,7 +27,7 @@ namespace lucene_api {
         virtual std::string  Modified(size_t) = 0;
         virtual std::string  ModifiedBy(size_t) = 0;
         virtual std::string  Name(size_t) = 0;
-        virtual std::string  Path(size_t) = 0;
+        virtual std::wstring  Path(size_t) = 0;
         virtual size_t Hits() = 0;
         virtual double Score(size_t) = 0;
     };

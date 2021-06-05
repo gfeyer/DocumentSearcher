@@ -20,12 +20,12 @@ namespace file_util {
 		DocToTextFormattingStyle* style = NULL;
 		DocToTextExtractedData* data = NULL;
 		DocToTextMetadata* metadata = NULL;
-		std::string path;
+		std::wstring path;
 		bool is_pdf = false;
 		bool is_csv = false;
 		bool is_docx = false;
 	public:
-		FileDoc(std::string);
+		FileDoc(std::wstring);
 		~FileDoc();
 		std::wstring  Content();
 		std::wstring  AuthorCreated();
@@ -36,16 +36,16 @@ namespace file_util {
 		bool IsTimeValid(const tm* tm_ptr);
 	};
 
-	std::shared_ptr<FileDoc> ReadDocument(std::string path);
+	std::shared_ptr<FileDoc> ReadDocument(std::wstring path);
 	std::shared_ptr<std::string> ReadText(std::string path);
 	std::shared_ptr<std::wstring> ReadWText(std::string path);
 	void WriteText(std::string path, std::string data);
 
 	std::string EpochToDate(std::string timestr);
-	std::string FileNameFromPath(std::string);
-	std::string ExtensionFromPath(std::string);
+	std::wstring FileNameFromPath(std::wstring);
+	std::string ExtensionFromPath(std::wstring);
 
-	bool IsSupported(std::string path);
+	bool IsSupported(std::wstring path);
 	bool IsSupported(std::wstring path);
 
 

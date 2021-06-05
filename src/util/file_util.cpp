@@ -29,7 +29,7 @@ namespace file_util {
 }
 
 namespace file_util {
-    FileDoc::FileDoc(std::string p) : path(p) {
+    FileDoc::FileDoc(std::wstring p) : path(p) {
         
         is_pdf = ExtensionFromPath(path) == PDF;
         is_csv = ExtensionFromPath(path) == CSV;
@@ -50,10 +50,12 @@ namespace file_util {
 
         //Extract contents
         if (!is_pdf && !is_docx) {
-            data = doctotext_process_file(path.c_str(), params, NULL);
+            wxString wp = path;
+            data = doctotext_process_file(wp.ToStdString().c_str(), params, NULL);
         }
         //Extract metadata
-        metadata = doctotext_extract_metadata(path.c_str(), params, NULL);
+        wxString wp = path;
+        metadata = doctotext_extract_metadata(wp.ToStdString().c_str(), params, NULL);
     }
 
     std::wstring FileDoc::Content() {
@@ -223,33 +225,29 @@ namespace file_util {
         return time.substr(0, time.find(' '));;
     }
 
-	std::string FileNameFromPath(std::string path)
+	std::wstring FileNameFromPath(std::wstring path)
 	{
-        auto filename = path.substr(path.find_last_of("/\\") + 1);
+        auto filename = path.substr(path.find_last_of(L"/\\") + 1);
         return filename;
 	}
 
-    std::string ExtensionFromPath(std::string path)
+    std::string ExtensionFromPath(std::wstring wpath)
     {
+        wxString wp = wpath;
+        std::string path = wp.ToStdString();
         auto ext = path.substr(path.find_last_of("\.") + 1);
         return ext;
     }
 
-    bool IsSupported(std::string path)
+    bool IsSupported(std::wstring path)
     {
         auto ext = ExtensionFromPath(path);
         return ext == CSV || ext == DOC || ext == DOCX || ext == PDF || ext == RTF || ext == TXT || ext == XLSX || ext == XLS;
     }
 
-    bool IsSupported(std::wstring path)
+    std::shared_ptr<FileDoc> ReadDocument(std::wstring path)
     {
-        wxString wstr = path;
-        return IsSupported(wstr.ToStdString());
-    }
-
-    std::shared_ptr<FileDoc> ReadDocument(std::string path)
-    {
-        auto doc = std::make_shared<FileDoc>(path);
+        auto doc = std::make_shared<FileDoc>(path); // TODO: to wxstring
         return doc;
     }
     std::shared_ptr<std::string> ReadText(std::string path)

@@ -325,7 +325,7 @@ FilterFrame::FilterFrame( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText13->Wrap( -1 );
 	bSizer31->Add( m_staticText13, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	gui_source_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("X:\\sap\\d1"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
+	gui_source_dir = new wxDirPickerCtrl( m_panel4, wxID_ANY, wxT("X:\\sap\\d2"), wxT("Select a folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE );
 	bSizer31->Add( gui_source_dir, 5, wxALL, 5 );
 
 
