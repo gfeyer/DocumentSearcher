@@ -21,9 +21,6 @@ namespace file_util {
 		DocToTextExtractedData* data = NULL;
 		DocToTextMetadata* metadata = NULL;
 		std::wstring path;
-		bool is_pdf = false;
-		bool is_csv = false;
-		bool is_docx = false;
 	public:
 		FileDoc(std::wstring);
 		~FileDoc();
@@ -34,6 +31,7 @@ namespace file_util {
 		std::wstring  DateModified();
 	private:
 		bool IsTimeValid(const tm* tm_ptr);
+		bool IsType(std::string);
 	};
 
 	std::shared_ptr<FileDoc> ReadDocument(std::wstring path);

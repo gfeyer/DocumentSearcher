@@ -31,10 +31,6 @@ namespace file_util {
 namespace file_util {
     FileDoc::FileDoc(std::wstring p) : path(p) {
         
-        is_pdf = ExtensionFromPath(path) == PDF;
-        is_csv = ExtensionFromPath(path) == CSV;
-        is_docx = ExtensionFromPath(path) == DOCX;
-        
         //Create style and extractor params objects
         params = doctotext_create_extractor_params();
         style = doctotext_create_formatting_style();
@@ -44,12 +40,12 @@ namespace file_util {
 
         // PDF data is extracted using another library due to a memory leak in the doctotext lib
         // CSV files always use text parser
-        if (is_csv || is_pdf || is_docx) {
+        if (IsType(CSV) || IsType(PDF) || IsType(DOCX) || IsType(DOC)) {
             doctotext_extractor_params_set_parser_type(params, DOCTOTEXT_PARSER_TXT);
         }
 
         //Extract contents
-        if (!is_pdf && !is_docx) {
+        if (!IsType(PDF) && !IsType(DOCX) && !IsType(DOC)) {
             wxString wp = path;
             data = doctotext_process_file(wp.ToStdString().c_str(), params, NULL);
         }
@@ -60,7 +56,7 @@ namespace file_util {
 
     std::wstring FileDoc::Content() {
 
-        if (is_pdf) {
+        if (IsType(PDF)) {
             std::stringstream readCmd;
             readCmd << PDF_READER;
             readCmd << " \"";
@@ -88,7 +84,7 @@ namespace file_util {
             return wstr;
         }
 
-        if (is_docx) {
+        if (IsType(DOCX) || IsType(DOC)) {
             std::stringstream readCmd;
             readCmd << DOCX_READER;
             readCmd << " \"";
@@ -182,6 +178,11 @@ namespace file_util {
         }
 
         return true;
+    }
+
+    bool FileDoc::IsType(std::string extension)
+    {
+        return ExtensionFromPath(path) == extension;
     }
 
     FileDoc::~FileDoc() {
