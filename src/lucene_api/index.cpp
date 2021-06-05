@@ -36,7 +36,7 @@ namespace lucene_api::internal {
         else {
             success = false;
         }
-        doc->add(newLucene<Field>(FIELD_CONTENT, fileDoc->Content(), Field::STORE_YES, Field::INDEX_ANALYZED));
+        doc->add(newLucene<Field>(FIELD_CONTENT, content, Field::STORE_YES, Field::INDEX_ANALYZED));
         
         return doc;
     }
@@ -73,7 +73,7 @@ namespace lucene_api::internal {
                         ss << L"Adding [" << ++docNumber << L"]: " << path << L"\n";
                     }
                     else {
-                        ss << L"Cannot extract text from [" << ++docNumber << L"]: " << path << L"\n";
+                        ss << L"Cannot extract text from: " << path << L"\n";
                     }
                     callback(ss.str(), success);
 

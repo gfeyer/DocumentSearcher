@@ -47,7 +47,7 @@ void FiltersUI::OnStart(wxCommandEvent& event)
             scheduler_->CallLaterOnMainThread([this, &indexed_docs, &failed_docs, msg, success]() {
                 gui_console->InsertText(0, msg);
 
-                if (!success) {
+                if (success) {
                     indexed_docs++;
                 }
                 else {
