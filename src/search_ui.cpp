@@ -71,9 +71,6 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     //auto index = R"(X:\sap\i1)";
     //lucene_api::IndexDocs(source, index, [](std::wstring) {});
 
-    auto doc = file_util::ReadDocument("X:\\sap\\d1\\woko.docx");
-    gui_excerpts_view->SetText(doc->Content());
-
 }
 
 SearchUI::~SearchUI()

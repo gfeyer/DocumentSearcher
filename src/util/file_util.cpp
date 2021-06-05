@@ -58,7 +58,7 @@ namespace file_util {
 
     std::wstring FileDoc::Content() {
 
-        if (ExtensionFromPath(path) == PDF) {
+        if (is_pdf) {
             std::stringstream readCmd;
             readCmd << PDF_READER;
             readCmd << " \"";
@@ -88,10 +88,11 @@ namespace file_util {
 
         if (is_docx) {
             std::stringstream readCmd;
-            readCmd << PDF_READER;
+            readCmd << DOCX_READER;
             readCmd << " \"";
             readCmd << path;
             readCmd << "\" ";
+            readCmd << " > ";
             readCmd << TEMPFILE;
             auto read = readCmd.str();
 
