@@ -28,6 +28,8 @@
 #include "ui/resources/xls.xpm"
 #include "ui/resources/xlsx.xpm"
 
+#include "duckx.hpp"
+
 using nlohmann::json;
 
 SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
@@ -65,10 +67,13 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 
     // temporary
     //NewSearch("american princess", { "C:\\Users\\Vlad\\Documents\\temp\\index", "C:\\Users\\Vlad\\Documents\\temp\\index_docs" });
-    //auto source = R"(C:\Users\Vlad\Documents\temp\source_large\t2)";
-    //auto source = R"(C:\Users\Vlad\Documents\temp\source_large\t2.solo)";
-    //auto index = R"(C:\Users\Vlad\Documents\temp\index_large)";
+    //auto source = R"(X:\sap\d1)";
+    //auto index = R"(X:\sap\i1)";
     //lucene_api::IndexDocs(source, index, [](std::wstring) {});
+
+    auto doc = file_util::ReadDocument("X:\\sap\\d1\\woko.docx");
+    gui_excerpts_view->SetText(doc->Content());
+
 }
 
 SearchUI::~SearchUI()

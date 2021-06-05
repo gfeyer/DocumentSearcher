@@ -23,6 +23,7 @@ namespace file_util {
 		std::string path;
 		bool is_pdf = false;
 		bool is_csv = false;
+		bool is_docx = false;
 	public:
 		FileDoc(std::string);
 		~FileDoc();
@@ -37,6 +38,7 @@ namespace file_util {
 
 	std::shared_ptr<FileDoc> ReadDocument(std::string path);
 	std::shared_ptr<std::string> ReadText(std::string path);
+	std::shared_ptr<std::wstring> ReadWText(std::string path);
 	void WriteText(std::string path, std::string data);
 
 	std::string EpochToDate(std::string timestr);

@@ -9,7 +9,7 @@
 
 #include <xlnt/xlnt.hpp>
 #include <wx/string.h>
-#include "duckx.hpp"
+#include <wx/textfile.h>
 
 #include "../logger.h"
 
@@ -23,8 +23,9 @@ namespace file_util {
     #define XLSX    "xlsx"
     #define XLS     "xls"
 
-    #define PDF_READER  "pdftotext.exe"
-    #define TEMPFILE        "temp.txt"
+    #define PDF_READER   "pdftotext.exe"
+    #define DOCX_READER  "doctotext.exe"
+    #define TEMPFILE     "temp.txt"
 }
 
 namespace file_util {
@@ -32,6 +33,7 @@ namespace file_util {
         
         is_pdf = ExtensionFromPath(path) == PDF;
         is_csv = ExtensionFromPath(path) == CSV;
+        is_docx = ExtensionFromPath(path) == DOCX;
         
         //Create style and extractor params objects
         params = doctotext_create_extractor_params();
@@ -42,12 +44,12 @@ namespace file_util {
 
         // PDF data is extracted using another library due to a memory leak in the doctotext lib
         // CSV files always use text parser
-        if (is_csv || is_pdf) {
+        if (is_csv || is_pdf || is_docx) {
             doctotext_extractor_params_set_parser_type(params, DOCTOTEXT_PARSER_TXT);
         }
 
-        //Extract text
-        if (!is_pdf) {
+        //Extract contents
+        if (!is_pdf && !is_docx) {
             data = doctotext_process_file(path.c_str(), params, NULL);
         }
         //Extract metadata
@@ -84,13 +86,41 @@ namespace file_util {
             return wstr;
         }
 
+        if (is_docx) {
+            std::stringstream readCmd;
+            readCmd << PDF_READER;
+            readCmd << " \"";
+            readCmd << path;
+            readCmd << "\" ";
+            readCmd << TEMPFILE;
+            auto read = readCmd.str();
+
+            std::stringstream delCmd;
+            delCmd << "del ";
+            delCmd << TEMPFILE;
+            auto delTempFile = delCmd.str();
+            
+            // Read file
+            logger_info << read;
+            system(read.c_str());
+            auto content = ReadWText(TEMPFILE);
+
+            // Delete temporary file
+            logger_info << delTempFile;
+            system(delTempFile.c_str());
+
+            return *content;
+
+        }
+
         if (data != NULL) {
-            // Extract contents and convert to wise string
+            // Extract contents and convert to wide string
             wxString wstr = doctotext_extracted_data_get_text(data);
             return wstr;
         }
         return L"";
     }
+
     std::wstring FileDoc::AuthorCreated() {
         if (metadata != NULL) {
             wxString wstr = doctotext_metadata_author(metadata);
@@ -237,6 +267,24 @@ namespace file_util {
           
        }
        return std::shared_ptr<std::string>();
+    }
+    std::shared_ptr<std::wstring> ReadWText(std::string path)
+    {
+        wxTextFile tfile;
+        tfile.Open(path);
+
+        // read the first line
+        std::wstringstream content;
+        content << tfile.GetFirstLine();
+
+        while (!tfile.Eof())
+        {
+            content << tfile.GetNextLine();
+            content << '\n';
+        }
+        
+        auto result = std::make_shared<std::wstring>(content.str());
+        return result;
     }
     void WriteText(std::string path, std::string data)
     {
