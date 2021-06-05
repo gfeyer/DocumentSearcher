@@ -43,7 +43,7 @@ namespace file_util {
 
 	std::string EpochToDate(std::string timestr);
 	std::wstring FileNameFromPath(std::wstring);
-	std::string ExtensionFromPath(std::wstring);
+	std::wstring ExtensionFromPath(std::wstring);
 
 	bool IsSupported(std::wstring path);
 	bool IsSupported(std::wstring path);

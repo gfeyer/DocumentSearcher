@@ -231,11 +231,9 @@ namespace file_util {
         return filename;
 	}
 
-    std::string ExtensionFromPath(std::wstring wpath)
+    std::wstring ExtensionFromPath(std::wstring path)
     {
-        wxString wp = wpath;
-        std::string path = wp.ToStdString();
-        auto ext = path.substr(path.find_last_of("\.") + 1);
+        auto ext = path.substr(path.find_last_of(L"\.") + 1);
         return ext;
     }
 

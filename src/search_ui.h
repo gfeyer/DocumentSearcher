@@ -36,7 +36,7 @@ private:
 	void LoadIndexes();
 	void LoadResources();
 	void ClearSearchSession();
-	wxBitmap GetBitmapForExtension(std::string ext);
+	wxBitmap GetBitmapForExtension(std::wstring ext);
 
 	void RefreshHighlights();
 	void RefreshExcerpts();

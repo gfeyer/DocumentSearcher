@@ -286,8 +286,9 @@ void SearchUI::ClearSearchSession()
     searchword_to_checkbox_.clear();
 }
 
-wxBitmap SearchUI::GetBitmapForExtension(std::string ext)
+wxBitmap SearchUI::GetBitmapForExtension(std::wstring wext)
 {
+    std::string ext = wxString(wext).ToStdString();
     if (bitmaps_.find(ext) != bitmaps_.end()) {
         return bitmaps_[ext];
     }
