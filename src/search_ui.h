@@ -41,8 +41,6 @@ private:
 	void RefreshHighlights();
 	void RefreshExcerpts();
 
-	void SetColor(wxColour, int);
-
 	void NewSearch(std::string, std::vector<std::string>);
 	void PopErrorDialog(std::string);
 

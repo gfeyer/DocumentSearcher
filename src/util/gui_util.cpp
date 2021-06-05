@@ -48,9 +48,6 @@ void gui_util::ExtractExcerpts(std::vector<std::string> keywords, wxStyledTextCt
     for (auto excerpt : excerpts) {
         std::stringstream ss;
         ss << "[...]";
-        // remove last newline
-        std::size_t newline = excerpt.find_last_of("\n");
-        excerpt =  excerpt.substr(0, newline);
 
         // remove double newlines
         excerpt.erase(std::remove(excerpt.begin(), excerpt.end(), '\n\n'), excerpt.end());

@@ -17,6 +17,14 @@ std::vector<std::string> word_util::SplitIntoWords(std::string sentence)
 
     while (ss >> word)
     {
+        if (word == "AND") {
+            continue;
+        }
+
+        if (*word.rbegin() == '*') {
+            word.pop_back();
+        }
+
         wordset.insert(word);
     }
 
