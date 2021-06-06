@@ -60,7 +60,7 @@ namespace lucene_api::internal {
 
                 if (!file_util::IsSupported(path)) {
                     ss << L"Extension not supported, skipping: " << path << L"\n";
-                    callback(ss.str(),true);
+                    //callback(ss.str(),true);
                     continue;
                 }
 
