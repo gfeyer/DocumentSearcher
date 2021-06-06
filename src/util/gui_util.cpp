@@ -2,6 +2,94 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include "../logger.h"
+
+void gui_util::ExtractExcerpts(std::vector<std::string> keywords, wxStyledTextCtrl* source, wxStyledTextCtrl* destination)
+{
+    destination->ClearAll();
+    // Extract excerpts from one text view and populate another
+    int distMax = 100;
+    std::vector<int> positions;
+    for (auto word : keywords) {
+        auto pos = gui_util::FindWordOccurences(source, word);
+
+        positions.insert(positions.end(), pos.begin(), pos.end());
+    }
+
+    std::sort(positions.begin(), positions.end());
+
+    int p1 = -1;
+    int p2 = -1;
+
+    std::vector<std::string> excerpts;
+
+    for (int i = 0; i < positions.size(); ++i) {
+
+        // beginning of search
+        if (p1 == -1 && p2 == -1) {
+            p1 = positions[i] - distMax;
+            p2 = positions[i] + distMax;
+        }else if (positions[i] < p2) {
+            // another word is near the first, extend the end of the segment
+            p2 = positions[i] + distMax;
+        }
+        else {
+            // save excerpt and reset p1, p2
+            excerpts.push_back(ExtractTextFromCtrl(source, p1, p2));
+            p1 = positions[i] - distMax;
+            p2 = positions[i] + distMax;
+        }
+    }
+
+    if (p1 != -1 || p2 != -1) {
+        excerpts.push_back(ExtractTextFromCtrl(source, p1, p2));
+    }
+
+    for (auto excerpt : excerpts) {
+        std::stringstream ss;
+        ss << "[...]";
+
+        // remove double newlines
+        excerpt.erase(std::remove(excerpt.begin(), excerpt.end(), '\n\n'), excerpt.end());
+
+        ss << excerpt;
+        ss << "[...]";
+        ss << "\n";
+
+        destination->AppendText(ss.str());
+        destination->AppendText("\n\n");
+    }
+}
+
+std::string gui_util::ExtractTextFromCtrl(wxStyledTextCtrl* ctrl, int from, int to)
+{
+    if (from < 0) {
+        from = 0;
+    }
+
+    if (to > ctrl->GetLength()) {
+        to = ctrl->GetLength();
+    }
+
+    return ctrl->GetTextRange(from,to);
+}
+
+std::vector<int> gui_util::FindWordOccurences(wxStyledTextCtrl* ctrl, std::string word)
+{
+    std::vector<int> positions; // holds all the positions that sub occurs within str
+
+    wxString wword(word);
+    int pos = ctrl->FindText(0, ctrl->GetLastPosition(), wword);
+
+    while (pos != -1)
+    {
+        positions.push_back(pos);
+        pos = ctrl->FindText(pos + wword.size(), ctrl->GetLastPosition(), wword);
+    }
+
+    return positions;
+}
+
 void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clear)
 {
 
@@ -26,18 +114,7 @@ void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clea
     SetColor(color, 8 + idx, ctrl); // set color for indicator for control view
 
     // Perform the search
-    std::string text = ctrl->GetText();
-
-    boost::algorithm::to_lower(text);
-    boost::algorithm::to_lower(word);
-
-    std::vector<size_t> positions; // holds all the positions that sub occurs within str
-    size_t pos = text.find(word, 0);
-    while (pos != std::string::npos)
-    {
-        positions.push_back(pos);
-        pos = text.find(word, pos + 1);
-    }
+    auto positions = FindWordOccurences(ctrl, word);
 
     // no matches, exit
     if (positions.empty()) {
@@ -67,6 +144,33 @@ void gui_util::HighlightWord(std::string word, wxStyledTextCtrl* ctrl, bool clea
     auto anchor = positions[0];
     ctrl->SetAnchor(anchor);
     ctrl->SetSelectionNCaret(0, anchor + word.size());
+    ctrl->EnsureCaretVisible();
+}
+
+void gui_util::ScrollToFirstOccurence(std::vector<std::string> words, wxStyledTextCtrl* ctrl)
+{
+    //wxString wword(word);
+    //int pos = ctrl->FindText(0, ctrl->GetLastPosition(), wword);
+
+    ctrl->Refresh(true);
+
+    auto text = ctrl->GetText();
+    size_t min = 0;
+    for (auto word : words) {
+        wxString wword(word);
+        int pos = ctrl->FindText(0, ctrl->GetLastPosition(), wword);
+        if (pos != -1) {
+            if (min < pos) {
+                min = pos;
+            }
+        }
+    }
+    
+    auto caret = ctrl->GetSelectionNCaret(0);
+    auto anchor = min;
+    caret = min + 5;
+    ctrl->SetAnchor(anchor);
+    ctrl->SetSelectionNCaret(0, caret);
     ctrl->EnsureCaretVisible();
 }
 

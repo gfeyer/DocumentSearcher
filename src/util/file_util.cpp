@@ -9,7 +9,7 @@
 
 #include <xlnt/xlnt.hpp>
 #include <wx/string.h>
-#include "duckx.hpp"
+#include <wx/textfile.h>
 
 #include "../logger.h"
 
@@ -17,15 +17,21 @@ namespace file_util {
     #define CSV     "csv"
     #define DOC     "doc"
     #define DOCX    "docx"
+    #define PDF     "pdf"
     #define RTF     "rtf"
     #define TXT     "txt"
     #define XLSX    "xlsx"
     #define XLS     "xls"
+
+    #define PDF_READER   "mutool.exe"
+    #define PDF_READER2  "pdftotext.exe"
+    #define DOCX_READER  "doctotext.exe"
+    #define TEMPFILE     "temp.txt"
 }
 
 namespace file_util {
-    FileDoc::FileDoc(std::string p) : path(p) {
-
+    FileDoc::FileDoc(std::wstring p) : path(p) {
+        
         //Create style and extractor params objects
         params = doctotext_create_extractor_params();
         style = doctotext_create_formatting_style();
@@ -33,26 +39,114 @@ namespace file_util {
         doctotext_extractor_params_set_formatting_style(params, style);
         //doctotext_extractor_params_set_verbose_logging(params, 0);
 
-        // CSV files - use text parser
-        if (ExtensionFromPath(path) == CSV) {
+        // PDF data is extracted using another library due to a memory leak in the doctotext lib
+        // CSV files always use text parser
+        if (IsType(CSV) || IsType(PDF) || IsType(DOCX) || IsType(DOC)) {
             doctotext_extractor_params_set_parser_type(params, DOCTOTEXT_PARSER_TXT);
         }
 
-        //Extract text
-        data = doctotext_process_file(path.c_str(), params, NULL);
-
+        //Extract contents
+        if (!IsType(PDF) && !IsType(DOCX) && !IsType(DOC)) {
+            wxString wp = path;
+            data = doctotext_process_file(wp.ToStdString().c_str(), params, NULL);
+        }
         //Extract metadata
-        metadata = doctotext_extract_metadata(path.c_str(), params, NULL);
+        wxString wp = path;
+        metadata = doctotext_extract_metadata(wp.ToStdString().c_str(), params, NULL);
     }
 
     std::wstring FileDoc::Content() {
+
+        /*if (IsType(PDF)) {
+            std::stringstream readCmd;
+            readCmd << PDF_READER;
+            readCmd << " \"";
+            readCmd << path;
+            readCmd << "\" ";
+            readCmd << TEMPFILE;
+            auto read = readCmd.str();
+
+            std::stringstream delCmd;
+            delCmd << "del ";
+            delCmd << TEMPFILE;
+            auto delTempFile = delCmd.str();
+
+            // Read file
+            logger_info << read;
+
+            system(read.c_str());
+            auto content = ReadText(TEMPFILE);
+
+            // Delete temporary file
+            logger_info << delTempFile;
+            system(delTempFile.c_str());
+
+            wxString wstr = *content;
+            return wstr;
+        }*/
+        
+        if (IsType(PDF)) {
+            // mutool convert -o temp.txt pdf.pdf
+            std::stringstream readCmd;
+            readCmd << PDF_READER << " convert " << " -o " << TEMPFILE << " ";
+            readCmd << "\"";
+            readCmd << path;
+            readCmd << "\"";
+            auto read = readCmd.str();
+
+            std::stringstream delCmd;
+            delCmd << "del ";
+            delCmd << TEMPFILE;
+            auto delTempFile = delCmd.str();
+
+            // Read file
+            logger_info << read;
+            system(read.c_str());
+            auto content = ReadWText(TEMPFILE);
+
+            // Delete temporary file
+            logger_info << delTempFile;
+            system(delTempFile.c_str());
+
+            return *content;
+        }
+        //if (IsType(DOCX) || IsType(DOC) || IsType(PDF)) {
+        if (IsType(DOCX) || IsType(DOC)) {
+            std::stringstream readCmd;
+            readCmd << DOCX_READER;
+            readCmd << " \"";
+            readCmd << path;
+            readCmd << "\" ";
+            readCmd << " > ";
+            readCmd << TEMPFILE;
+            auto read = readCmd.str();
+
+            std::stringstream delCmd;
+            delCmd << "del ";
+            delCmd << TEMPFILE;
+            auto delTempFile = delCmd.str();
+            
+            // Read file
+            logger_info << read;
+            system(read.c_str());
+            auto content = ReadWText(TEMPFILE);
+
+            // Delete temporary file
+            logger_info << delTempFile;
+            system(delTempFile.c_str());
+
+            return *content;
+
+        }
+
         if (data != NULL) {
-            // Extract contents and convert to wise string
+            // Extract contents and convert to wide string
             wxString wstr = doctotext_extracted_data_get_text(data);
             return wstr;
         }
         return L"";
     }
+
     std::wstring FileDoc::AuthorCreated() {
         if (metadata != NULL) {
             wxString wstr = doctotext_metadata_author(metadata);
@@ -69,29 +163,69 @@ namespace file_util {
     }
     std::wstring FileDoc::DateCreated() {
         if (metadata != NULL) {
+            
             char date[64];
-            strftime(date, 64, "%Y-%m-%d", doctotext_metadata_creation_date(metadata));
+            memset(date, 0, sizeof date);
+            auto tm_ptr = doctotext_metadata_creation_date(metadata);
+            
+            if (!IsTimeValid(tm_ptr)) {
+                return L"";
+            }
+            
+            strftime(date, 64, "%Y-%m-%d", tm_ptr);
+            std::cout << "Using date: " << date << std::endl;
             wxString wstr(date);
             return wstr;
+           
         }
         return L"";
     }
     std::wstring FileDoc::DateModified() {
         if (metadata != NULL) {
             char date[64];
-            strftime(date, 64, "%Y-%m-%d", doctotext_metadata_last_modification_date(metadata));
+            auto tm_ptr = doctotext_metadata_last_modification_date(metadata);
+
+            if (!IsTimeValid(tm_ptr)) {
+                return L"";
+            }
+
+            strftime(date, 64, "%Y-%m-%d", tm_ptr);
             wxString wstr(date);
             return wstr;
         }
         return L"";
     }
 
+    bool FileDoc::IsTimeValid(const tm* tm_ptr)
+    {
+        if (tm_ptr->tm_year<0 || tm_ptr->tm_year > 200 ||
+            tm_ptr->tm_mon < 0 || tm_ptr->tm_mon > 12 ||
+            tm_ptr->tm_mday < 0 || tm_ptr->tm_mday > 31) {
+            return false;
+        }
+
+        return true;
+    }
+
+    bool FileDoc::IsType(std::string extension)
+    {
+        return ExtensionFromPath(path) == extension;
+    }
+
     FileDoc::~FileDoc() {
         // Release pointers
-        doctotext_free_extractor_params(params);
-        doctotext_free_formatting_style(style);
-        doctotext_free_metadata(metadata);
-        doctotext_free_extracted_data(data);
+        if (params != NULL) {
+            doctotext_free_extractor_params(params);
+        }
+        if (style != NULL) {
+            doctotext_free_formatting_style(style);
+        }
+        if (metadata != NULL) {
+            doctotext_free_metadata(metadata);
+        }
+        if (data != NULL) {
+            doctotext_free_extracted_data(data);
+        }
     }
 }
 
@@ -119,21 +253,27 @@ namespace file_util {
         return time.substr(0, time.find(' '));;
     }
 
-	std::string FileNameFromPath(std::string path)
+	std::wstring FileNameFromPath(std::wstring path)
 	{
-        auto filename = path.substr(path.find_last_of("/\\") + 1);
+        auto filename = path.substr(path.find_last_of(L"/\\") + 1);
         return filename;
 	}
 
-    std::string ExtensionFromPath(std::string path)
+    std::wstring ExtensionFromPath(std::wstring path)
     {
-        auto ext = path.substr(path.find_last_of("\.") + 1);
+        auto ext = path.substr(path.find_last_of(L"\.") + 1);
         return ext;
     }
 
-    std::shared_ptr<FileDoc> ReadDocument(std::string path)
+    bool IsSupported(std::wstring path)
     {
-        auto doc = std::make_shared<FileDoc>(path);
+        auto ext = ExtensionFromPath(path);
+        return ext == CSV || ext == DOC || ext == DOCX || ext == PDF || ext == RTF || ext == TXT || ext == XLSX || ext == XLS;
+    }
+
+    std::shared_ptr<FileDoc> ReadDocument(std::wstring path)
+    {
+        auto doc = std::make_shared<FileDoc>(path); // TODO: to wxstring
         return doc;
     }
     std::shared_ptr<std::string> ReadText(std::string path)
@@ -152,6 +292,24 @@ namespace file_util {
           
        }
        return std::shared_ptr<std::string>();
+    }
+    std::shared_ptr<std::wstring> ReadWText(std::string path)
+    {
+        wxTextFile tfile;
+        tfile.Open(path);
+
+        // read the first line
+        std::wstringstream content;
+        content << tfile.GetFirstLine();
+
+        while (!tfile.Eof())
+        {
+            content << tfile.GetNextLine();
+            content << '\n';
+        }
+        
+        auto result = std::make_shared<std::wstring>(content.str());
+        return result;
     }
     void WriteText(std::string path, std::string data)
     {

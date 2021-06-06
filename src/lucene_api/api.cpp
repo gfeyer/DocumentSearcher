@@ -3,6 +3,7 @@
 #include <wx/string.h>
 #include <codecvt>
 #include <iostream>
+#include <vector>
 
 #include "search.h"
 
@@ -19,9 +20,9 @@ namespace lucene_api {
         return conv.to_bytes(utf16Str);
     }
 
-    std::shared_ptr<IResults> NewSearch(std::string query, std::string index) {
+    std::shared_ptr<IResults> NewSearch(std::string query, std::vector<std::string> indexes) {
         wxString wquery(query);
-        std::shared_ptr<IResults> searchResults(new internal::SearchResults(wquery,index));
+        std::shared_ptr<IResults> searchResults(new internal::SearchResults(wquery,indexes));
         return searchResults;
     }
 }

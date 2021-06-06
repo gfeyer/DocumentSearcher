@@ -16,28 +16,37 @@ namespace file_util {
 
 	class FileDoc {
 	private:
-		DocToTextExtractorParams* params;
-		DocToTextFormattingStyle* style;
-		DocToTextExtractedData* data;
-		DocToTextMetadata* metadata;
-		std::string path;
+		DocToTextExtractorParams* params = NULL;
+		DocToTextFormattingStyle* style = NULL;
+		DocToTextExtractedData* data = NULL;
+		DocToTextMetadata* metadata = NULL;
+		std::wstring path;
 	public:
-		FileDoc(std::string);
+		FileDoc(std::wstring);
 		~FileDoc();
 		std::wstring  Content();
 		std::wstring  AuthorCreated();
 		std::wstring  AuthorModified();
 		std::wstring  DateCreated();
 		std::wstring  DateModified();
+	private:
+		bool IsTimeValid(const tm* tm_ptr);
+		bool IsType(std::string);
 	};
 
-	std::shared_ptr<FileDoc> ReadDocument(std::string path);
+	std::shared_ptr<FileDoc> ReadDocument(std::wstring path);
 	std::shared_ptr<std::string> ReadText(std::string path);
+	std::shared_ptr<std::wstring> ReadWText(std::string path);
 	void WriteText(std::string path, std::string data);
 
 	std::string EpochToDate(std::string timestr);
-	std::string FileNameFromPath(std::string);
-	std::string ExtensionFromPath(std::string);
+	std::wstring FileNameFromPath(std::wstring);
+	std::wstring ExtensionFromPath(std::wstring);
+
+	bool IsSupported(std::wstring path);
+	bool IsSupported(std::wstring path);
+
+
 }
 
 #endif // FILE_UTIL_H_

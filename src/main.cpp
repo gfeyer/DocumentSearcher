@@ -10,10 +10,15 @@
 #include <wx/wx.h>
 #endif
 #include "ui/noname.h"
-
 #include "logger.h"
-
 #include "app.h"
+
+/*
+TODO:
+	- after indexing, new archive does not show
+	- Refactor settings into its own class rather than reading file from everywhere
+	- When indexing some pdf, created/modified date returns corrupted
+*/
 
 class MainApp : public wxApp
 {
@@ -39,7 +44,7 @@ bool MainApp::OnInit()
 	//logger::WriteToFile("log.txt");
 
 	ui_frame = new App(nullptr);
-	ui_frame->SetTitle(VERSION);
+	ui_frame->SetTitle(VERSION + " | Build date: " + BUILD_DATE + " " + BUILD_TIME);
 	ui_frame->Show();
 
 	//wxIcon mainicon;

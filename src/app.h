@@ -7,7 +7,7 @@
 
 #include "search_ui.h"
 
-const std::string VERSION = "DesktopSearcher 1.0";
+const std::string VERSION = "DocumentSearcher 1.0 -BETA-";
 const std::string BUILD_TIME = __TIME__;
 const std::string BUILD_DATE = __DATE__;
 
@@ -22,6 +22,7 @@ private:
     SearchUI* search_panel_;
     // Event handlers
     void OnSelectMenuIndexView(wxCommandEvent& event);
+    void OnSelectMenuIndexNew(wxCommandEvent& event);
 
     // Closing & Cleanup
     void OnClose();

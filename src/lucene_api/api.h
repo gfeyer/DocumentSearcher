@@ -9,9 +9,12 @@
 #define NOMINMAX
 #endif
 
+#include <functional>
 #include <memory>
+#include <vector>
 
 #include "LuceneHeaders.h"
+#include <string>
 
 namespace lucene_api {
 
@@ -24,15 +27,15 @@ namespace lucene_api {
         virtual std::string  Modified(size_t) = 0;
         virtual std::string  ModifiedBy(size_t) = 0;
         virtual std::string  Name(size_t) = 0;
-        virtual std::string  Path(size_t) = 0;
+        virtual std::wstring  Path(size_t) = 0;
         virtual size_t Hits() = 0;
         virtual double Score(size_t) = 0;
     };
 
-    std::shared_ptr<IResults> NewSearch(std::string query, std::string index);
+    std::shared_ptr<IResults> NewSearch(std::string query, std::vector<std::string> indexes);
 
     // Interface for indexing directory and updating the index
-    int IndexDocs(std::string source, std::string index);
+    int IndexDocs(std::string source, std::string index, std::function<void(std::wstring,bool)>);
     int UpdateDocs(std::string source, std::string index);
 
     // Utility functions

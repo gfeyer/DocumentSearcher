@@ -7,7 +7,7 @@
 
 namespace word_util {
 
-	std::vector<std::string> GetWords(std::string);
+	std::vector<std::string> SplitIntoWords(std::string);
 }
 
 #endif // WORD_UTIL_H_

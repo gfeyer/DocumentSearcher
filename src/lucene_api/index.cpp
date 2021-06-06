@@ -1,8 +1,9 @@
 #include "api.h"
 #include "index.h"
 
+#include <functional>
+#include <wx/string.h>
 #include "../util/file_util.h"
-
 
 
 namespace lucene_api::internal {
@@ -10,12 +11,12 @@ namespace lucene_api::internal {
     
     int32_t docNumber = 0;
     
-    Lucene::DocumentPtr fileDocument(const Lucene::String& docFile) {
+    Lucene::DocumentPtr fileDocument(const Lucene::String& docFile, bool& success) {
     
         DocumentPtr doc = newLucene<Document>(); 
 
-        std::string  path = utf16ToUtf8(docFile);
-        auto fileDoc = file_util::ReadDocument(path);
+        wxString path = docFile;
+        auto fileDoc = file_util::ReadDocument(path.ToStdWstring());
 
         // Add metadata
         // Add the path of the file as a field named "path".  Use a field that is indexed (ie. searchable), but
@@ -28,12 +29,19 @@ namespace lucene_api::internal {
         doc->add(newLucene<Field>(FIELD_MODIFIED_BY, fileDoc->AuthorModified(), Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
 
         // Add file contents:
-        doc->add(newLucene<Field>(FIELD_CONTENT, fileDoc->Content(), Field::STORE_YES, Field::INDEX_ANALYZED));
-    
+        auto content = fileDoc->Content();
+        if (content.size() > 5) {
+            success = true;
+        }
+        else {
+            success = false;
+        }
+        doc->add(newLucene<Field>(FIELD_CONTENT, content, Field::STORE_YES, Field::INDEX_ANALYZED));
+        
         return doc;
     }
     
-    void IndexDocsWithWriter(const Lucene::IndexWriterPtr& writer, const Lucene::String& sourceDir) {
+    void IndexDocsWithWriter(const Lucene::IndexWriterPtr& writer, const Lucene::String& sourceDir, std::function<void(std::wstring,bool)> callback) {
     
         HashSet<String> dirList(HashSet<String>::newInstance());
         if (!FileUtils::listDirectory(sourceDir, false, dirList)) {
@@ -41,16 +49,34 @@ namespace lucene_api::internal {
         }
     
         for (HashSet<String>::iterator dirFile = dirList.begin(); dirFile != dirList.end(); ++dirFile) {
-            String docFile(FileUtils::joinPath(sourceDir, *dirFile));
+            
+            auto path = FileUtils::joinPath(sourceDir, *dirFile);
+            String docFile(path);
             if (FileUtils::isDirectory(docFile)) {
-                IndexDocsWithWriter(writer, docFile);
+                IndexDocsWithWriter(writer, docFile, callback);
             }
             else {
-                std::wcout << L"Adding [" << ++docNumber << L"]: " << *dirFile << L"\n";
-    
+                std::wstringstream ss;
+
+                if (!file_util::IsSupported(path)) {
+                    ss << L"Extension not supported, skipping: " << path << L"\n";
+                    //callback(ss.str(),true);
+                    continue;
+                }
+
                 try {
                     //std::wcout << L"addDocument->\n";
-                    auto fdoc = fileDocument(docFile);
+                    bool success;
+                    auto fdoc = fileDocument(docFile, success);
+
+                    if (success) {
+                        ss << L"Adding [" << ++docNumber << L"]: " << path << L"\n";
+                    }
+                    else {
+                        ss << L"Cannot extract text from: " << path << L"\n";
+                    }
+                    callback(ss.str(), success);
+
                     writer->addDocument(fdoc);
                     //std::wcout << L"done->\n";
                 }
@@ -62,7 +88,7 @@ namespace lucene_api::internal {
 }
 
 namespace lucene_api {
-    int IndexDocs(std::string source, std::string index) {
+    int IndexDocs(std::string source, std::string index, std::function<void(std::wstring,bool)> callback) {
         using namespace Lucene;
         String sourceDir(StringUtils::toUnicode(source));
         String indexDir(StringUtils::toUnicode(index));
@@ -90,7 +116,7 @@ namespace lucene_api {
 
             std::wcout << L"Indexing to directory: " << indexDir << L"...\n";
 
-            internal::IndexDocsWithWriter(writer, sourceDir);
+            internal::IndexDocsWithWriter(writer, sourceDir, callback);
 
             uint64_t endIndex = MiscUtils::currentTimeMillis();
             uint64_t indexDuration = endIndex - beginIndex;

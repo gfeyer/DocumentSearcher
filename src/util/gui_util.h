@@ -2,10 +2,15 @@
 #define GUI_UTIL_H_
 
 #include <string>
+#include <vector>
 #include <wx/stc/stc.h>
 
 namespace gui_util {
+    void ExtractExcerpts(std::vector<std::string> keywords, wxStyledTextCtrl* source, wxStyledTextCtrl* destination);
+    std::string ExtractTextFromCtrl(wxStyledTextCtrl*, int,int);
+    std::vector<int> FindWordOccurences(wxStyledTextCtrl*, std::string);
 	void HighlightWord(std::string, wxStyledTextCtrl*, bool clear = false);
+	void ScrollToFirstOccurence(std::vector<std::string>, wxStyledTextCtrl*);
 	void SetColor(wxColour, int, wxStyledTextCtrl*);
 
     const std::vector<wxColour> kHighlightColors = {

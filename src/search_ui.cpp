@@ -1,5 +1,9 @@
 #include "search_ui.h"
 
+#include <algorithm>    // std::sort
+#include <memory>
+#include <set>
+
 #include <wx/msgdlg.h>
 #include <wx/checkbox.h>
 #include <nlohmann/json.hpp>
@@ -12,6 +16,7 @@
 #include "lucene_api/api.h"
 #include "index_ui.h"
 #include "logger.h"
+#include "scheduler.h"
 
 #include "ui/resources/filter.xpm"
 #include "ui/resources/csv.xpm"
@@ -23,22 +28,22 @@
 #include "ui/resources/xls.xpm"
 #include "ui/resources/xlsx.xpm"
 
-/*
-    TODO:
-        - refactor settings into its own class rather than reading file from everywhere
-
-*/
+#include "duckx.hpp"
 
 using nlohmann::json;
 
-
 SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
 {
+    // Create sacheduler for X miliseconds
+    scheduler_ = std::make_shared<Scheduler>(200);
+
+
     LoadResources();
     LoadIndexes();
 
     // Setup
     gui_text_view->SetWrapMode(1);
+    gui_excerpts_view->SetWrapMode(1);
 
     // Rank column
     gui_list_view->AppendTextColumn("Rank");
@@ -59,29 +64,32 @@ SearchUI::SearchUI(wxWindow* window) : SearchPanel(window)
     gui_list_view->AppendTextColumn("Author");
     gui_list_view->AppendTextColumn("ModifiedBy");
     gui_list_view->AppendTextColumn("Modified");
-    
-    //_setmode(_fileno(stdout), _O_U16TEXT);
-    //auto source = "C:\\Users\\Vlad\\Documents\\temp\\source2";
-    //auto index = "C:\\Users\\Vlad\\Documents\\temp\\index";
-    //lucene_api::IndexDocs(source, index);
 
-    // Perform basic search and get results
-    auto index = gui_choice_index->GetStringSelection();
-    if (!index.empty()) {
-        NewSearch("H4R*", index);
-    }
+    // temporary
+    //NewSearch("american princess", { "C:\\Users\\Vlad\\Documents\\temp\\index", "C:\\Users\\Vlad\\Documents\\temp\\index_docs" });
+    //auto source = R"(X:\sap\d1)";
+    //auto index = R"(X:\sap\i1)";
+    //lucene_api::IndexDocs(source, index, [](std::wstring) {});
+
 }
 
 SearchUI::~SearchUI()
 {
 }
 
-void SearchUI::NewSearch(std::string query, std::string index)
+void SearchUI::NewSearch(std::string query, std::vector<std::string> indexes)
 {
     // clear any locks on the index
-    //results_ = nullptr;
-    results_ = lucene_api::NewSearch(query, index);
+    results_ = nullptr;
 
+    //
+    if (indexes.empty()) {
+        return;
+    }
+    
+    results_ = lucene_api::NewSearch(query, indexes);
+
+    // Populate results
     gui_list_view->DeleteAllItems();
 
     for (auto i = 0; i < results_->Hits(); ++i) {
@@ -109,6 +117,29 @@ void SearchUI::NewSearch(std::string query, std::string index)
 
         gui_list_view->AppendItem(data);
     }
+
+    // Create checkboxes
+    ClearSearchSession();
+
+    // Split query into separate words
+    std::vector<std::string> words = word_util::SplitIntoWords(query);
+
+    // One word per checkbox
+    auto sizer = gui_panel_selected_words->GetSizer();
+    for (auto w : words) {
+        auto checkbox = new wxCheckBox(gui_panel_selected_words, wxID_ANY, w, wxDefaultPosition, wxDefaultSize, 0);
+        checkbox->SetValue(1);
+        sizer->Add(checkbox, 0, wxALL, 5);
+        checkbox->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(SearchUI::OnCheck), NULL, this);
+
+        searchword_to_checkbox_[w] = checkbox;
+    }
+
+    // Perform a resize and autofit
+    gui_panel_selected_words->Layout();
+    sizer->Fit(gui_panel_selected_words);
+    gui_panel_selected_words->GetParent()->Layout();
+    this->Layout();
 }
 
 void SearchUI::OnDoubleClick(wxDataViewEvent& event)
@@ -131,51 +162,46 @@ void SearchUI::OnSelectResult(wxDataViewEvent& event)
         return;
     }
 
+    // Clear views
+    gui_text_view->ClearAll();
+    gui_excerpts_view->ClearAll();
+
     // Populate text content
     auto content = results_->Content(row);
     gui_text_view->SetText(content);
 
-    auto sizer = gui_checkboxes->GetSizer();
-    sizer->Clear(true);
-
-    std::vector<std::string> words = word_util::GetWords(gui_search_query->GetValue());
-
-    // Display words in query as checkboxes
-    for (auto w : words) {
-        auto checkbox = new wxCheckBox(gui_checkboxes, wxID_ANY, w, wxDefaultPosition, wxDefaultSize, 0);
-        checkbox->SetValue(1);
-        sizer->Add(checkbox, 0, wxALL, 5);
-        checkbox->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(SearchUI::OnCheck), NULL, this);
-
-        OnCheck(checkbox);
-    }
-
-    // Perform a resize and autofit
-    gui_checkboxes->Layout();
-    sizer->Fit(gui_checkboxes);
-    gui_checkboxes->GetParent()->Layout();
-    this->Layout();
+    // Extract excerpts from text view and populate excerpts view
+    RefreshExcerpts();
+    RefreshHighlights();
 }
 
-void SearchUI::OnSelectIndex(wxCommandEvent& event)
+void SearchUI::OnNewIndex()
 {
-    auto selection = gui_choice_index->GetStringSelection();
-    if (selection == "New...") {
-        auto ui_filters = new FiltersUI(this);
-        ui_filters->AddCallbackOnCompleted([this]() {
-            LoadIndexes();
-        });
-        ui_filters->Show();
-    }
+    auto ui_filters = new FiltersUI(this);
+    ui_filters->AddCallbackOnCompleted([this]() {
+        LoadIndexes();
+    });
+    ui_filters->Show();
 }
 
 void SearchUI::OnSearch(wxCommandEvent& event)
 {
-    auto index = gui_choice_index->GetStringSelection();
+    // Collect all selected indexes 
+    std::vector<std::string> indexes;
+    for (auto name_checkbox : index_name_to_checkbox_) {
+        auto name = name_checkbox.first;
+        auto checkbox = name_checkbox.second;
+
+        if (checkbox->IsChecked()) {
+            indexes.push_back(index_name_to_path_[name]);
+        }
+    }
+    
+    // Collect query
     std::string query = gui_search_query->GetValue();
     
     try {
-        NewSearch(query, index);
+        NewSearch(query, indexes);
     }
     catch (std::exception& e) {
         PopErrorDialog(e.what());
@@ -206,25 +232,38 @@ void SearchUI::LoadIndexes()
     file_util::ReadText("settings.json");
     auto settings_txt = file_util::ReadText("settings.json");
 
-    // Clear indexes/reloading
-    gui_choice_index->Clear();
+    // Clear old indexes
+    auto sizer = gui_panel_indexes->GetSizer();
+    sizer->Clear(true);
+    index_name_to_path_.clear();
+    index_name_to_checkbox_.clear();
 
+    // Load new indexes from settings file
     if (!settings_txt->empty()) {
         auto settings = json::parse(*settings_txt);
         auto indexes = settings["indexes"];
 
         for (size_t i = 0; i < indexes.size(); ++i) {
-            auto index_path = indexes[i]["index"].get<std::string>();
-            gui_choice_index->AppendString(index_path);
+            auto name = indexes[i]["name"].get<std::string>();
+            auto path = indexes[i]["index"].get<std::string>();
+            index_name_to_path_[name] = path;
         }
     }
 
-    if (gui_choice_index->GetCount() > 0) {
-        gui_choice_index->SetSelection(0);
+    // Add new indexes
+    for (auto p : index_name_to_path_) {
+        auto name = p.first;
+        auto checkbox = new wxCheckBox(gui_panel_indexes, wxID_ANY, name, wxDefaultPosition, wxDefaultSize, 0);
+        checkbox->SetValue(1);
+        sizer->Add(checkbox, 0, wxALL, 5);
+        index_name_to_checkbox_[name] = checkbox;
     }
-    
-    gui_choice_index->AppendString("New...");
-    
+
+    // Resize and autofit
+    gui_panel_indexes->Layout();
+    sizer->Fit(gui_panel_indexes);
+    gui_panel_indexes->GetParent()->Layout();
+    this->Layout();
 }
 
 void SearchUI::LoadResources()
@@ -240,25 +279,70 @@ void SearchUI::LoadResources()
     bitmaps_["xlsx"] = wxBitmap(xlsx_xpm);
 }
 
-wxBitmap SearchUI::GetBitmapForExtension(std::string ext)
+void SearchUI::ClearSearchSession()
 {
+    auto sizer = gui_panel_selected_words->GetSizer();
+    sizer->Clear(true);
+    searchword_to_checkbox_.clear();
+}
+
+wxBitmap SearchUI::GetBitmapForExtension(std::wstring wext)
+{
+    std::string ext = wxString(wext).ToStdString();
     if (bitmaps_.find(ext) != bitmaps_.end()) {
         return bitmaps_[ext];
     }
     return wxBitmap();
 }
 
+void SearchUI::RefreshHighlights()
+{
+    for (auto& p : searchword_to_checkbox_) {
+        auto word = p.first;
+        auto checkbox = p.second;
+
+        if (checkbox->IsChecked()) {
+            gui_util::HighlightWord(word, gui_excerpts_view);
+            gui_util::HighlightWord(word, gui_text_view);
+        }
+        else {
+            gui_util::HighlightWord(word, gui_excerpts_view, true);
+            gui_util::HighlightWord(word, gui_text_view, true);
+        }
+    }
+
+    gui_excerpts_view->ScrollToStart();
+    gui_text_view->ScrollToStart();
+}
+
+void SearchUI::RefreshExcerpts()
+{
+    std::vector<std::string> checked;
+    for (auto& p : searchword_to_checkbox_) {
+        auto word = p.first;
+        auto checkbox = p.second;
+
+        if (checkbox->IsChecked()) {
+            checked.push_back(word);
+        }
+    }
+    gui_util::ExtractExcerpts(checked, gui_text_view, gui_excerpts_view);
+}
+
 void SearchUI::OnCheck(wxCommandEvent& event)
 {
     wxCheckBox* box = wxDynamicCast(event.GetEventObject(), wxCheckBox);
-    OnCheck(box);
+    RefreshExcerpts();
+    RefreshHighlights();
 }
 
 void SearchUI::OnCheck(wxCheckBox* box)
 {
     auto word = box->GetLabelText();
     auto isChecked = box->IsChecked();
-
+     
     gui_util::HighlightWord(word, gui_text_view, !isChecked);
+    gui_util::HighlightWord(word, gui_excerpts_view, !isChecked);
+
 }
 

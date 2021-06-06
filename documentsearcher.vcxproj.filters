@@ -56,6 +56,9 @@
     <ClCompile Include="src\util\word_util.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\scheduler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lucene_api\search.h">
@@ -90,6 +93,9 @@
     </ClInclude>
     <ClInclude Include="src\util\word_util.h">
       <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scheduler.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

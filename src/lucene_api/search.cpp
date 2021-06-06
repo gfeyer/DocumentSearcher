@@ -1,20 +1,30 @@
 #include "api.h"
 #include "search.h"
+#include <vector>
 
 namespace lucene_api::internal {
     using namespace Lucene;
 
-    const int32_t kMaxHits = 200;
+    const int32_t kMaxHits = 2000;
 
 
-    SearchResults::SearchResults(std::wstring userquery, std::string index) {
+    SearchResults::SearchResults(std::wstring userquery, std::vector<std::string> indexes) {
         // Search
         // String index = L"index";
         String field = FIELD_CONTENT;
-    
+
+        Collection<IndexReaderPtr> readers(Collection<IndexReaderPtr>::newInstance(0));
+
+        for (auto index : indexes) {
+            auto reader = IndexReader::open(FSDirectory::open(utf8ToUtf16(index)), true);
+            readers.add(reader);
+        }
+
+        reader_ = newLucene<MultiReader>(readers);
+
         // only searching, so read-only=true
-        reader_ = IndexReader::open(FSDirectory::open(utf8ToUtf16(index)), true);
-        searcher_ = newLucene<IndexSearcher>(reader_);
+        searcher_ = newLucene<IndexSearcher>(reader_);        
+
         AnalyzerPtr analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_CURRENT);
         QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_CURRENT, field, analyzer);
     
@@ -96,11 +106,11 @@ namespace lucene_api::internal {
         std::string filename = path.substr(path.find_last_of("/\\") + 1);
         return filename;
     }
-    std::string SearchResults::Path(size_t index)
+    std::wstring SearchResults::Path(size_t index)
     {
         DocumentPtr doc = searcher_->doc(hits_[index]->doc);
         String path = doc->get(FIELD_PATH);
-        return utf16ToUtf8(path);
+        return path;
     }
     size_t SearchResults::Hits() {
         return hits_.size();

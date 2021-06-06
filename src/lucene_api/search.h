@@ -4,7 +4,7 @@
 #include <codecvt>
 #include <iostream>
 #include <memory>
-
+#include <vector>
 
 namespace lucene_api::internal {
 
@@ -15,7 +15,7 @@ namespace lucene_api::internal {
         Lucene::TopScoreDocCollectorPtr collector_;
         Lucene::Collection<Lucene::ScoreDocPtr> hits_;
     public:
-        SearchResults(std::wstring userquery, std::string index);
+        SearchResults(std::wstring userquery, std::vector<std::string> index);
         ~SearchResults();
         std::wstring Content(size_t);
         std::string Created(size_t);
@@ -23,7 +23,7 @@ namespace lucene_api::internal {
         std::string Modified(size_t);
         std::string ModifiedBy(size_t);
         std::string Name(size_t);
-        std::string Path(size_t);
+        std::wstring Path(size_t);
         size_t Hits();
         double Score(size_t pos);
     };
