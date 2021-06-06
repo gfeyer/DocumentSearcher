@@ -23,7 +23,8 @@ namespace file_util {
     #define XLSX    "xlsx"
     #define XLS     "xls"
 
-    #define PDF_READER   "pdftotext.exe"
+    #define PDF_READER   "mutool.exe"
+    #define PDF_READER2  "pdftotext.exe"
     #define DOCX_READER  "doctotext.exe"
     #define TEMPFILE     "temp.txt"
 }
@@ -56,7 +57,7 @@ namespace file_util {
 
     std::wstring FileDoc::Content() {
 
-        if (IsType(PDF)) {
+        /*if (IsType(PDF)) {
             std::stringstream readCmd;
             readCmd << PDF_READER;
             readCmd << " \"";
@@ -82,8 +83,34 @@ namespace file_util {
 
             wxString wstr = *content;
             return wstr;
-        }
+        }*/
+        
+        if (IsType(PDF)) {
+            // mutool convert -o temp.txt pdf.pdf
+            std::stringstream readCmd;
+            readCmd << PDF_READER << " convert " << " -o " << TEMPFILE << " ";
+            readCmd << "\"";
+            readCmd << path;
+            readCmd << "\"";
+            auto read = readCmd.str();
 
+            std::stringstream delCmd;
+            delCmd << "del ";
+            delCmd << TEMPFILE;
+            auto delTempFile = delCmd.str();
+
+            // Read file
+            logger_info << read;
+            system(read.c_str());
+            auto content = ReadWText(TEMPFILE);
+
+            // Delete temporary file
+            logger_info << delTempFile;
+            system(delTempFile.c_str());
+
+            return *content;
+        }
+        //if (IsType(DOCX) || IsType(DOC) || IsType(PDF)) {
         if (IsType(DOCX) || IsType(DOC)) {
             std::stringstream readCmd;
             readCmd << DOCX_READER;
